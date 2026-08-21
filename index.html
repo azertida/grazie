@@ -198,7 +198,7 @@
 
   <div class="bloc" id="bloc-lieux-accueil">
     <h2>Où tu déposeras</h2>
-    <p class="compte">Coche les boîtes à livres que tu proposes pour ce colis.</p>
+    <p class="compte">Touche les boîtes à livres que tu proposes pour ce colis. Au moins une.</p>
     <div id="liste-lieux-coche"></div>
   </div>
 
@@ -518,7 +518,7 @@ function dessinerAccueil(){
   var rangee = document.createElement("div");
   profil.lieux.forEach(function(nom){
     var actif = colis.lieux.indexOf(nom) !== -1;
-    var b = boutonChoix(nom, actif, function(){
+    var b = boutonChoix((actif ? "\u2611  " : "\u2610  ") + nom, actif, function(){
       var k = colis.lieux.indexOf(nom);
       if (k === -1) colis.lieux.push(nom); else colis.lieux.splice(k,1);
       ecrire("colis", colis);
@@ -528,6 +528,7 @@ function dessinerAccueil(){
     b.style.width = "100%";
     b.style.textAlign = "left";
     b.style.marginBottom = "8px";
+    b.style.fontSize = "1rem";
     rangee.appendChild(b);
   });
   zone.appendChild(rangee);
@@ -746,10 +747,11 @@ function dessinerOffre(o){
   var zl = $("d-lieux");
   vider(zl);
   o.x.forEach(function(nom){
-    var b = boutonChoix(nom, false, function(){
+    var b = boutonChoix("\u25CB  " + nom, false, function(){
       demandeEnCours.lieu = nom;
       dessinerLieuxDemande();
     });
+    b.dataset.lieu = nom;
     b.style.display = "block";
     b.style.width = "100%";
     b.style.textAlign = "left";
@@ -773,8 +775,9 @@ function dessinerOffre(o){
 function dessinerLieuxDemande(){
   var enfants = $("d-lieux").children;
   for (var i=0;i<enfants.length;i++){
-    enfants[i].setAttribute("aria-pressed",
-      enfants[i].textContent === demandeEnCours.lieu ? "true" : "false");
+    var choisi = enfants[i].dataset.lieu === demandeEnCours.lieu;
+    enfants[i].setAttribute("aria-pressed", choisi ? "true" : "false");
+    enfants[i].textContent = (choisi ? "\u25CF  " : "\u25CB  ") + enfants[i].dataset.lieu;
   }
   majBoutonDemande();
 }
