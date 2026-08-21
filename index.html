@@ -96,6 +96,7 @@
   .btn.calme{background:transparent;color:var(--encre);border:1.5px solid var(--trait)}
   .btn:disabled{opacity:.4;cursor:not-allowed}
   .btn:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
+  .bloc.amorce{border-left:4px solid var(--terre);background:var(--doux)}
   .livre{
     border-left:3px solid var(--terre);
     background:var(--doux);
@@ -182,6 +183,12 @@
     <p>Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.</p>
   </div>
 
+  <div class="bloc amorce" id="bloc-avant">
+    <h2>Avant de composer</h2>
+    <p id="avant-texte"></p>
+    <button class="btn" id="btn-vers-reglages">Indiquer mon prénom et mes boîtes</button>
+  </div>
+
   <div class="bloc">
     <h2>Ton colis</h2>
     <p class="compte" id="compte-livres"></p>
@@ -195,6 +202,7 @@
     <div id="liste-lieux-coche"></div>
   </div>
 
+  <p class="compte" id="manque"></p>
   <button class="btn" id="btn-creer" disabled>Créer le lien du colis</button>
 
   <nav><a href="#reglages">Tes lieux et ton prénom</a></nav>
@@ -518,9 +526,31 @@ function dessinerAccueil(){
   });
   zone.appendChild(rangee);
 
-  $("btn-creer").disabled = !(colis.livres.length && colis.lieux.length && profil.prenom);
-  $("btn-creer").textContent = profil.prenom ? "Créer le lien du colis" : "Indique d'abord ton prénom";
+  var manques = [];
+  if (!profil.prenom) manques.push("ton prénom");
+  if (!profil.lieux.length) manques.push("au moins une boîte à livres");
+  if (!colis.livres.length) manques.push("au moins un livre");
+  else if (profil.lieux.length && !colis.lieux.length) manques.push("une boîte cochée pour ce colis");
+
+  var amorce = !profil.prenom || !profil.lieux.length;
+  $("bloc-avant").style.display = amorce ? "block" : "none";
+  if (amorce){
+    $("avant-texte").textContent = !profil.prenom && !profil.lieux.length
+      ? "Il te faut un prénom et au moins une boîte à livres où déposer. C'est à faire une fois."
+      : (!profil.prenom
+          ? "Il te manque ton prénom. C'est à faire une fois."
+          : "Il te manque au moins une boîte à livres où déposer. C'est à faire une fois.");
+  }
+
+  $("manque").textContent = manques.length
+    ? "Pour créer le lien, il manque " + manques.join(", ") + "."
+    : "";
+  $("btn-creer").disabled = manques.length > 0;
 }
+
+$("btn-vers-reglages").addEventListener("click", function(){
+  location.hash = "reglages";
+});
 
 $("btn-ajouter").addEventListener("click", function(){
   brouillonLivre = {l:"fr", e:3};
