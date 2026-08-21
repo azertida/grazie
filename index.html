@@ -260,6 +260,12 @@
     <button class="btn calme" id="btn-ajouter-lieu">Ajouter cette boîte</button>
   </div>
 
+  <div class="bloc">
+    <h2>Effacer</h2>
+    <p class="compte">Supprime de cet appareil ton prénom, tes boîtes et le colis en cours. Les liens déjà envoyés continuent de fonctionner&#8239;: ils ne dépendent pas de cet appareil.</p>
+    <button class="btn calme" id="btn-effacer">Effacer mes données</button>
+  </div>
+
   <button class="btn" id="btn-retour-accueil">Revenir au colis</button>
 </section>
 
@@ -656,6 +662,22 @@ $("btn-ajouter-lieu").addEventListener("click", function(){
   $("r-lieu").value = "";
   dessinerReglages();
 });
+$("btn-effacer").addEventListener("click", function(){
+  if (!confirm("Effacer ton prénom, tes boîtes et le colis en cours sur cet appareil\u202f?")) return;
+  try {
+    var aSupprimer = [];
+    for (var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if (k && k.indexOf(CLE) === 0) aSupprimer.push(k);
+    }
+    aSupprimer.forEach(function(k){ localStorage.removeItem(k); });
+  } catch(e){}
+  profil = {prenom:"", lieux:[]};
+  colis = {livres:[], lieux:[]};
+  dessinerReglages();
+  dessinerAccueil();
+});
+
 $("btn-retour-accueil").addEventListener("click", function(){
   location.hash = "";
   dessinerAccueil();
