@@ -154,6 +154,8 @@
   .grille .creneau[aria-pressed=true]{background:var(--bleu);color:#fff;border-color:var(--bleu)}
   .cle{font-family:Fraunces,Georgia,serif;font-size:1.5rem;font-weight:600;line-height:1.25}
   .compte{font-size:.85rem;color:var(--gris);margin-bottom:12px}
+  #barre{margin-bottom:18px;font-size:.9rem}
+  #barre a{color:var(--terre);text-decoration:none;font-weight:700}
   nav{margin-top:26px;font-size:.9rem}
   nav a{color:var(--bleu);text-decoration:underline;margin-right:16px}
   .vide{color:var(--gris);font-style:italic;margin-bottom:14px}
@@ -163,6 +165,8 @@
 </head>
 <body>
 <div class="page">
+
+<div id="barre" style="display:none"><a href="#" class="maison">← Grazie&#8239;: composer un colis</a></div>
 
 <!-- ================= ACCUEIL ================= -->
 <section id="ecran-accueil">
@@ -208,6 +212,7 @@
   </div>
 
   <p class="compte" id="manque"></p>
+  <button class="btn calme" id="btn-vider-colis" style="display:none">Vider ce colis</button>
   <button class="btn" id="btn-creer" disabled>Créer le lien du colis</button>
 
   <nav><a href="#reglages">Tes lieux et ton prénom</a></nav>
@@ -291,7 +296,8 @@
     <button class="btn calme" id="btn-copier">Copier le lien</button>
   </div>
 
-  <button class="btn calme" id="btn-lien-retour">Revenir</button>
+  <button class="btn calme" id="btn-nouveau-colis">Composer un nouveau colis</button>
+  <button class="btn calme" id="btn-lien-retour">Revenir sans rien changer</button>
 </section>
 
 <!-- ================= OFFRE REÇUE ================= -->
@@ -316,7 +322,7 @@
   </div>
 
   <div class="avis" id="offre-vieille"></div>
-  <nav><a href="#">Composer mon propre colis</a></nav>
+  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
 </section>
 
 <!-- ================= DEMANDE REÇUE ================= -->
@@ -347,6 +353,7 @@
   </div>
 
   <div class="avis">Si tu ne donnes pas ce colis, un mot dans la conversation vaut mieux qu'un silence.</div>
+  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
 </section>
 
 <!-- ================= ACCORD REÇU ================= -->
@@ -365,7 +372,7 @@
     Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.
   </div>
 
-  <nav><a href="#">Composer mon propre colis</a></nav>
+  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
 </section>
 
 </div>
@@ -507,10 +514,25 @@ function montrer(nom, cible){
   for (var i=0;i<ECRANS.length;i++){
     $("ecran-"+ECRANS[i]).classList.toggle("actif", ECRANS[i]===nom);
   }
+  $("barre").style.display = (nom === "accueil") ? "none" : "block";
   var el = cible ? $(cible) : null;
   if (el) el.scrollIntoView({block:"start"});
   else window.scrollTo(0,0);
 }
+
+function allerAccueil(){
+  if (location.hash){
+    try { history.replaceState(null, "", location.pathname); }
+    catch(e){ location.hash = ""; }
+  }
+  $("alerte-lien").style.display = "none";
+  dessinerAccueil();
+  montrer("accueil");
+}
+document.addEventListener("click", function(e){
+  var a = e.target.closest ? e.target.closest("a.maison") : null;
+  if (a){ e.preventDefault(); allerAccueil(); }
+});
 
 /* ================= ACCUEIL ================= */
 function dessinerAccueil(){
@@ -589,7 +611,21 @@ function dessinerAccueil(){
     ? "Pour créer le lien, il manque " + manques.join(", ") + "."
     : "";
   $("btn-creer").disabled = manques.length > 0;
+  $("btn-vider-colis").style.display = colis.livres.length ? "block" : "none";
 }
+
+$("btn-vider-colis").addEventListener("click", function(){
+  if (!confirm("Retirer tous les livres de ce colis\u202f?")) return;
+  colis.livres = [];
+  ecrire("colis", colis);
+  dessinerAccueil();
+});
+
+$("btn-nouveau-colis").addEventListener("click", function(){
+  colis.livres = [];
+  ecrire("colis", colis);
+  allerAccueil();
+});
 
 $("btn-vers-reglages").addEventListener("click", function(){
   location.hash = "reglages";
@@ -723,11 +759,7 @@ $("btn-effacer").addEventListener("click", function(){
   dessinerAccueil();
 });
 
-$("btn-retour-accueil").addEventListener("click", function(){
-  location.hash = "";
-  dessinerAccueil();
-  montrer("accueil");
-});
+$("btn-retour-accueil").addEventListener("click", allerAccueil);
 
 /* ================= ÉCRAN LIEN ================= */
 var lienCourant = "";
@@ -739,6 +771,7 @@ function afficherLien(url, titre, sous, avecRgpd, retour){
   $("lien-sous").textContent = sous;
   $("lien-texte").textContent = url;
   $("rgpd-bloc").style.display = avecRgpd ? "block" : "none";
+  $("btn-nouveau-colis").style.display = avecRgpd ? "block" : "none";
   montrer("lien");
 }
 $("btn-partager").addEventListener("click", function(){
@@ -763,13 +796,8 @@ function copier(){
   }
 }
 $("btn-lien-retour").addEventListener("click", function(){
-  if (retourDepuisLien === "accueil"){
-    location.hash = "";
-    dessinerAccueil();
-    montrer("accueil");
-  } else {
-    montrer(retourDepuisLien);
-  }
+  if (retourDepuisLien === "accueil") allerAccueil();
+  else montrer(retourDepuisLien);
 });
 
 /* ================= OFFRE REÇUE ================= */
