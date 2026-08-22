@@ -181,7 +181,7 @@
 
     <h3>Quand tu donnes</h3>
     <ol>
-      <li>Compose un colis d'un à cinq livres et coche les boîtes à livres où tu peux le déposer.</li>
+      <li>Compose un colis d'un à trois livres et coche les boîtes à livres où tu peux le déposer. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
       <li>L'appli fabrique un lien&#160;: envoie-le à qui tu veux.</li>
       <li>Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.</li>
     </ol>
@@ -301,9 +301,13 @@
   </div>
 
   <div class="bloc">
+    <label for="lien-message">Le mot qui accompagne</label>
+    <textarea id="lien-message"></textarea>
+    <p class="compte">Un lien nu inquiète, à raison. Une phrase de ta main change tout&#160;: modifie-la comme tu veux.</p>
     <div class="lien" id="lien-texte"></div>
-    <button class="btn" id="btn-partager">Envoyer le lien</button>
-    <button class="btn calme" id="btn-copier">Copier le lien</button>
+    <p class="compte">Ce lien est long parce qu'il contient le colis lui-même. Rien n'est stocké sur un serveur&#8239;; tout voyage dans le message.</p>
+    <button class="btn" id="btn-partager">Envoyer</button>
+    <button class="btn calme" id="btn-copier">Copier</button>
   </div>
 
   <button class="btn calme" id="btn-nouveau-colis">Composer un nouveau colis</button>
@@ -392,7 +396,7 @@
 
 /* ---------- constantes ---------- */
 var CLE = "grazie.";
-var MAX_LIVRES = 5;
+var MAX_LIVRES = 3;
 var MAX_LIEUX = 3;
 var MAX_MOT = 80;
 var PEREMPTION_JOURS = 30;
@@ -444,6 +448,11 @@ async function dec(txt){
   return JSON.parse(new TextDecoder().decode(bin));
 }
 function baseURL(){ return location.origin + location.pathname; }
+function lienVers(etiquette, charge){ return baseURL() + "#" + etiquette + "/" + charge; }
+function separer(h){
+  var i = h.indexOf("/");
+  return (i === -1) ? {etiquette:"", corps:h} : {etiquette:h.slice(0,i), corps:h.slice(i+1)};
+}
 
 /* ---------- stockage ---------- */
 function lire(cle, defaut){
@@ -659,7 +668,7 @@ $("btn-creer").addEventListener("click", async function(){
     x:colis.lieux
   };
   afficherLien(
-    baseURL() + "#" + await enc(charge),
+    lienVers("colis-de-livres", await enc(charge)),
     "Le lien du colis est prêt",
     "Envoie-le à qui tu veux. Il circulera tout seul.",
     true,
@@ -774,7 +783,26 @@ $("btn-retour-accueil").addEventListener("click", allerAccueil);
 /* ================= ÉCRAN LIEN ================= */
 var lienCourant = "";
 var retourDepuisLien = "accueil";
+function messageDefaut(retour, avecRgpd){
+  if (avecRgpd){
+    var n = colis.livres.length;
+    return "Je donne " + (n > 1 ? n + " livres" : "un livre") +
+      ". Si ça ne te tente pas, transmets ce lien à quelqu'un pour qui ça compterait.";
+  }
+  if (retour === "offre") return "Ton colis m'intéresse. Voici ma demande.";
+  return "C'est d'accord. Voici le lieu et le moment.";
+}
+function texteComplet(){
+  var m = $("lien-message").value.trim();
+  return m ? m + "\n" + lienCourant : lienCourant;
+}
 function afficherLien(url, titre, sous, avecRgpd, retour){
+  // Le fragment pointe encore sur le lien qu'on vient de traiter.
+  // Tant qu'il y reste, rouvrir ce même lien ne provoque aucun événement
+  // et l'écran ne bouge pas. On nettoie l'adresse.
+  if (location.hash){
+    try { history.replaceState(null, "", location.pathname); } catch(e){}
+  }
   lienCourant = url;
   retourDepuisLien = retour;
   $("lien-titre").textContent = titre;
@@ -782,11 +810,12 @@ function afficherLien(url, titre, sous, avecRgpd, retour){
   $("lien-texte").textContent = url;
   $("rgpd-bloc").style.display = avecRgpd ? "block" : "none";
   $("btn-nouveau-colis").style.display = avecRgpd ? "block" : "none";
+  $("lien-message").value = messageDefaut(retour, avecRgpd);
   montrer("lien");
 }
 $("btn-partager").addEventListener("click", function(){
   if (navigator.share){
-    navigator.share({text:lienCourant}).catch(function(){});
+    navigator.share({text:texteComplet()}).catch(function(){});
   } else {
     copier();
   }
@@ -795,9 +824,9 @@ $("btn-copier").addEventListener("click", copier);
 function copier(){
   var b = $("btn-copier");
   if (navigator.clipboard){
-    navigator.clipboard.writeText(lienCourant).then(function(){
-      b.textContent = "Lien copié";
-      setTimeout(function(){ b.textContent = "Copier le lien"; }, 2000);
+    navigator.clipboard.writeText(texteComplet()).then(function(){
+      b.textContent = "Copié";
+      setTimeout(function(){ b.textContent = "Copier"; }, 2000);
     }).catch(function(){
       b.textContent = "Copie impossible, sélectionne le lien ci-dessus";
     });
@@ -824,6 +853,12 @@ function dessinerOffre(o){
 
   var zone = $("offre-livres");
   vider(zone);
+  if (o.c.length > 1){
+    var ens = document.createElement("p");
+    ens.className = "compte";
+    ens.textContent = "Ces " + o.c.length + " livres vont ensemble\u202f: le colis ne se divise pas.";
+    zone.appendChild(ens);
+  }
   o.c.forEach(function(l){ zone.appendChild(carteLivre(l)); });
 
   var zl = $("d-lieux");
@@ -908,7 +943,7 @@ $("btn-demander").addEventListener("click", async function(){
     j:demandeEnCours.dispos.slice().sort()
   };
   afficherLien(
-    baseURL() + "#" + await enc(charge),
+    lienVers("demande", await enc(charge)),
     "Ta demande est prête",
     "Renvoie ce lien à la personne qui t'a transmis le colis.",
     false,
@@ -972,7 +1007,7 @@ $("btn-accepter").addEventListener("click", async function(){
     f:dureeAttente
   };
   afficherLien(
-    baseURL() + "#" + await enc(charge),
+    lienVers("rendez-vous", await enc(charge)),
     "Ta réponse est prête",
     "Renvoie ce lien à " + demandeRecue.p + ".",
     false,
@@ -1010,7 +1045,7 @@ async function router(){
     return;
   }
   var charge = null;
-  try { charge = await dec(h); } catch(e){ charge = null; }
+  try { charge = await dec(separer(h).corps); } catch(e){ charge = null; }
 
   if (!charge || !charge.v){
     dessinerAccueil();

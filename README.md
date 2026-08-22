@@ -2,7 +2,7 @@
 
 Donner des livres d'occasion, un colis à la fois, sans compte ni serveur.
 
-Un colis d'un à cinq livres, un lien, une boîte à livres. Le lien circule de personne à personne&#8239;: celui qui veut le colis le garde, les autres le transmettent à quelqu'un pour qui il compterait.
+Un colis d'un à trois livres, un lien, une boîte à livres. Le lien circule de personne à personne&#8239;: celui qui veut le colis le garde, les autres le transmettent à quelqu'un pour qui il compterait.
 
 ## Le principe
 
@@ -44,7 +44,7 @@ Les charges utiles sont du JSON compact, compressé puis encodé en base64url, p
 
 Le fragment commence par une lettre indiquant le mode&#160;: `z` compressé, `j` brut. Les navigateurs sans `CompressionStream` retombent sur le second, et les liens des deux formats restent lisibles.
 
-La longueur compte, parce que les messageries cessent de rendre cliquables les URL trop longues. Un colis de trois livres tient sous 400 caractères, cinq livres entièrement commentés sous 700. Le mot de commentaire est plafonné à 80 caractères pour cette raison.
+La longueur compte, parce que les messageries cessent de rendre cliquables les URL trop longues. Un colis de trois livres tient sous 400 caractères, commentaires compris. Le mot de commentaire est plafonné à 80 caractères pour cette raison.
 
 ## Vie privée
 
