@@ -16,6 +16,10 @@ Trois liens font un échange complet&#8239;:
 
 Le colis est un don, sans contrepartie ni réciprocité. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé, avec un prénom écrit dessus, à l'heure convenue.
 
+## La fiche d'un livre
+
+Sept champs, dont le titre seul est nécessaire&#8239;: titre, auteur, langue, année, état, genre, et un mot de quatre-vingts caractères. La langue et l'état se choisissent parmi des valeurs fixes, affichées en toutes lettres plutôt que masquées dans un menu.
+
 ## Ce que l'appli ne fait pas
 
 Pas de compte, pas de profil, pas de notation, pas de prix, pas de messagerie, pas de fil à faire défiler, pas d'annuaire. La découverte se fait de bouche à oreille, ce qui limite la portée — et c'est la condition qui rend le reste possible&#8239;: sans réputation à fabriquer, il faut que les gens se connaissent, au moins de proche en proche.
@@ -36,7 +40,11 @@ Un seul fichier, `index.html`. HTML, CSS et JavaScript natifs, aucune dépendanc
 
 Les données restent dans le `localStorage` du navigateur, sous le préfixe `grazie.`&#8239;: le prénom, jusqu'à trois boîtes à livres, et le colis en cours de composition. Rien n'est transmis sans une action explicite.
 
-Les charges utiles sont du JSON compact encodé en base64url, portées par le fragment. Un colis de cinq livres entièrement renseigné produit environ 1 500 caractères — assez court pour se passer de compression.
+Les charges utiles sont du JSON compact, compressé puis encodé en base64url, porté par le fragment. La compression utilise `CompressionStream("deflate-raw")`, native au navigateur&#8239;: aucun service tiers, aucun raccourcisseur, rien qui quitte l'appareil. Le lien reste autoportant — tout son contenu est dans ses caractères.
+
+Le fragment commence par une lettre indiquant le mode&#160;: `z` compressé, `j` brut. Les navigateurs sans `CompressionStream` retombent sur le second, et les liens des deux formats restent lisibles.
+
+La longueur compte, parce que les messageries cessent de rendre cliquables les URL trop longues. Un colis de trois livres tient sous 400 caractères, cinq livres entièrement commentés sous 700. Le mot de commentaire est plafonné à 80 caractères pour cette raison.
 
 ## Vie privée
 

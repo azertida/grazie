@@ -183,6 +183,11 @@
     <p>Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.</p>
   </div>
 
+  <div class="bloc amorce" id="alerte-lien" style="display:none">
+    <h2>Ce lien n'a pas pu être lu</h2>
+    <p>Il a probablement été tronqué en chemin. Demande qu'on te le renvoie en le copiant-collant plutôt qu'en le partageant.</p>
+  </div>
+
   <div class="bloc amorce" id="bloc-avant">
     <h2>Avant de composer</h2>
     <p id="avant-texte"></p>
@@ -233,7 +238,8 @@
     <input type="text" id="f-genre" autocomplete="off">
 
     <label for="f-mot">Un mot</label>
-    <textarea id="f-mot" placeholder="Ce que tu en as pensé, à qui il pourrait plaire…"></textarea>
+    <textarea id="f-mot" maxlength="80" placeholder="Ce que tu en as pensé, à qui il pourrait plaire…"></textarea>
+    <p class="compte" id="compte-mot" style="margin-top:-8px">80 caractères, pour que le lien reste transmissible.</p>
   </div>
 
   <button class="btn" id="btn-garder">Garder ce livre</button>
@@ -276,7 +282,7 @@
 
   <div class="rgpd" id="rgpd-bloc">
     <strong>Ce que tu partages dit ce que tu lis.</strong>
-    Une liste de livres en dit long sur la personne qui la propose. Envoie-la à des gens en qui tu as confiance&#8239;; elle continuera son chemin sans toi.
+    Ce lien est fait pour circuler&#160;: il passera de main en main et finira chez des gens que tu ne connais pas. Les livres que tu proposes en disent long sur toi — compose ton colis en le sachant.
   </div>
 
   <div class="bloc">
@@ -330,12 +336,12 @@
   <div class="bloc">
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
-    <p class="compte">Choisis un moment dans ses disponibilités. Tu déposes, tu repars&#8239;; le colis attend le temps que tu décides ici.</p>
+    <p class="compte">Choisis un moment dans ses disponibilités. Tu déposes et tu repars&#8239;: c'est le colis qui attend, pas toi.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
     <label for="a-heure">Heure du dépôt</label>
     <input type="time" id="a-heure">
-    <label>Durée d'attente</label>
+    <label>Combien de temps le colis reste seul dans la boîte</label>
     <div class="rangee" id="a-duree"></div>
     <button class="btn" id="btn-accepter" disabled>Créer la réponse</button>
   </div>
@@ -351,6 +357,7 @@
   <div class="bloc">
     <p class="cle" id="accord-quand"></p>
     <p class="cle" id="accord-ou" style="color:var(--terre)"></p>
+    <p class="compte" id="accord-limite" style="margin-top:12px"></p>
     <div class="avis" id="accord-livres"></div>
   </div>
 
@@ -370,6 +377,7 @@
 var CLE = "grazie.";
 var MAX_LIVRES = 5;
 var MAX_LIEUX = 3;
+var MAX_MOT = 80;
 var PEREMPTION_JOURS = 30;
 
 var LANGUES = [["fr","FR"],["nl","NL"],["en","EN"],["es","ES"],["it","IT"],["de","DE"],["xx","Autre"]];
@@ -379,18 +387,43 @@ var JOURS = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
 var MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 
 /* ---------- encodage fragment ---------- */
-function enc(obj){
-  var bin = new TextEncoder().encode(JSON.stringify(obj));
+function b64(bin){
   var s = "";
   for (var i=0;i<bin.length;i++) s += String.fromCharCode(bin[i]);
   return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 }
-function dec(txt){
+function deb64(txt){
   var b = txt.replace(/-/g,"+").replace(/_/g,"/");
   while (b.length % 4) b += "=";
   var s = atob(b);
   var bin = new Uint8Array(s.length);
   for (var i=0;i<s.length;i++) bin[i] = s.charCodeAt(i);
+  return bin;
+}
+async function enc(obj){
+  var bin = new TextEncoder().encode(JSON.stringify(obj));
+  if (typeof CompressionStream === "function"){
+    try {
+      var cs = new CompressionStream("deflate-raw");
+      var w = cs.writable.getWriter();
+      w.write(bin); w.close();
+      var buf = await new Response(cs.readable).arrayBuffer();
+      return "z" + b64(new Uint8Array(buf));
+    } catch(e){}
+  }
+  return "j" + b64(bin);
+}
+async function dec(txt){
+  var tete = txt.charAt(0);
+  var corps = (tete === "z" || tete === "j") ? txt.slice(1) : txt;
+  var bin = deb64(corps);
+  if (tete === "z"){
+    var ds = new DecompressionStream("deflate-raw");
+    var w = ds.writable.getWriter();
+    w.write(bin); w.close();
+    var buf = await new Response(ds.readable).arrayBuffer();
+    bin = new Uint8Array(buf);
+  }
   return JSON.parse(new TextDecoder().decode(bin));
 }
 function baseURL(){ return location.origin + location.pathname; }
@@ -470,15 +503,18 @@ function carteLivre(l){
 
 /* ---------- navigation ---------- */
 var ECRANS = ["accueil","livre","reglages","lien","offre","demande","accord"];
-function montrer(nom){
+function montrer(nom, cible){
   for (var i=0;i<ECRANS.length;i++){
     $("ecran-"+ECRANS[i]).classList.toggle("actif", ECRANS[i]===nom);
   }
-  window.scrollTo(0,0);
+  var el = cible ? $(cible) : null;
+  if (el) el.scrollIntoView({block:"start"});
+  else window.scrollTo(0,0);
 }
 
 /* ================= ACCUEIL ================= */
 function dessinerAccueil(){
+  if (location.hash === "" ) $("alerte-lien").style.display = "none";
   var liste = $("liste-colis");
   vider(liste);
   if (!colis.livres.length){
@@ -563,11 +599,12 @@ $("btn-ajouter").addEventListener("click", function(){
   brouillonLivre = {l:"fr", e:3};
   $("f-titre").value = ""; $("f-auteur").value = "";
   $("f-annee").value = ""; $("f-genre").value = ""; $("f-mot").value = "";
+  $("compte-mot").textContent = "80 caractères, pour que le lien reste transmissible.";
   dessinerFormulaireLivre();
   montrer("livre");
 });
 
-$("btn-creer").addEventListener("click", function(){
+$("btn-creer").addEventListener("click", async function(){
   var charge = {
     v:"o",
     p:profil.prenom,
@@ -576,7 +613,7 @@ $("btn-creer").addEventListener("click", function(){
     x:colis.lieux
   };
   afficherLien(
-    baseURL() + "#" + enc(charge),
+    baseURL() + "#" + await enc(charge),
     "Le lien du colis est prêt",
     "Envoie-le à qui tu veux. Il circulera tout seul.",
     true,
@@ -602,6 +639,13 @@ function dessinerFormulaireLivre(){
   });
 }
 
+$("f-mot").addEventListener("input", function(){
+  var reste = MAX_MOT - this.value.length;
+  $("compte-mot").textContent = reste > 0
+    ? reste + " caractère" + (reste > 1 ? "s" : "") + " restant" + (reste > 1 ? "s" : "") + "."
+    : "Limite atteinte.";
+});
+
 $("btn-garder").addEventListener("click", function(){
   var titre = $("f-titre").value.trim();
   if (!titre){ $("f-titre").focus(); return; }
@@ -609,13 +653,13 @@ $("btn-garder").addEventListener("click", function(){
   var a = $("f-auteur").value.trim(); if (a) l.a = a;
   var y = parseInt($("f-annee").value,10); if (y) l.y = y;
   var g = $("f-genre").value.trim(); if (g) l.g = g;
-  var m = $("f-mot").value.trim(); if (m) l.m = m;
+  var m = $("f-mot").value.trim().slice(0, MAX_MOT); if (m) l.m = m;
   colis.livres.push(l);
   ecrire("colis", colis);
   dessinerAccueil();
-  montrer("accueil");
+  montrer("accueil", "liste-colis");
 });
-$("btn-annuler-livre").addEventListener("click", function(){ montrer("accueil"); });
+$("btn-annuler-livre").addEventListener("click", function(){ montrer("accueil", "liste-colis"); });
 
 /* ================= RÉGLAGES ================= */
 function dessinerReglages(){
@@ -699,7 +743,7 @@ function afficherLien(url, titre, sous, avecRgpd, retour){
 }
 $("btn-partager").addEventListener("click", function(){
   if (navigator.share){
-    navigator.share({url:lienCourant}).catch(function(){});
+    navigator.share({text:lienCourant}).catch(function(){});
   } else {
     copier();
   }
@@ -817,7 +861,7 @@ function majBoutonDemande(){
 }
 $("d-prenom").addEventListener("input", majBoutonDemande);
 
-$("btn-demander").addEventListener("click", function(){
+$("btn-demander").addEventListener("click", async function(){
   var charge = {
     v:"d",
     p:$("d-prenom").value.trim(),
@@ -826,7 +870,7 @@ $("btn-demander").addEventListener("click", function(){
     j:demandeEnCours.dispos.slice().sort()
   };
   afficherLien(
-    baseURL() + "#" + enc(charge),
+    baseURL() + "#" + await enc(charge),
     "Ta demande est prête",
     "Renvoie ce lien à la personne qui t'a transmis le colis.",
     false,
@@ -880,7 +924,7 @@ function majBoutonAccord(){
 $("a-jour").addEventListener("input", majBoutonAccord);
 $("a-heure").addEventListener("input", majBoutonAccord);
 
-$("btn-accepter").addEventListener("click", function(){
+$("btn-accepter").addEventListener("click", async function(){
   var charge = {
     v:"a",
     c:demandeRecue.c,
@@ -890,7 +934,7 @@ $("btn-accepter").addEventListener("click", function(){
     f:dureeAttente
   };
   afficherLien(
-    baseURL() + "#" + enc(charge),
+    baseURL() + "#" + await enc(charge),
     "Ta réponse est prête",
     "Renvoie ce lien à " + demandeRecue.p + ".",
     false,
@@ -905,14 +949,16 @@ function dessinerAccord(a){
   var finTexte = String(fin.getHours()).padStart(2,"0") + "h" + String(fin.getMinutes()).padStart(2,"0");
   var debutTexte = h[0] + "h" + h[1];
 
-  $("accord-quand").textContent = dateCourte(a.j) + ", entre " + debutTexte + " et " + finTexte;
+  $("accord-quand").textContent = "Déposé " + dateCourte(a.j) + " à " + debutTexte;
+  $("accord-limite").textContent = "Passe le prendre avant " + finTexte +
+    ". Le colis attend seul dans la boîte\u202f: au-delà, plus rien n'est garanti.";
   $("accord-ou").textContent = a.x;
   $("accord-livres").textContent = a.c.join(" · ");
   montrer("accord");
 }
 
 /* ================= ROUTAGE ================= */
-function router(){
+async function router(){
   var h = location.hash.slice(1);
 
   if (h === "reglages"){
@@ -926,10 +972,11 @@ function router(){
     return;
   }
   var charge = null;
-  try { charge = dec(h); } catch(e){ charge = null; }
+  try { charge = await dec(h); } catch(e){ charge = null; }
 
   if (!charge || !charge.v){
     dessinerAccueil();
+    $("alerte-lien").style.display = "block";
     montrer("accueil");
     return;
   }
