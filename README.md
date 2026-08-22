@@ -52,9 +52,13 @@ Une liste de livres en dit long sur la personne qui la propose&#8239;: opinions,
 
 Aucune donnée ne quitte l'appareil autrement que par un lien fabriqué et envoyé volontairement. Les lieux décrivent du mobilier urbain, pas un domicile. Le prénom suffit&#8239;; le nom n'est jamais demandé.
 
-## À faire
+## Les boîtes à livres
 
-Sélecteur de boîtes à livres sur fond OpenStreetMap, pour l'écran des réglages. Les données existent (`amenity=public_bookcase`) et la couverture bruxelloise est bonne&#8239;; l'intégration suppose soit une carte, soit un `boites.json` alimenté par une action planifiée. Les boîtes se saisissent à la main en attendant, ce qui suffit.
+Grazie ne tient aucune liste de boîtes et n'en intègre aucune base de données. Les trois boîtes se saisissent à la main, une fois, dans les réglages.
+
+C'est un choix, pas un manque. Les gens connaissent déjà les boîtes de leur quartier ou de leur trajet, et les décrivent mieux qu'une base — trois quarts des nœuds OpenStreetMap sont anonymes. Une base recensée servirait à découvrir des boîtes inconnues, ce qui n'est pas le besoin&#8239;: on dépose là où l'on passe. Et une liste embarquée serait fausse dès qu'une boîte disparaît, sans que personne s'en aperçoive.
+
+Les réglages renvoient vers [la carte MapComplete](https://mapcomplete.org/bookcases), construite sur les données OpenStreetMap et qui sert aussi d'éditeur. L'appli fonctionne entièrement sans elle.
 
 ## Licence
 
