@@ -212,6 +212,9 @@
 
   <div class="bloc">
     <h2>Ton colis</h2>
+    <label for="colis-nom">Un nom pour ce colis (facultatif)</label>
+    <input type="text" id="colis-nom" maxlength="40" placeholder="Trois romans italiens">
+    <p class="compte">Il voyage avec le lien&#8239;: c'est lui qui dira, de relais en relais, à qui le colis pourrait plaire.</p>
     <p class="compte" id="compte-livres"></p>
     <div id="liste-colis"></div>
     <button class="btn calme" id="btn-ajouter">Ajouter un livre</button>
@@ -409,6 +412,7 @@ var CLE = "grazie.";
 var MAX_LIVRES = 3;
 var MAX_LIEUX = 3;
 var MAX_MOT = 80;
+var MAX_NOM = 40;
 var PEREMPTION_JOURS = 30;
 
 var LANGUES = [["fr","FR"],["nl","NL"],["en","EN"],["es","ES"],["it","IT"],["de","DE"],["xx","Autre"]];
@@ -474,7 +478,7 @@ function ecrire(cle, val){
 }
 
 var profil = lire("profil", {prenom:"", lieux:[]});
-var colis  = lire("colis", {livres:[], lieux:[]});
+var colis  = lire("colis", {livres:[], lieux:[], nom:""});
 var brouillonLivre = {l:"fr", e:3};
 
 /* ---------- utilitaires ---------- */
@@ -566,6 +570,7 @@ document.addEventListener("click", function(e){
 /* ================= ACCUEIL ================= */
 function dessinerAccueil(){
   if (location.hash === "" ) $("alerte-lien").style.display = "none";
+  if ($("colis-nom").value !== (colis.nom || "")) $("colis-nom").value = colis.nom || "";
   var liste = $("liste-colis");
   vider(liste);
   if (!colis.livres.length){
@@ -643,15 +648,24 @@ function dessinerAccueil(){
   $("btn-vider-colis").style.display = colis.livres.length ? "block" : "none";
 }
 
+$("colis-nom").addEventListener("input", function(){
+  colis.nom = this.value.trim().slice(0, MAX_NOM);
+  ecrire("colis", colis);
+});
+
 $("btn-vider-colis").addEventListener("click", function(){
   if (!confirm("Retirer tous les livres de ce colis\u202f?")) return;
   colis.livres = [];
+  colis.nom = "";
+  $("colis-nom").value = "";
   ecrire("colis", colis);
   dessinerAccueil();
 });
 
 $("btn-nouveau-colis").addEventListener("click", function(){
   colis.livres = [];
+  colis.nom = "";
+  $("colis-nom").value = "";
   ecrire("colis", colis);
   allerAccueil();
 });
@@ -677,6 +691,7 @@ $("btn-creer").addEventListener("click", async function(){
     c:colis.livres,
     x:colis.lieux
   };
+  if (colis.nom) charge.n = colis.nom;
   afficherLien(
     lienVers("colis-de-livres", await enc(charge)),
     "Le lien du colis est prêt",
@@ -783,7 +798,7 @@ $("btn-effacer").addEventListener("click", function(){
     aSupprimer.forEach(function(k){ localStorage.removeItem(k); });
   } catch(e){}
   profil = {prenom:"", lieux:[]};
-  colis = {livres:[], lieux:[]};
+  colis = {livres:[], lieux:[], nom:""};
   dessinerReglages();
   dessinerAccueil();
 });
@@ -796,8 +811,10 @@ var retourDepuisLien = "accueil";
 function messageDefaut(retour, avecRgpd){
   if (avecRgpd){
     var n = colis.livres.length;
-    return "Je donne " + (n > 1 ? n + " livres" : "un livre") +
-      ". Si ça ne te tente pas, transmets ce lien à quelqu'un pour qui ça compterait.";
+    return (colis.nom
+        ? "Je donne un colis : " + colis.nom + "."
+        : "Je donne " + (n > 1 ? n + " livres" : "un livre") + ".") +
+      " Si ça ne te tente pas, transmets ce lien à quelqu'un pour qui ça compterait.";
   }
   if (retour === "offre") return "Ton colis m'intéresse. Voici ma demande.";
   return "C'est d'accord. Voici le lieu et le moment.";
@@ -863,6 +880,11 @@ function dessinerOffre(o){
 
   var zone = $("offre-livres");
   vider(zone);
+  if (o.n){
+    var h = document.createElement("h2");
+    h.textContent = o.n;
+    zone.appendChild(h);
+  }
   if (o.c.length > 1){
     var ens = document.createElement("p");
     ens.className = "compte";
@@ -952,6 +974,7 @@ $("btn-demander").addEventListener("click", async function(){
     x:demandeEnCours.lieu,
     j:demandeEnCours.dispos.slice().sort()
   };
+  if (offreCourante.n) charge.n = offreCourante.n;
   afficherLien(
     lienVers("demande", await enc(charge)),
     "Ta demande est prête",
@@ -972,6 +995,12 @@ function dessinerDemande(d){
 
   var zl = $("demande-livres");
   vider(zl);
+  if (d.n){
+    var hn = document.createElement("p");
+    hn.style.fontWeight = "700";
+    hn.textContent = d.n;
+    zl.appendChild(hn);
+  }
   d.c.forEach(function(t){
     var p = document.createElement("p");
     p.textContent = "— " + t;
@@ -1016,6 +1045,7 @@ $("btn-accepter").addEventListener("click", async function(){
     h:$("a-heure").value,
     f:dureeAttente
   };
+  if (demandeRecue.n) charge.n = demandeRecue.n;
   afficherLien(
     lienVers("rendez-vous", await enc(charge)),
     "Ta réponse est prête",
@@ -1036,7 +1066,7 @@ function dessinerAccord(a){
   $("accord-limite").textContent = "Passe le prendre avant " + finTexte +
     ". Le colis attend seul dans la boîte\u202f: au-delà, plus rien n'est garanti.";
   $("accord-ou").textContent = a.x;
-  $("accord-livres").textContent = a.c.join(" · ");
+  $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
   montrer("accord");
 }
 

@@ -16,6 +16,10 @@ Trois liens font un échange complet&#8239;:
 
 Le colis est un don, sans contrepartie ni réciprocité. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé, avec un prénom écrit dessus, à l'heure convenue.
 
+## Le nom du colis
+
+Facultatif, quarante caractères. Il voyage dans le lien, contrairement au mot qui accompagne l'envoi&#8239;: celui-ci s'arrête au premier destinataire, le nom du colis arrive intact au troisième relais. C'est donc lui qui oriente la circulation — «&#160;Trois romans italiens&#160;», ou mieux, «&#160;Pour quelqu'un qui apprend l'italien&#160;».
+
 ## La fiche d'un livre
 
 Sept champs, dont le titre seul est nécessaire&#8239;: titre, auteur, langue, année, état, genre, et un mot de quatre-vingts caractères. La langue et l'état se choisissent parmi des valeurs fixes, affichées en toutes lettres plutôt que masquées dans un menu.
