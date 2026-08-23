@@ -292,6 +292,7 @@
     <div class="avis">
       <h3>Trouver une boîte</h3>
       <p>Le plus souvent, tu en connais déjà une&#8239;: sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.</p>
+      <p>Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.</p>
       <p>Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.</p>
       <p><a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">Carte des boîtes à livres →</a></p>
       <p>Grazie ne tient aucune liste de boîtes et n'en vérifie aucune&#160;: c'est toi qui sais si celle que tu indiques existe encore.</p>
@@ -378,13 +379,15 @@
   <div class="bloc">
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
-    <p class="compte">Choisis un moment dans ses disponibilités. Tu déposes et tu repars&#8239;: c'est le colis qui attend, pas toi.</p>
+    <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être dans la boîte&#160;: c'est à toi de décider quand tu passes avant.</p>
+    <p class="compte">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
-    <label for="a-heure">Heure du dépôt</label>
+    <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
     <input type="time" id="a-heure">
     <label>Combien de temps le colis reste seul dans la boîte</label>
     <div class="rangee" id="a-duree"></div>
+    <p class="compte" id="recap-depot"></p>
     <button class="btn" id="btn-accepter" disabled>Créer la réponse</button>
   </div>
 
@@ -399,13 +402,15 @@
 
   <div class="bloc">
     <p class="cle" id="accord-quand"></p>
+    <p class="cle" id="accord-fenetre"></p>
     <p class="cle" id="accord-ou" style="color:var(--terre)"></p>
     <p class="compte" id="accord-limite" style="margin-top:12px"></p>
     <div class="avis" id="accord-livres"></div>
   </div>
 
   <div class="avis">
-    Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.
+    <p>Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.</p>
+    <p>Personne ne t'attend sur place&#160;: le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un livre.</p>
   </div>
 
   <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
@@ -1036,11 +1041,22 @@ function dessinerDemande(d){
   });
 
   $("a-jour").min = aujourdhui();
+  $("recap-depot").textContent = "";
   majBoutonAccord();
   montrer("demande");
 }
 function majBoutonAccord(){
-  $("btn-accepter").disabled = !($("a-jour").value && $("a-heure").value);
+  var pret = $("a-jour").value && $("a-heure").value;
+  $("btn-accepter").disabled = !pret;
+  if (pret){
+    var h = $("a-heure").value.split(":");
+    var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + dureeAttente);
+    $("recap-depot").textContent = "Tu déposes avant " + h[0] + "h" + h[1] +
+      ". Le colis peut être pris entre " + h[0] + "h" + h[1] + " et " +
+      String(fin.getHours()).padStart(2,"0") + "h" + String(fin.getMinutes()).padStart(2,"0") + ".";
+  } else {
+    $("recap-depot").textContent = "";
+  }
 }
 $("a-jour").addEventListener("input", majBoutonAccord);
 $("a-heure").addEventListener("input", majBoutonAccord);
@@ -1071,9 +1087,10 @@ function dessinerAccord(a){
   var finTexte = String(fin.getHours()).padStart(2,"0") + "h" + String(fin.getMinutes()).padStart(2,"0");
   var debutTexte = h[0] + "h" + h[1];
 
-  $("accord-quand").textContent = "Déposé " + dateCourte(a.j) + " à " + debutTexte;
-  $("accord-limite").textContent = "Passe le prendre avant " + finTexte +
-    ". Le colis attend seul dans la boîte\u202f: au-delà, plus rien n'est garanti.";
+  $("accord-quand").textContent = "À prendre " + dateCourte(a.j);
+  $("accord-limite").textContent = "Le colis sera dans la boîte entre " + debutTexte +
+    " et " + finTexte + ", et il y attend seul\u202f: au-delà, plus rien n'est garanti.";
+  $("accord-fenetre").textContent = "entre " + debutTexte + " et " + finTexte;
   $("accord-ou").textContent = a.x;
   $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
   montrer("accord");
