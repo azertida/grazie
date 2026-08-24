@@ -380,13 +380,12 @@
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
     <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être dans la boîte&#160;: c'est à toi de décider quand tu passes avant.</p>
+    <p class="compte">Le colis est à prendre dans la demi-heure qui suit cette heure. C'est ce que l'appli annonce à l'autre personne&#8239;; ni toi ni elle ne peut le garantir, mais cela évite qu'elle vienne le lendemain.</p>
     <p class="compte">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
     <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
     <input type="time" id="a-heure">
-    <label>Combien de temps le colis reste seul dans la boîte</label>
-    <div class="rangee" id="a-duree"></div>
     <p class="compte" id="recap-depot"></p>
     <button class="btn" id="btn-accepter" disabled>Créer la réponse</button>
   </div>
@@ -1000,11 +999,10 @@ $("btn-demander").addEventListener("click", async function(){
 
 /* ================= DEMANDE REÇUE ================= */
 var demandeRecue = null;
-var dureeAttente = 30;
+var FENETRE = 30;
 
 function dessinerDemande(d){
   demandeRecue = d;
-  dureeAttente = 30;
   $("demande-sous").textContent = d.p + " a demandé ton colis.";
 
   var zl = $("demande-livres");
@@ -1031,15 +1029,6 @@ function dessinerDemande(d){
   });
   $("demande-dispos").textContent = textes.join(" · ");
 
-  var zd = $("a-duree");
-  vider(zd);
-  [30,60].forEach(function(min){
-    zd.appendChild(boutonChoix(min + " minutes", dureeAttente === min, function(){
-      dureeAttente = min;
-      dessinerDemande(demandeRecue);
-    }));
-  });
-
   $("a-jour").min = aujourdhui();
   $("recap-depot").textContent = "";
   majBoutonAccord();
@@ -1050,7 +1039,7 @@ function majBoutonAccord(){
   $("btn-accepter").disabled = !pret;
   if (pret){
     var h = $("a-heure").value.split(":");
-    var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + dureeAttente);
+    var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + FENETRE);
     $("recap-depot").textContent = "Tu déposes avant " + h[0] + "h" + h[1] +
       ". Le colis peut être pris entre " + h[0] + "h" + h[1] + " et " +
       String(fin.getHours()).padStart(2,"0") + "h" + String(fin.getMinutes()).padStart(2,"0") + ".";
@@ -1068,7 +1057,7 @@ $("btn-accepter").addEventListener("click", async function(){
     x:demandeRecue.x,
     j:$("a-jour").value,
     h:$("a-heure").value,
-    f:dureeAttente
+    f:FENETRE
   };
   if (demandeRecue.n) charge.n = demandeRecue.n;
   afficherLien(
@@ -1083,7 +1072,7 @@ $("btn-accepter").addEventListener("click", async function(){
 /* ================= ACCORD REÇU ================= */
 function dessinerAccord(a){
   var h = a.h.split(":");
-  var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + a.f);
+  var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + (a.f || FENETRE));
   var finTexte = String(fin.getHours()).padStart(2,"0") + "h" + String(fin.getMinutes()).padStart(2,"0");
   var debutTexte = h[0] + "h" + h[1];
 
