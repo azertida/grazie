@@ -187,15 +187,15 @@
 
     <h3>Quand tu donnes</h3>
     <ol>
-      <li>Compose un colis d'un à trois livres et coche les boîtes à livres où tu peux le déposer. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
+      <li>Compose un colis d'un à trois livres et coche les lieux où tu peux le déposer — une boîte à livres, ou un commerce qui accepte de servir de relais. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
       <li>L'appli fabrique un lien&#160;: envoie-le à qui tu veux.</li>
       <li>Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.</li>
     </ol>
 
     <h3>Quand tu reçois un lien</h3>
     <ol>
-      <li>Le colis te tente&#8239;? Demande-le&#160;: choisis une boîte parmi celles proposées, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.</li>
-      <li>La réponse te donne la boîte, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.</li>
+      <li>Le colis te tente&#8239;? Demande-le&#160;: choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.</li>
+      <li>La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.</li>
       <li>Passe le prendre dans la demi-heure qui suit le dépôt.</li>
     </ol>
 
@@ -211,7 +211,7 @@
   <div class="bloc amorce" id="bloc-avant">
     <h2>Avant de composer</h2>
     <p id="avant-texte"></p>
-    <button class="btn" id="btn-vers-reglages">Indiquer mon prénom et mes boîtes</button>
+    <button class="btn" id="btn-vers-reglages">Indiquer mon prénom et mes lieux</button>
   </div>
 
   <div class="bloc">
@@ -227,7 +227,7 @@
 
   <div class="bloc" id="bloc-lieux-accueil">
     <h2>Où tu déposeras</h2>
-    <p class="compte">Touche les boîtes à livres que tu proposes pour ce colis. Au moins une.</p>
+    <p class="compte">Touche les lieux que tu proposes pour ce colis. Au moins un.</p>
     <div id="liste-lieux-coche"></div>
   </div>
 
@@ -282,26 +282,31 @@
   </div>
 
   <div class="bloc">
-    <h2>Tes boîtes à livres</h2>
+    <h2>Tes lieux de dépôt</h2>
     <p class="compte">Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.</p>
+    <p class="compte"><strong>Sans idée&#8239;? Commence par une boîte à livres.</strong> Il y en a partout, elles sont faites pour ça, et personne n'a rien à accepter — aucune démarche à faire.</p>
+    <p class="compte">Une boîte à livres ne surveille rien&#160;: le colis y attend seul. Un commerce qui accepte de servir de relais — libraire, café, station-service — garde le colis derrière son comptoir. L'appli ne dira pas la même chose dans les deux cas.</p>
     <div id="liste-lieux-reglages"></div>
-    <label for="r-lieu">Ajouter une boîte</label>
+    <label for="r-lieu">Ajouter un lieu</label>
     <input type="text" id="r-lieu" placeholder="La boîte du parc Pechère, près du métro Tomberg">
-    <button class="btn calme" id="btn-ajouter-lieu">Ajouter cette boîte</button>
+    <label>Quelle sorte de lieu&#8239;?</label>
+    <div class="rangee" id="r-nature"></div>
+    <button class="btn calme" id="btn-ajouter-lieu">Ajouter ce lieu</button>
 
     <div class="avis">
-      <h3>Trouver une boîte</h3>
+      <h3>Trouver une boîte à livres</h3>
       <p>Le plus souvent, tu en connais déjà une&#8239;: sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.</p>
+      <p>Un commerce qui accepte de servir de relais est plus sûr, mais il faut le lui demander. Une boîte à livres ne demande rien à personne.</p>
       <p>Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.</p>
       <p>Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.</p>
       <p><a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">Carte des boîtes à livres →</a></p>
-      <p>Grazie ne tient aucune liste de boîtes et n'en vérifie aucune&#160;: c'est toi qui sais si celle que tu indiques existe encore.</p>
+      <p>Grazie ne tient aucune liste de lieux et n'en vérifie aucun&#160;: c'est toi qui sais si celui que tu indiques convient encore.</p>
     </div>
   </div>
 
   <div class="bloc">
     <h2>Effacer</h2>
-    <p class="compte">Supprime de cet appareil ton prénom, tes boîtes et le colis en cours. Les liens déjà envoyés continuent de fonctionner&#8239;: ils ne dépendent pas de cet appareil.</p>
+    <p class="compte">Supprime de cet appareil ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner&#8239;: ils ne dépendent pas de cet appareil.</p>
     <button class="btn calme" id="btn-effacer">Effacer mes données</button>
   </div>
 
@@ -370,8 +375,9 @@
   <div class="bloc">
     <h3>Le colis</h3>
     <div id="demande-livres"></div>
-    <h3>La boîte choisie</h3>
+    <h3>Le lieu choisi</h3>
     <p id="demande-lieu"></p>
+    <p class="compte" id="demande-nature"></p>
     <h3>Ses disponibilités</h3>
     <p id="demande-dispos"></p>
   </div>
@@ -379,9 +385,9 @@
   <div class="bloc">
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
-    <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être dans la boîte&#160;: c'est à toi de décider quand tu passes avant.</p>
+    <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être sur place&#160;: c'est à toi de décider quand tu passes avant.</p>
     <p class="compte">Le colis est à prendre dans la demi-heure qui suit cette heure. C'est ce que l'appli annonce à l'autre personne&#8239;; ni toi ni elle ne peut le garantir, mais cela évite qu'elle vienne le lendemain.</p>
-    <p class="compte">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
+    <p class="compte" id="demande-arbitrage">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
     <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
@@ -408,7 +414,7 @@
   </div>
 
   <div class="avis">
-    <p>Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.</p>
+    <p id="accord-risque">Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.</p>
     <p>Personne ne t'attend sur place&#160;: le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un livre.</p>
   </div>
 
@@ -493,6 +499,7 @@ function ecrire(cle, val){
 var profil = lire("profil", {prenom:"", lieux:[]});
 var colis  = lire("colis", {livres:[], lieux:[], nom:""});
 var brouillonLivre = {l:"fr", e:3};
+var natureLieu = 0;   // 0 = libre (boîte à livres), 1 = tenu (commerce)
 
 /* ---------- utilitaires ---------- */
 function $(id){ return document.getElementById(id); }
@@ -524,6 +531,14 @@ function boutonChoix(texte, actif, action){
   b.setAttribute("aria-pressed", actif ? "true" : "false");
   b.addEventListener("click", action);
   return b;
+}
+function nomLieu(x){ return (typeof x === "string") ? x : x.n; }
+function estTenu(x){ return (typeof x === "string") ? false : x.t === 1; }
+function etiquetteLieu(x){
+  var e = document.createElement("span");
+  e.className = "etiq";
+  e.textContent = estTenu(x) ? "lieu tenu" : "boîte à livres";
+  return e;
 }
 function carteLivre(l){
   var d = document.createElement("div");
@@ -617,7 +632,7 @@ function dessinerAccueil(){
   if (!profil.lieux.length){
     var p = document.createElement("p");
     p.className = "vide";
-    p.textContent = "Aucune boîte enregistrée. Ajoute-en une dans tes réglages.";
+    p.textContent = "Aucun lieu enregistré. Ajoutes-en un dans tes réglages.";
     zone.appendChild(p);
   }
   var rangee = document.createElement("div");
@@ -640,18 +655,18 @@ function dessinerAccueil(){
 
   var manques = [];
   if (!profil.prenom) manques.push("ton prénom");
-  if (!profil.lieux.length) manques.push("au moins une boîte à livres");
+  if (!profil.lieux.length) manques.push("au moins un lieu de dépôt");
   if (!colis.livres.length) manques.push("au moins un livre");
-  else if (profil.lieux.length && !colis.lieux.length) manques.push("une boîte cochée pour ce colis");
+  else if (profil.lieux.length && !colis.lieux.length) manques.push("un lieu coché pour ce colis");
 
   var amorce = !profil.prenom || !profil.lieux.length;
   $("bloc-avant").style.display = amorce ? "block" : "none";
   if (amorce){
     $("avant-texte").textContent = !profil.prenom && !profil.lieux.length
-      ? "Il te faut un prénom et au moins une boîte à livres où déposer. C'est à faire une fois."
+      ? "Il te faut un prénom et au moins un lieu où déposer. C'est à faire une fois."
       : (!profil.prenom
           ? "Il te manque ton prénom. C'est à faire une fois."
-          : "Il te manque au moins une boîte à livres où déposer. C'est à faire une fois.");
+          : "Il te manque au moins un lieu où déposer. C'est à faire une fois.");
   }
 
   $("manque").textContent = manques.length
@@ -702,7 +717,12 @@ $("btn-creer").addEventListener("click", async function(){
     p:profil.prenom,
     d:aujourdhui(),
     c:colis.livres,
-    x:colis.lieux
+    x:colis.lieux.map(function(nom){
+      for (var i=0;i<profil.lieux.length;i++){
+        if (nomLieu(profil.lieux[i]) === nom) return profil.lieux[i];
+      }
+      return {n:nom};
+    })
   };
   if (colis.nom) charge.n = colis.nom;
   afficherLien(
@@ -762,22 +782,32 @@ function dessinerReglages(){
   if (!profil.lieux.length){
     var v = document.createElement("p");
     v.className = "vide";
-    v.textContent = "Aucune boîte enregistrée.";
+    v.textContent = "Aucun lieu enregistré.";
     zone.appendChild(v);
   }
-  profil.lieux.forEach(function(nom, i){
+  var zn = $("r-nature");
+  vider(zn);
+  [[0,"Boîte à livres"],[1,"Commerce ou lieu tenu"]].forEach(function(pair){
+    zn.appendChild(boutonChoix(pair[1], natureLieu === pair[0], function(){
+      natureLieu = pair[0];
+      dessinerReglages();
+    }));
+  });
+
+  profil.lieux.forEach(function(lieu, i){
     var d = document.createElement("div");
     d.className = "livre";
     var t = document.createElement("div");
-    t.textContent = nom;
+    t.textContent = nomLieu(lieu);
     d.appendChild(t);
+    d.appendChild(etiquetteLieu(lieu));
     var sup = document.createElement("button");
     sup.type = "button";
     sup.className = "choix";
     sup.style.marginTop = "10px";
     sup.textContent = "Retirer";
     sup.addEventListener("click", function(){
-      var k = colis.lieux.indexOf(profil.lieux[i]);
+      var k = colis.lieux.indexOf(nomLieu(profil.lieux[i]));
       if (k !== -1){ colis.lieux.splice(k,1); ecrire("colis", colis); }
       profil.lieux.splice(i,1);
       ecrire("profil", profil);
@@ -795,13 +825,16 @@ $("r-prenom").addEventListener("input", function(){
 $("btn-ajouter-lieu").addEventListener("click", function(){
   var nom = $("r-lieu").value.trim();
   if (!nom || profil.lieux.length >= MAX_LIEUX) return;
-  profil.lieux.push(nom);
+  var lieu = {n:nom};
+  if (natureLieu === 1) lieu.t = 1;
+  profil.lieux.push(lieu);
   ecrire("profil", profil);
   $("r-lieu").value = "";
+  natureLieu = 0;
   dessinerReglages();
 });
 $("btn-effacer").addEventListener("click", function(){
-  if (!confirm("Effacer ton prénom, tes boîtes et le colis en cours sur cet appareil\u202f?")) return;
+  if (!confirm("Effacer ton prénom, tes lieux et le colis en cours sur cet appareil\u202f?")) return;
   try {
     var aSupprimer = [];
     for (var i = 0; i < localStorage.length; i++){
@@ -885,7 +918,7 @@ var demandeEnCours = {lieu:null, dispos:[]};
 
 function dessinerOffre(o){
   offreCourante = o;
-  demandeEnCours = {lieu:null, dispos:[]};
+  demandeEnCours = {lieu:null, iLieu:-1, dispos:[]};
 
   $("offre-sous").textContent = o.p
     ? o.p + " met ce colis en circulation. Si tu n'en veux pas, transmets le lien à quelqu'un qu'il pourrait intéresser."
@@ -1018,8 +1051,14 @@ function dessinerDemande(d){
     p.textContent = "— " + t;
     zl.appendChild(p);
   });
-  $("demande-lieu").textContent = d.x;
-  $("demande-kraft").textContent = "Emballe le colis et écris « " + d.p + " » dessus.";
+  $("demande-lieu").textContent = nomLieu(d.x);
+  $("demande-kraft").textContent = estTenu(d.x)
+    ? "Emballe le colis, écris « " + d.p + " » dessus et confie-le sur place."
+    : "Emballe le colis et écris « " + d.p + " » dessus.";
+  $("demande-nature").textContent = estTenu(d.x)
+    ? "C'est un lieu tenu : le colis y est gardé, il n'attend pas seul. Dépose-le pendant les heures d'ouverture."
+    : "C'est une boîte à livres : personne ne la surveille.";
+  $("demande-arbitrage").style.display = estTenu(d.x) ? "none" : "block";
 
   var textes = d.j.map(function(cle){
     var iso = cle.slice(0,10), code = cle.slice(10);
@@ -1077,10 +1116,13 @@ function dessinerAccord(a){
   var debutTexte = h[0] + "h" + h[1];
 
   $("accord-quand").textContent = "À prendre " + dateCourte(a.j);
-  $("accord-limite").textContent = "Le colis sera dans la boîte entre " + debutTexte +
-    " et " + finTexte + ", et il y attend seul\u202f: au-delà, plus rien n'est garanti.";
   $("accord-fenetre").textContent = "entre " + debutTexte + " et " + finTexte;
-  $("accord-ou").textContent = a.x;
+  $("accord-ou").textContent = nomLieu(a.x);
+  $("accord-limite").textContent = estTenu(a.x)
+    ? "C'est un lieu tenu : demande le colis sur place, à ton nom."
+    : "Le colis sera dans la boîte entre " + debutTexte + " et " + finTexte +
+      ", et il y attend seul\u202f: au-delà, plus rien n'est garanti.";
+  $("accord-risque").style.display = estTenu(a.x) ? "none" : "block";
   $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
   montrer("accord");
 }
