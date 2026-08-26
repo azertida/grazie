@@ -284,8 +284,9 @@
   <div class="bloc">
     <h2>Tes lieux de dépôt</h2>
     <p class="compte">Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.</p>
+    <p class="compte">Un lieu privé peut se nommer sans son adresse&#160;: «&#160;Domicile Étoile&#160;», «&#160;Chez Miguel&#160;». Le nom voyage dans le lien, l'adresse ne se donne qu'à la personne à qui tu accordes le colis, dans ta réponse. Si le lieu appartient à quelqu'un d'autre, préviens-le&#8239;: c'est lui qui ouvrira la porte.</p>
     <p class="compte"><strong>Sans idée&#8239;? Commence par une boîte à livres.</strong> Il y en a partout, elles sont faites pour ça, et personne n'a rien à accepter — aucune démarche à faire.</p>
-    <p class="compte">Une boîte à livres ne surveille rien&#160;: le colis y attend seul. Un commerce qui accepte de servir de relais — libraire, café, station-service — garde le colis derrière son comptoir. L'appli ne dira pas la même chose dans les deux cas.</p>
+    <p class="compte">Ce qui distingue les deux&#160;: est-ce que quelqu'un garde le colis&#8239;? Dans une boîte à livres, non — il y attend seul. Ailleurs, oui&#160;: un commerce qui accepte de servir de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.</p>
     <div id="liste-lieux-reglages"></div>
     <label for="r-lieu">Ajouter un lieu</label>
     <input type="text" id="r-lieu" placeholder="La boîte du parc Pechère, près du métro Tomberg">
@@ -296,7 +297,7 @@
     <div class="avis">
       <h3>Trouver une boîte à livres</h3>
       <p>Le plus souvent, tu en connais déjà une&#8239;: sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.</p>
-      <p>Un commerce qui accepte de servir de relais est plus sûr, mais il faut le lui demander. Une boîte à livres ne demande rien à personne.</p>
+      <p>Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Une boîte à livres ne demande rien à personne.</p>
       <p>Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.</p>
       <p>Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.</p>
       <p><a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">Carte des boîtes à livres →</a></p>
@@ -392,6 +393,7 @@
     <input type="date" id="a-jour">
     <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
     <input type="time" id="a-heure">
+    <p class="compte" id="rappel-adresse"></p>
     <p class="compte" id="recap-depot"></p>
     <button class="btn" id="btn-accepter" disabled>Créer la réponse</button>
   </div>
@@ -498,6 +500,9 @@ function ecrire(cle, val){
 
 var profil = lire("profil", {prenom:"", lieux:[]});
 var colis  = lire("colis", {livres:[], lieux:[], nom:""});
+colis.lieux = (colis.lieux || []).map(function(x){ return (typeof x === "string") ? x : (x && x.n) || ""; })
+                                 .filter(function(x){ return x; });
+
 var brouillonLivre = {l:"fr", e:3};
 var natureLieu = 0;   // 0 = libre (boîte à livres), 1 = tenu (commerce)
 
@@ -537,7 +542,7 @@ function estTenu(x){ return (typeof x === "string") ? false : x.t === 1; }
 function etiquetteLieu(x){
   var e = document.createElement("span");
   e.className = "etiq";
-  e.textContent = estTenu(x) ? "lieu tenu" : "boîte à livres";
+  e.textContent = estTenu(x) ? "lieu gardé" : "boîte à livres";
   return e;
 }
 function carteLivre(l){
@@ -636,9 +641,11 @@ function dessinerAccueil(){
     zone.appendChild(p);
   }
   var rangee = document.createElement("div");
-  profil.lieux.forEach(function(nom){
+  profil.lieux.forEach(function(lieu){
+    var nom = nomLieu(lieu);
     var actif = colis.lieux.indexOf(nom) !== -1;
-    var b = boutonChoix((actif ? "\u2611  " : "\u2610  ") + nom, actif, function(){
+    var b = boutonChoix((actif ? "\u2611  " : "\u2610  ") + nom +
+                        (estTenu(lieu) ? "  (lieu gardé)" : ""), actif, function(){
       var k = colis.lieux.indexOf(nom);
       if (k === -1) colis.lieux.push(nom); else colis.lieux.splice(k,1);
       ecrire("colis", colis);
@@ -787,7 +794,7 @@ function dessinerReglages(){
   }
   var zn = $("r-nature");
   vider(zn);
-  [[0,"Boîte à livres"],[1,"Commerce ou lieu tenu"]].forEach(function(pair){
+  [[0,"Boîte à livres"],[1,"Autre lieu gardé"]].forEach(function(pair){
     zn.appendChild(boutonChoix(pair[1], natureLieu === pair[0], function(){
       natureLieu = pair[0];
       dessinerReglages();
@@ -941,12 +948,14 @@ function dessinerOffre(o){
 
   var zl = $("d-lieux");
   vider(zl);
-  o.x.forEach(function(nom){
-    var b = boutonChoix("\u25CB  " + nom, false, function(){
-      demandeEnCours.lieu = nom;
+  o.x.forEach(function(lieu, i){
+    var b = boutonChoix("\u25CB  " + nomLieu(lieu) + (estTenu(lieu) ? "  (lieu gardé)" : ""), false, function(){
+      demandeEnCours.lieu = lieu;
+      demandeEnCours.iLieu = i;
       dessinerLieuxDemande();
     });
-    b.dataset.lieu = nom;
+    b.dataset.index = i;
+    b.dataset.etiquette = nomLieu(lieu) + (estTenu(lieu) ? "  (lieu gardé)" : "");
     b.style.display = "block";
     b.style.width = "100%";
     b.style.textAlign = "left";
@@ -970,9 +979,9 @@ function dessinerOffre(o){
 function dessinerLieuxDemande(){
   var enfants = $("d-lieux").children;
   for (var i=0;i<enfants.length;i++){
-    var choisi = enfants[i].dataset.lieu === demandeEnCours.lieu;
+    var choisi = Number(enfants[i].dataset.index) === demandeEnCours.iLieu;
     enfants[i].setAttribute("aria-pressed", choisi ? "true" : "false");
-    enfants[i].textContent = (choisi ? "\u25CF  " : "\u25CB  ") + enfants[i].dataset.lieu;
+    enfants[i].textContent = (choisi ? "\u25CF  " : "\u25CB  ") + enfants[i].dataset.etiquette;
   }
   majBoutonDemande();
 }
@@ -1053,12 +1062,15 @@ function dessinerDemande(d){
   });
   $("demande-lieu").textContent = nomLieu(d.x);
   $("demande-kraft").textContent = estTenu(d.x)
-    ? "Emballe le colis, écris « " + d.p + " » dessus et confie-le sur place."
+    ? "Emballe le colis, écris « " + d.p + " » dessus et confie-le à la personne sur place."
     : "Emballe le colis et écris « " + d.p + " » dessus.";
   $("demande-nature").textContent = estTenu(d.x)
-    ? "C'est un lieu tenu : le colis y est gardé, il n'attend pas seul. Dépose-le pendant les heures d'ouverture."
+    ? "C'est un lieu gardé : le colis n'y attend pas seul. Dépose-le quand quelqu'un est là pour le recevoir."
     : "C'est une boîte à livres : personne ne la surveille.";
   $("demande-arbitrage").style.display = estTenu(d.x) ? "none" : "block";
+  $("rappel-adresse").textContent = estTenu(d.x)
+    ? "Si le nom du lieu ne suffit pas à le trouver, donne l'adresse exacte dans le mot qui accompagne ta réponse — elle n'ira qu'à cette personne."
+    : "";
 
   var textes = d.j.map(function(cle){
     var iso = cle.slice(0,10), code = cle.slice(10);
@@ -1119,7 +1131,7 @@ function dessinerAccord(a){
   $("accord-fenetre").textContent = "entre " + debutTexte + " et " + finTexte;
   $("accord-ou").textContent = nomLieu(a.x);
   $("accord-limite").textContent = estTenu(a.x)
-    ? "C'est un lieu tenu : demande le colis sur place, à ton nom."
+    ? "C'est un lieu gardé : demande le colis sur place, à ton nom."
     : "Le colis sera dans la boîte entre " + debutTexte + " et " + finTexte +
       ", et il y attend seul\u202f: au-delà, plus rien n'est garanti.";
   $("accord-risque").style.display = estTenu(a.x) ? "none" : "block";
