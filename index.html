@@ -201,7 +201,7 @@
     <ol>
       <li>Le colis te tente&#8239;? Demande-le&#160;: choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.</li>
       <li>La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.</li>
-      <li>Passe le prendre dans la demi-heure qui suit le dépôt.</li>
+      <li>Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.</li>
     </ol>
 
     <h3>Dans les deux cas</h3>
@@ -392,7 +392,6 @@
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
     <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être sur place&#160;: c'est à toi de décider quand tu passes avant.</p>
-    <p class="compte">Le colis est à prendre dans la demi-heure qui suit cette heure. C'est ce que l'appli annonce à l'autre personne&#8239;; ni toi ni elle ne peut le garantir, mais cela évite qu'elle vienne le lendemain.</p>
     <p class="compte" id="demande-arbitrage">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
@@ -507,6 +506,11 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
+ "Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting in a public bookcase, don't dawdle — nobody is looking after it.",
+ "Tu déposes avant {0}. Le colis peut être pris à partir de {0}.": "You drop it off before {0}. The parcel can be collected from {0} onwards.",
+ "à partir de {0}": "from {0} onwards",
+ "Le colis attend seul dans la boîte : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting alone in the bookcase: the longer you leave it, the likelier it has gone.",
+
  "Grazie — donner un livre": "Grazie — give a book away",
  "Un livre qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "A book that mattered, passed on to someone who hasn't read it yet.",
  "← Grazie : composer un colis": "← Grazie: put a parcel together",
@@ -520,7 +524,6 @@ TRAD.en = {
  "Quand tu reçois un lien": "When you receive a link",
  "Le colis te tente ? Demande-le : choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.": "Tempted by the parcel? Ask for it: pick one of the places offered and say when you can come by. If not, pass the link on to someone it would mean something to.",
  "La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.": "The reply gives you the place, the day and the time. If no reply comes, assume the parcel went elsewhere.",
- "Passe le prendre dans la demi-heure qui suit le dépôt.": "Collect it within the half hour that follows the drop-off.",
  "Dans les deux cas": "Either way",
  "Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.": "The parcel is a gift, with nothing expected back. Whoever receives it does the travelling. It is dropped off wrapped — brown paper, newspaper, a shopping bag — with a first name written on it.",
  "Avant de composer": "Before you start",
@@ -636,19 +639,15 @@ TRAD.en = {
  "Emballe le colis et écris « {0} » dessus.": "Wrap the parcel and write “{0}” on it.",
  "Emballe le colis, écris « {0} » dessus et confie-le à la personne sur place.": "Wrap the parcel, write “{0}” on it and hand it to whoever is there.",
  "Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être sur place : c'est à toi de décider quand tu passes avant.": "Pick a moment within the times they gave. By the hour you set, the parcel must already be there: it is up to you when you go beforehand.",
- "Le colis est à prendre dans la demi-heure qui suit cette heure. C'est ce que l'appli annonce à l'autre personne ; ni toi ni elle ne peut le garantir, mais cela évite qu'elle vienne le lendemain.": "The parcel is to be collected within the half hour after that time. That is what the app tells the other person; neither of you can guarantee it, but it stops them turning up the next day.",
  "Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.": "Drop it just before and the parcel is barely exposed, but you may run into each other. Drop it well before and you won't meet, but it waits longer. Up to you which matters more that day.",
  "Si le nom du lieu ne suffit pas à le trouver, donne l'adresse exacte dans le mot qui accompagne ta réponse — elle n'ira qu'à cette personne.": "If the name of the place isn't enough to find it, give the exact address in the message that goes with your reply — it will reach that person only.",
  "Jour": "Day",
  "À partir de quelle heure le colis peut être pris": "From what time the parcel can be collected",
- "Tu déposes avant {0}. Le colis peut être pris entre {0} et {1}.": "You drop it off before {0}. The parcel can be collected between {0} and {1}.",
  "Créer la réponse": "Create the reply",
  "Si tu ne donnes pas ce colis, un mot dans la conversation vaut mieux qu'un silence.": "If you are not giving this parcel away, a word in the conversation is better than silence.",
  "C'est convenu": "It's agreed",
  "Emballé, ton prénom dessus.": "Wrapped, with your first name on it.",
  "À prendre {0}": "To collect on {0}",
- "entre {0} et {1}": "between {0} and {1}",
- "Le colis sera dans la boîte entre {0} et {1}, et il y attend seul : au-delà, plus rien n'est garanti.": "The parcel will be in the bookcase between {0} and {1}, waiting there alone: after that, nothing is guaranteed.",
  "C'est un lieu gardé : demande le colis sur place, à ton nom.": "Someone looks after this place: ask for the parcel there, in your name.",
  "Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.": "Parcels do sometimes vanish before collection, wrapping or no wrapping. It is nobody's fault.",
  "Personne ne t'attend sur place : le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un livre.": "Nobody is waiting for you there: the parcel is dropped off, then collected, without the two of you meeting. If anything feels off, don't go — it's only a book.",
@@ -1289,7 +1288,6 @@ $("btn-demander").addEventListener("click", async function(){
 
 /* ================= DEMANDE REÇUE ================= */
 var demandeRecue = null;
-var FENETRE = 30;
 
 function dessinerDemande(d){
   demandeRecue = d;
@@ -1338,10 +1336,7 @@ function majBoutonAccord(){
   $("btn-accepter").disabled = !pret;
   if (pret){
     var h = $("a-heure").value.split(":");
-    var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + FENETRE);
-    var debut = heureTexte(h[0], h[1]);
-    var apres = heureTexte(fin.getHours(), fin.getMinutes());
-    $("recap-depot").textContent = Lf("Tu déposes avant {0}. Le colis peut être pris entre {0} et {1}.", debut, apres);
+    $("recap-depot").textContent = Lf("Tu déposes avant {0}. Le colis peut être pris à partir de {0}.", heureTexte(h[0], h[1]));
   } else {
     $("recap-depot").textContent = "";
   }
@@ -1355,8 +1350,7 @@ $("btn-accepter").addEventListener("click", async function(){
     c:demandeRecue.c,
     x:demandeRecue.x,
     j:$("a-jour").value,
-    h:$("a-heure").value,
-    f:FENETRE
+    h:$("a-heure").value
   };
   if (demandeRecue.n) charge.n = demandeRecue.n;
   afficherLien(
@@ -1371,16 +1365,14 @@ $("btn-accepter").addEventListener("click", async function(){
 /* ================= ACCORD REÇU ================= */
 function dessinerAccord(a){
   var h = a.h.split(":");
-  var fin = new Date(2000,0,1, parseInt(h[0],10), parseInt(h[1],10) + (a.f || FENETRE));
-  var finTexte = heureTexte(fin.getHours(), fin.getMinutes());
   var debutTexte = heureTexte(h[0], h[1]);
 
   $("accord-quand").textContent = Lf("À prendre {0}", dateCourte(a.j));
-  $("accord-fenetre").textContent = Lf("entre {0} et {1}", debutTexte, finTexte);
+  $("accord-fenetre").textContent = Lf("à partir de {0}", debutTexte);
   $("accord-ou").textContent = nomLieu(a.x);
   $("accord-limite").textContent = estTenu(a.x)
     ? L("C'est un lieu gardé : demande le colis sur place, à ton nom.")
-    : Lf("Le colis sera dans la boîte entre {0} et {1}, et il y attend seul\u202f: au-delà, plus rien n'est garanti.", debutTexte, finTexte);
+    : L("Le colis attend seul dans la boîte\u202f: plus tu tardes, plus il risque d'être parti.");
   $("accord-risque").style.display = estTenu(a.x) ? "none" : "block";
   $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
   montrer("accord");
