@@ -38,6 +38,14 @@ Deux personnes peuvent demander le même colis. En pratique c'est rare — qui v
 
 Un lien peut circuler longtemps. Passé un mois, l'appli signale que le colis est probablement parti, sans empêcher la demande.
 
+## Langues
+
+Français et anglais, sélecteur en tête de page. La langue retenue est celle enregistrée sur l'appareil&#8239;; à défaut, celle du navigateur&#8239;; à défaut, le français. Un lien n'impose jamais la langue de qui l'a envoyé.
+
+Le français reste la langue source dans le code&#160;: les traductions sont un dictionnaire indexé par la phrase française, appliqué au chargement. Ajouter le néerlandais revient à ajouter un objet `TRAD.nl` et une entrée dans `LANGUES_UI`&#8239;; une phrase sans traduction s'affiche en français plutôt que de disparaître.
+
+Les dates et les heures suivent la locale, sans table de jours ni de mois.
+
 ## Technique
 
 Un seul fichier, `index.html`. HTML, CSS et JavaScript natifs, aucune dépendance, aucune requête réseau, aucune police chargée depuis l'extérieur.
