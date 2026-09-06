@@ -83,6 +83,7 @@
     cursor:pointer;
   }
   .choix[aria-pressed=true]{background:var(--encre);color:var(--papier);border-color:var(--encre)}
+  .choix.grand{font-size:1.05rem;padding:15px 17px;line-height:1.35;border-width:2px;border-radius:12px}
   .choix:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
   .btn{
     display:block;
@@ -506,10 +507,17 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
- "Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting in a public bookcase, don't dawdle — nobody is looking after it.",
+ "Je te propose un colis : {0}.": "Here's a parcel for you: {0}.",
+ "Je te propose {0} livres.": "Here are {0} books for you.",
+ "Je te propose un livre.": "Here's a book for you.",
+ "À toi si ça te tente — sinon, fais suivre à quelqu'un que ça pourrait ravir.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
+ "Ton colis me tente beaucoup. Voici ma demande.": "Your parcel is very tempting. Here is my request.",
+ "Avec plaisir. Voici le lieu et le moment.": "With pleasure. Here are the place and the time.",
+
+ "Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting in a public bookcase, don't leave it too long — nobody is looking after it.",
  "Tu déposes avant {0}. Le colis peut être pris à partir de {0}.": "You drop it off before {0}. The parcel can be collected from {0} onwards.",
  "à partir de {0}": "from {0} onwards",
- "Le colis attend seul dans la boîte : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting alone in the bookcase: the longer you leave it, the likelier it has gone.",
+ "Le colis attend seul dans la boîte : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting alone in the bookcase: the longer you leave it, the more likely it is to be gone.",
 
  "Grazie — donner un livre": "Grazie — give a book away",
  "Un livre qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "A book that mattered, passed on to someone who hasn't read it yet.",
@@ -522,7 +530,7 @@ TRAD.en = {
  "L'appli fabrique un lien : envoie-le à qui tu veux.": "The app builds a link: send it to whoever you like.",
  "Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.": "Answer the first request by setting the day and time, then drop the parcel off and leave.",
  "Quand tu reçois un lien": "When you receive a link",
- "Le colis te tente ? Demande-le : choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.": "Tempted by the parcel? Ask for it: pick one of the places offered and say when you can come by. If not, pass the link on to someone it would mean something to.",
+ "Le colis te tente ? Demande-le : choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.": "Tempted by the parcel? Ask for it: pick one of the places offered and say when you can come by. If not, pass the link on to someone who'd love it.",
  "La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.": "The reply gives you the place, the day and the time. If no reply comes, assume the parcel went elsewhere.",
  "Dans les deux cas": "Either way",
  "Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.": "The parcel is a gift, with nothing expected back. Whoever receives it does the travelling. It is dropped off wrapped — brown paper, newspaper, a shopping bag — with a first name written on it.",
@@ -574,12 +582,12 @@ TRAD.en = {
  "La boîte du parc Pechère, près du métro Tomberg": "The bookcase in Pechère park, near Tomberg metro",
  "Quelle sorte de lieu ?": "What kind of place?",
  "Boîte à livres": "Public bookcase",
- "Autre lieu gardé": "Somewhere looked after",
+ "Autre lieu gardé": "Someone will keep it",
  "Ajouter ce lieu": "Add this place",
  "Trouver une boîte à livres": "Finding a public bookcase",
  "Le plus souvent, tu en connais déjà une : sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.": "Most of the time you already know one: on your way somewhere, near work, at the end of the street. Just write it down, with a landmark for whoever has to find it.",
- "Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Une boîte à livres ne demande rien à personne.": "Somewhere looked after is safer, but someone has to agree to it. A public bookcase asks nothing of anyone.",
- "Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.": "Otherwise this map lists them from OpenStreetMap. Zoom in on your neighbourhood. If you know one that is missing, you can add it from the same page.",
+ "Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Une boîte à livres ne demande rien à personne.": "A place where someone keeps it is safer, but they have to agree to it. A public bookcase asks nothing of anyone.",
+ "Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.": "This map shows them, using OpenStreetMap data. Zoom in on your neighbourhood. If you know one that is missing, you can add it from the same page.",
  "Carte des boîtes à livres →": "Map of public bookcases →",
  "Grazie ne tient aucune liste de lieux et n'en vérifie aucun : c'est toi qui sais si celui que tu indiques convient encore.": "Grazie keeps no list of places and checks none of them: you are the one who knows whether the place you name still works.",
  "Effacer": "Erase",
@@ -605,17 +613,11 @@ TRAD.en = {
  "Renvoie ce lien à la personne qui t'a transmis le colis.": "Send this link back to whoever passed the parcel on to you.",
  "Ta réponse est prête": "Your reply is ready",
  "Renvoie ce lien à {0}.": "Send this link back to {0}.",
- "Je donne un colis : {0}.": "I'm giving away a parcel: {0}.",
- "Je donne {0} livres.": "I'm giving away {0} books.",
- "Je donne un livre.": "I'm giving away a book.",
- "Si ça ne te tente pas, transmets ce lien à quelqu'un pour qui ça compterait.": "If it doesn't tempt you, pass this link on to someone it would mean something to.",
- "Ton colis m'intéresse. Voici ma demande.": "I'd like your parcel. Here is my request.",
- "C'est d'accord. Voici le lieu et le moment.": "That's agreed. Here are the place and the time.",
  "Un colis pour toi": "A parcel for you",
  "{0} met ce colis en circulation. Si tu n'en veux pas, transmets le lien à quelqu'un qu'il pourrait intéresser.": "{0} has put this parcel into circulation. If you don't want it, pass the link on to someone who might.",
  "Colis en circulation.": "Parcel in circulation.",
  "Ce colis n'est stocké nulle part.": "This parcel is stored nowhere.",
- "Il est écrit en entier dans le lien que tu viens d'ouvrir ; il n'y a rien d'autre à consulter, et rien ne s'enregistre. Si tu n'en veux pas, transmets ce lien à quelqu'un pour qui il compterait plutôt que de le refermer.": "It is written out in full inside the link you have just opened; there is nothing else to look at, and nothing is recorded. If you don't want it, pass this link on to someone it would mean something to rather than closing it.",
+ "Il est écrit en entier dans le lien que tu viens d'ouvrir ; il n'y a rien d'autre à consulter, et rien ne s'enregistre. Si tu n'en veux pas, transmets ce lien à quelqu'un pour qui il compterait plutôt que de le refermer.": "It is written out in full inside the link you have just opened; there is nothing else to look at, and nothing is recorded. If you don't want it, pass this link on to someone who'd love it rather than closing it.",
  "Ces {0} livres vont ensemble : le colis ne se divise pas.": "These {0} books go together: the parcel cannot be split.",
  "Le demander": "Ask for it",
  "Où tu iras le chercher": "Where you will collect it",
@@ -655,8 +657,8 @@ TRAD.en = {
  "Aucun lieu enregistré.": "No places saved.",
  "Aucun lieu enregistré. Ajoutes-en un dans tes réglages.": "No places saved. Add one in your settings.",
  "Retirer": "Remove",
- "{0} livre sur {1} au maximum.": "{0} book, {1} at most.",
- "{0} livres sur {1} au maximum.": "{0} books, {1} at most.",
+ "{0} livre sur {1} au maximum.": "{0} of {1} books.",
+ "{0} livres sur {1} au maximum.": "{0} of {1} books.",
  "{0} caractère restant.": "{0} character left.",
  "{0} caractères restants.": "{0} characters left.",
  "Limite atteinte.": "Limit reached.",
@@ -665,14 +667,14 @@ TRAD.en = {
  "au moins un livre": "at least one book",
  "un lieu coché pour ce colis": "a place ticked for this parcel",
  "Pour créer le lien, il manque {0}.": "To create the link, still missing: {0}.",
- "Il te faut un prénom et au moins un lieu où déposer. C'est à faire une fois.": "You need a first name and at least one place to drop things off. This is a one-off.",
- "Il te manque ton prénom. C'est à faire une fois.": "Your first name is missing. This is a one-off.",
- "Il te manque au moins un lieu où déposer. C'est à faire une fois.": "You need at least one place to drop things off. This is a one-off.",
+ "Il te faut un prénom et au moins un lieu où déposer. C'est à faire une fois.": "You need a first name and at least one place to drop things off. You only need to do this once.",
+ "Il te manque ton prénom. C'est à faire une fois.": "Your first name is missing. You only need to do this once.",
+ "Il te manque au moins un lieu où déposer. C'est à faire une fois.": "You need at least one place to drop things off. You only need to do this once.",
  "Retirer tous les livres de ce colis ?": "Remove every book from this parcel?",
  "Effacer ton prénom, tes lieux et le colis en cours sur cet appareil ?": "Erase your first name, your places and the parcel in progress on this device?",
- "lieu gardé": "looked after",
+ "lieu gardé": "kept for you",
  "boîte à livres": "public bookcase",
- "(lieu gardé)": "(looked after)"
+ "(lieu gardé)": "(kept for you)"
 };
 
 function normTexte(x){
@@ -901,8 +903,8 @@ function dessinerAccueil(){
     b.style.display = "block";
     b.style.width = "100%";
     b.style.textAlign = "left";
-    b.style.marginBottom = "8px";
-    b.style.fontSize = "1rem";
+    b.style.marginBottom = "10px";
+    b.className += " grand";
     rangee.appendChild(b);
   });
   zone.appendChild(rangee);
@@ -1112,12 +1114,12 @@ function messageDefaut(retour, avecRgpd){
   if (avecRgpd){
     var n = colis.livres.length;
     return (colis.nom
-        ? Lf("Je donne un colis : {0}.", colis.nom)
-        : Lf(n > 1 ? "Je donne {0} livres." : "Je donne un livre.", n)) +
-      " " + L("Si ça ne te tente pas, transmets ce lien à quelqu'un pour qui ça compterait.");
+        ? Lf("Je te propose un colis : {0}.", colis.nom)
+        : Lf(n > 1 ? "Je te propose {0} livres." : "Je te propose un livre.", n)) +
+      " " + L("À toi si ça te tente — sinon, fais suivre à quelqu'un que ça pourrait ravir.");
   }
-  if (retour === "offre") return L("Ton colis m'intéresse. Voici ma demande.");
-  return L("C'est d'accord. Voici le lieu et le moment.");
+  if (retour === "offre") return L("Ton colis me tente beaucoup. Voici ma demande.");
+  return L("Avec plaisir. Voici le lieu et le moment.");
 }
 function texteComplet(){
   var m = $("lien-message").value.trim();
@@ -1206,7 +1208,8 @@ function dessinerOffre(o){
     b.style.display = "block";
     b.style.width = "100%";
     b.style.textAlign = "left";
-    b.style.marginBottom = "8px";
+    b.style.marginBottom = "10px";
+    b.className += " grand";
     zl.appendChild(b);
   });
 
