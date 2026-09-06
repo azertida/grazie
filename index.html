@@ -70,6 +70,7 @@
     -webkit-appearance:none;
   }
   textarea{min-height:76px;resize:vertical}
+  #lien-message{min-height:112px;overflow:hidden}
   input:focus,textarea:focus{outline:2px solid var(--bleu);outline-offset:1px;border-color:var(--bleu)}
   .rangee{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
   .choix{
@@ -510,7 +511,7 @@ TRAD.en = {
  "Je te propose un colis : {0}.": "Here's a parcel for you: {0}.",
  "Je te propose {0} livres.": "Here are {0} books for you.",
  "Je te propose un livre.": "Here's a book for you.",
- "À toi si ça te tente — sinon, fais suivre à quelqu'un que ça pourrait ravir.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
+ "À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
  "Ton colis me tente beaucoup. Voici ma demande.": "Your parcel is very tempting. Here is my request.",
  "Avec plaisir. Voici le lieu et le moment.": "With pleasure. Here are the place and the time.",
 
@@ -1116,10 +1117,15 @@ function messageDefaut(retour, avecRgpd){
     return (colis.nom
         ? Lf("Je te propose un colis : {0}.", colis.nom)
         : Lf(n > 1 ? "Je te propose {0} livres." : "Je te propose un livre.", n)) +
-      " " + L("À toi si ça te tente — sinon, fais suivre à quelqu'un que ça pourrait ravir.");
+      " " + L("À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.");
   }
   if (retour === "offre") return L("Ton colis me tente beaucoup. Voici ma demande.");
   return L("Avec plaisir. Voici le lieu et le moment.");
+}
+function ajusterMessage(){
+  var t = $("lien-message");
+  t.style.height = "auto";
+  if (t.scrollHeight) t.style.height = (t.scrollHeight + 4) + "px";
 }
 function texteComplet(){
   var m = $("lien-message").value.trim();
@@ -1141,7 +1147,10 @@ function afficherLien(url, titre, sous, avecRgpd, retour){
   $("btn-nouveau-colis").style.display = avecRgpd ? "block" : "none";
   $("lien-message").value = messageDefaut(retour, avecRgpd);
   montrer("lien");
+  ajusterMessage();
 }
+$("lien-message").addEventListener("input", ajusterMessage);
+
 $("btn-partager").addEventListener("click", function(){
   if (navigator.share){
     navigator.share({text:texteComplet()}).catch(function(){});
