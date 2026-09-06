@@ -351,6 +351,11 @@
   <p class="sous" id="offre-sous"></p>
 
   <div class="rgpd">
+    <strong>C'est un don&#160;: rien à payer, rien à rendre.</strong>
+    Le colis est offert. Celui ou celle qui le prend fait simplement le déplacement.
+  </div>
+
+  <div class="rgpd">
     <strong>Ce colis n'est stocké nulle part.</strong>
     Il est écrit en entier dans le lien que tu viens d'ouvrir&#8239;; il n'y a rien d'autre à consulter, et rien ne s'enregistre. Si tu n'en veux pas, transmets ce lien à quelqu'un pour qui il compterait plutôt que de le refermer.
   </div>
@@ -508,9 +513,11 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
- "Je te propose un colis : {0}.": "Here's a parcel for you: {0}.",
- "Je te propose {0} livres.": "Here are {0} books for you.",
- "Je te propose un livre.": "Here's a book for you.",
+ "Je te propose un colis à donner : {0}.": "I have a parcel to give away: {0}.",
+ "Je te propose {0} livres à donner.": "I have {0} books to give away.",
+ "Je te propose un livre à donner.": "I have a book to give away.",
+ "C'est un don : rien à payer, rien à rendre.": "It's a gift: nothing to pay, nothing to give back.",
+ "Le colis est offert. Celui ou celle qui le prend fait simplement le déplacement.": "The parcel is free. Whoever takes it simply does the travelling.",
  "À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
  "Ton colis me tente beaucoup. Voici ma demande.": "Your parcel is very tempting. Here is my request.",
  "Avec plaisir. Voici le lieu et le moment.": "With pleasure. Here are the place and the time.",
@@ -1115,8 +1122,8 @@ function messageDefaut(retour, avecRgpd){
   if (avecRgpd){
     var n = colis.livres.length;
     return (colis.nom
-        ? Lf("Je te propose un colis : {0}.", colis.nom)
-        : Lf(n > 1 ? "Je te propose {0} livres." : "Je te propose un livre.", n)) +
+        ? Lf("Je te propose un colis à donner : {0}.", colis.nom)
+        : Lf(n > 1 ? "Je te propose {0} livres à donner." : "Je te propose un livre à donner.", n)) +
       " " + L("À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.");
   }
   if (retour === "offre") return L("Ton colis me tente beaucoup. Voici ma demande.");
