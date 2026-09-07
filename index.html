@@ -492,7 +492,7 @@ async function dec(txt){
   return JSON.parse(new TextDecoder().decode(bin));
 }
 function baseURL(){ return location.origin + location.pathname; }
-function lienVers(etiquette, charge){ return baseURL() + "#" + etiquette + "/" + charge; }
+function lienVers(etiquette, charge){ return baseURL() + "#" + L(etiquette) + "/" + charge; }
 function separer(h){
   var i = h.indexOf("/");
   return (i === -1) ? {etiquette:"", corps:h} : {etiquette:h.slice(0,i), corps:h.slice(i+1)};
@@ -513,6 +513,10 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
+ "colis-de-livres": "parcel-of-books",
+ "demande": "request",
+ "rendez-vous": "meeting-point",
+
  "Je te propose un colis à donner : {0}.": "I have a parcel to give away: {0}.",
  "Je te propose {0} livres à donner.": "I have {0} books to give away.",
  "Je te propose un livre à donner.": "I have a book to give away.",
@@ -1002,14 +1006,14 @@ $("btn-creer").addEventListener("click", async function(){
 function dessinerFormulaireLivre(){
   var zl = $("f-langue"); vider(zl);
   LANGUES.forEach(function(pair){
-    zl.appendChild(boutonChoix(pair[1], brouillonLivre.l === pair[0], function(){
+    zl.appendChild(boutonChoix(L(pair[1]), brouillonLivre.l === pair[0], function(){
       brouillonLivre.l = pair[0];
       dessinerFormulaireLivre();
     }));
   });
   var ze = $("f-etat"); vider(ze);
   ETATS.forEach(function(pair){
-    ze.appendChild(boutonChoix(pair[1], brouillonLivre.e === pair[0], function(){
+    ze.appendChild(boutonChoix(L(pair[1]), brouillonLivre.e === pair[0], function(){
       brouillonLivre.e = pair[0];
       dessinerFormulaireLivre();
     }));
