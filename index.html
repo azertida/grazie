@@ -183,7 +183,7 @@
 <!-- ================= ACCUEIL ================= -->
 <section id="ecran-accueil">
   <h1>Grazie</h1>
-  <p class="sous">Un livre qui a compté, remis à quelqu'un qui ne le connaît pas encore.</p>
+  <p class="sous">Quelque chose qui a compté, remis à quelqu'un qui ne le connaît pas encore.</p>
 
   <div class="bloc">
     <h2>Comment ça marche</h2>
@@ -194,7 +194,7 @@
 
     <h3>Quand tu donnes</h3>
     <ol>
-      <li>Compose un colis d'un à trois livres et coche les lieux où tu peux le déposer — une boîte à livres, ou un commerce qui accepte de servir de relais. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
+      <li>Choisis ce que tu donnes — livres, vêtements ou autre — compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
       <li>L'appli fabrique un lien&#160;: envoie-le à qui tu veux.</li>
       <li>Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.</li>
     </ol>
@@ -203,7 +203,7 @@
     <ol>
       <li>Le colis te tente&#8239;? Demande-le&#160;: choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.</li>
       <li>La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.</li>
-      <li>Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.</li>
+      <li>Le colis est déjà là à l'heure annoncée. S'il attend en libre accès, ne traîne pas — personne ne le garde.</li>
     </ol>
 
     <h3>Dans les deux cas</h3>
@@ -223,6 +223,8 @@
 
   <div class="bloc">
     <h2>Ton colis</h2>
+    <label>Ce que tu donnes</label>
+    <div class="rangee" id="colis-type"></div>
     <label for="colis-nom">Un nom pour ce colis (facultatif)</label>
     <input type="text" id="colis-nom" maxlength="40" placeholder="Trois romans italiens">
     <p class="compte">Il voyage avec le lien&#8239;: c'est lui qui dira, de relais en relais, à qui le colis pourrait plaire.</p>
@@ -246,27 +248,40 @@
 
 <!-- ================= FORMULAIRE LIVRE ================= -->
 <section id="ecran-livre">
-  <h1>Un livre</h1>
-  <p class="sous">Seul le titre est nécessaire.</p>
+  <h1 id="livre-titre">Un livre</h1>
+  <p class="sous" id="livre-sous">Seul le titre est nécessaire.</p>
 
   <div class="bloc">
-    <label for="f-titre">Titre</label>
+    <label for="f-titre" id="label-titre">Titre</label>
     <input type="text" id="f-titre" autocomplete="off">
 
-    <label for="f-auteur">Auteur</label>
-    <input type="text" id="f-auteur" autocomplete="off">
+    <div id="champ-auteur">
+      <label for="f-auteur">Auteur</label>
+      <input type="text" id="f-auteur" autocomplete="off">
+    </div>
 
-    <label>Langue</label>
-    <div class="rangee" id="f-langue"></div>
+    <div id="champ-taille">
+      <label for="f-taille">Taille</label>
+      <input type="text" id="f-taille" autocomplete="off" placeholder="M, 42, 8 ans…">
+    </div>
+
+    <div id="champ-langue">
+      <label>Langue</label>
+      <div class="rangee" id="f-langue"></div>
+    </div>
 
     <label>État</label>
     <div class="rangee" id="f-etat"></div>
 
-    <label for="f-annee">Année de parution</label>
-    <input type="number" id="f-annee" min="1400" max="2100" inputmode="numeric">
+    <div id="champ-annee">
+      <label for="f-annee">Année de parution</label>
+      <input type="number" id="f-annee" min="1400" max="2100" inputmode="numeric">
+    </div>
 
-    <label for="f-genre">Genre</label>
-    <input type="text" id="f-genre" autocomplete="off">
+    <div id="champ-genre">
+      <label for="f-genre">Genre</label>
+      <input type="text" id="f-genre" autocomplete="off">
+    </div>
 
     <label for="f-mot">Un mot</label>
     <textarea id="f-mot" maxlength="80" placeholder="Ce que tu en as pensé, à qui il pourrait plaire…"></textarea>
@@ -292,8 +307,8 @@
     <h2>Tes lieux de dépôt</h2>
     <p class="compte">Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.</p>
     <p class="compte">Un lieu privé peut se nommer sans son adresse&#160;: «&#160;Domicile Étoile&#160;», «&#160;Chez Miguel&#160;». Le nom voyage dans le lien, l'adresse ne se donne qu'à la personne à qui tu accordes le colis, dans ta réponse. Si le lieu appartient à quelqu'un d'autre, préviens-le&#8239;: c'est lui qui ouvrira la porte.</p>
-    <p class="compte"><strong>Sans idée&#8239;? Commence par une boîte à livres.</strong> Il y en a partout, elles sont faites pour ça, et personne n'a rien à accepter — aucune démarche à faire.</p>
-    <p class="compte">Ce qui distingue les deux&#160;: est-ce que quelqu'un garde le colis&#8239;? Dans une boîte à livres, non — il y attend seul. Ailleurs, oui&#160;: un commerce qui accepte de servir de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.</p>
+    <p class="compte"><strong>Sans idée&#8239;?</strong> Une boîte à livres pour des livres, le pied d'une bulle à vêtements pour des habits. Personne n'a rien à accepter — aucune démarche à faire. Un paquet posé au sol reste plus exposé qu'un livre dans une boîte&#8239;: dépose peu avant.</p>
+    <p class="compte">Ce qui distingue les deux&#160;: est-ce que quelqu'un garde le colis&#8239;? En libre accès, non — il attend seul&#160;: une boîte à livres, le pied d'une bulle à vêtements, un endroit convenu. Gardé, oui&#160;: un commerce qui sert de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.</p>
     <div id="liste-lieux-reglages"></div>
     <label for="r-lieu">Ajouter un lieu</label>
     <input type="text" id="r-lieu" placeholder="La boîte du parc Pechère, près du métro Tomberg">
@@ -302,9 +317,9 @@
     <button class="btn calme" id="btn-ajouter-lieu">Ajouter ce lieu</button>
 
     <div class="avis">
-      <h3>Trouver une boîte à livres</h3>
+      <h3>Trouver un lieu en libre accès</h3>
       <p>Le plus souvent, tu en connais déjà une&#8239;: sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.</p>
-      <p>Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Une boîte à livres ne demande rien à personne.</p>
+      <p>Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Un lieu en libre accès ne demande rien à personne.</p>
       <p>Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.</p>
       <p>Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.</p>
       <p><a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">Carte des boîtes à livres →</a></p>
@@ -328,7 +343,7 @@
 
   <div class="rgpd" id="rgpd-bloc">
     <strong>Ce que tu partages dit ce que tu lis.</strong>
-    Ce lien est fait pour circuler&#160;: il passera de main en main et finira chez des gens que tu ne connais pas. Les livres que tu proposes en disent long sur toi — compose ton colis en le sachant.
+    Ce lien est fait pour circuler&#160;: il passera de main en main et finira chez des gens que tu ne connais pas. Ce que tu proposes en dit long sur toi — compose ton colis en le sachant.
   </div>
 
   <div class="bloc">
@@ -428,7 +443,7 @@
 
   <div class="avis">
     <p id="accord-risque">Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.</p>
-    <p>Personne ne t'attend sur place&#160;: le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un livre.</p>
+    <p>Personne ne t'attend sur place&#160;: le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.</p>
   </div>
 
   <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
@@ -445,6 +460,7 @@ var MAX_LIVRES = 3;
 var MAX_LIEUX = 3;
 var MAX_MOT = 80;
 var MAX_NOM = 40;
+var TYPES = [["l","Livres"],["v","Vêtements"],["o","Autre"]];
 var PEREMPTION_JOURS = 30;
 
 var LANGUES = [["fr","FR"],["nl","NL"],["en","EN"],["es","ES"],["it","IT"],["de","DE"],["xx","Autre"]];
@@ -513,6 +529,44 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
+ "Quelque chose qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "Something that mattered, passed on to someone who doesn't know it yet.",
+ "Ce lien est fait pour circuler : il passera de main en main et finira chez des gens que tu ne connais pas. Ce que tu proposes en dit long sur toi — compose ton colis en le sachant.": "This link is meant to travel: it will pass from hand to hand and end up with people you do not know. What you offer says a good deal about you — build your parcel knowing that.",
+ "Personne ne t'attend sur place : le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.": "Nobody is waiting for you there: the parcel is dropped off, then collected, without the two of you meeting. If anything feels off, don't go — it's only a parcel.",
+ "Ajouter un lot": "Add a batch",
+ "{0} sur {1} livres.": "{0} of {1} books.",
+ "{0} sur {1} lots.": "{0} of {1} batches.",
+ "Aucun lot pour l'instant.": "No batches yet.",
+ "au moins un lot": "at least one batch",
+
+ "colis-de-vetements": "parcel-of-clothes",
+ "colis": "parcel",
+
+ "Ce que tu donnes": "What you're giving",
+ "Livres": "Books",
+ "Vêtements": "Clothes",
+ "Un lot": "A batch",
+ "Décris le lot d'un mot : « quatre débardeurs », « vaisselle dépareillée ».": "Describe the batch in a few words: “four vest tops”, “odd crockery”.",
+ "Ce que c'est": "What it is",
+ "Une précision utile : couleur, marque, pourquoi tu t'en sépares…": "Anything useful: colour, brand, why you're parting with it…",
+ "Taille": "Size",
+ "taille": "size",
+ "M, 42, 8 ans…": "M, 42, age 8…",
+ "Ces {0} lots vont ensemble : le colis ne se divise pas.": "These {0} batches go together: the parcel cannot be split.",
+ "En libre accès": "Open to anyone",
+ "Gardé par quelqu'un": "Someone will keep it",
+ "libre accès": "open access",
+ "gardé": "kept for you",
+ "(gardé)": "(kept for you)",
+ "C'est un lieu en libre accès : personne ne le surveille.": "This place is open to anyone: nobody is watching over it.",
+ "Le colis attend seul : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting there alone: the longer you leave it, the more likely it is to be gone.",
+ "Le colis est déjà là à l'heure annoncée. S'il attend en libre accès, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting somewhere open to anyone, don't leave it too long — nobody is looking after it.",
+ "Choisis ce que tu donnes — livres, vêtements ou autre — compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer. Il se prend entier : compose-le comme un ensemble.": "Choose what you're giving — books, clothes or something else — put together a parcel of one to three entries and tick the places where you can drop it off. It is taken as a whole: build it as a set.",
+ "Ce qui distingue les deux : est-ce que quelqu'un garde le colis ? En libre accès, non — il attend seul : une boîte à livres, le pied d'une bulle à vêtements, un endroit convenu. Gardé, oui : un commerce qui sert de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.": "What sets the two apart: is anyone looking after the parcel? Open to anyone, no — it waits alone: a public bookcase, the foot of a clothing bank, an agreed spot. Kept, yes: a shop acting as a relay, a building lobby, a club reception, an office desk. The app says different things in each case.",
+ "Sans idée ?": "No idea?",
+ "Une boîte à livres pour des livres, le pied d'une bulle à vêtements pour des habits. Personne n'a rien à accepter — aucune démarche à faire. Un paquet posé au sol reste plus exposé qu'un livre dans une boîte : dépose peu avant.": "A public bookcase for books, the foot of a clothing bank for clothes. Nobody has to agree to anything — there is nothing to arrange. A parcel left on the ground is more exposed than a book in a bookcase: drop it off shortly before.",
+ "Trouver un lieu en libre accès": "Finding somewhere open to anyone",
+ "Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Un lieu en libre accès ne demande rien à personne.": "A place where someone keeps it is safer, but they have to agree to it. Somewhere open to anyone asks nothing of anyone.",
+
  "colis-de-livres": "parcel-of-books",
  "demande": "request",
  "rendez-vous": "meeting-point",
@@ -525,20 +579,15 @@ TRAD.en = {
  "À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
  "Ton colis me tente beaucoup. Voici ma demande.": "Your parcel is very tempting. Here is my request.",
  "Avec plaisir. Voici le lieu et le moment.": "With pleasure. Here are the place and the time.",
-
- "Le colis est déjà là à l'heure annoncée. S'il attend dans une boîte à livres, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting in a public bookcase, don't leave it too long — nobody is looking after it.",
  "Tu déposes avant {0}. Le colis peut être pris à partir de {0}.": "You drop it off before {0}. The parcel can be collected from {0} onwards.",
  "à partir de {0}": "from {0} onwards",
- "Le colis attend seul dans la boîte : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting alone in the bookcase: the longer you leave it, the more likely it is to be gone.",
 
  "Grazie — donner un livre": "Grazie — give a book away",
- "Un livre qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "A book that mattered, passed on to someone who hasn't read it yet.",
  "← Grazie : composer un colis": "← Grazie: put a parcel together",
  "Comment ça marche": "How it works",
  "Il n'y a pas de site où voir les colis.": "There is no website listing the parcels.",
  "Pas de compte, pas de catalogue, pas de notifications. Un colis est écrit en entier dans son lien : il n'existe nulle part ailleurs. Les réponses arrivent dans ta messagerie, comme n'importe quel message.": "No account, no catalogue, no notifications. A parcel is written out in full inside its link: it exists nowhere else. Replies reach you through your messaging app, like any other message.",
  "Quand tu donnes": "When you give",
- "Compose un colis d'un à trois livres et coche les lieux où tu peux le déposer — une boîte à livres, ou un commerce qui accepte de servir de relais. Il se prend entier : compose-le comme un ensemble.": "Put together a parcel of one to three books and tick the places where you can drop it off — a public bookcase, or anywhere someone agrees to keep it. It is taken as a whole: build it as a set.",
  "L'appli fabrique un lien : envoie-le à qui tu veux.": "The app builds a link: send it to whoever you like.",
  "Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.": "Answer the first request by setting the day and time, then drop the parcel off and leave.",
  "Quand tu reçois un lien": "When you receive a link",
@@ -586,19 +635,12 @@ TRAD.en = {
  "Tes lieux de dépôt": "Your drop-off places",
  "Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.": "Up to three, near home, near work or anywhere else. Describe them as you would to someone who has to find them.",
  "Un lieu privé peut se nommer sans son adresse : « Domicile Étoile », « Chez Miguel ». Le nom voyage dans le lien, l'adresse ne se donne qu'à la personne à qui tu accordes le colis, dans ta réponse. Si le lieu appartient à quelqu'un d'autre, préviens-le : c'est lui qui ouvrira la porte.": "A private place can be named without its address: “Étoile home”, “Miguel's place”. The name travels in the link; the address is given only to the person you grant the parcel to, in your reply. If the place belongs to someone else, tell them: they are the one who will open the door.",
- "Ce qui distingue les deux : est-ce que quelqu'un garde le colis ? Dans une boîte à livres, non — il y attend seul. Ailleurs, oui : un commerce qui accepte de servir de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.": "What sets the two apart: is anyone looking after the parcel? In a public bookcase, no — it waits there alone. Elsewhere, yes: a shop willing to act as a relay, a building lobby, a club reception, an office desk. The app says different things in each case.",
- "Sans idée ? Commence par une boîte à livres.": "No idea? Start with a public bookcase.",
- "Il y en a partout, elles sont faites pour ça, et personne n'a rien à accepter — aucune démarche à faire.": "They are everywhere, they exist for this, and nobody has to agree to anything — there is nothing to arrange.",
  "Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.": "Choose them in busy, visible spots, and never outside your own front door.",
  "Ajouter un lieu": "Add a place",
  "La boîte du parc Pechère, près du métro Tomberg": "The bookcase in Pechère park, near Tomberg metro",
  "Quelle sorte de lieu ?": "What kind of place?",
- "Boîte à livres": "Public bookcase",
- "Autre lieu gardé": "Someone will keep it",
  "Ajouter ce lieu": "Add this place",
- "Trouver une boîte à livres": "Finding a public bookcase",
  "Le plus souvent, tu en connais déjà une : sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.": "Most of the time you already know one: on your way somewhere, near work, at the end of the street. Just write it down, with a landmark for whoever has to find it.",
- "Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Une boîte à livres ne demande rien à personne.": "A place where someone keeps it is safer, but they have to agree to it. A public bookcase asks nothing of anyone.",
  "Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.": "This map shows them, using OpenStreetMap data. Zoom in on your neighbourhood. If you know one that is missing, you can add it from the same page.",
  "Carte des boîtes à livres →": "Map of public bookcases →",
  "Grazie ne tient aucune liste de lieux et n'en vérifie aucun : c'est toi qui sais si celui que tu indiques convient encore.": "Grazie keeps no list of places and checks none of them: you are the one who knows whether the place you name still works.",
@@ -608,7 +650,6 @@ TRAD.en = {
  "Revenir au colis": "Back to the parcel",
  "Le lien est prêt": "The link is ready",
  "Ce que tu partages dit ce que tu lis.": "What you share says what you read.",
- "Ce lien est fait pour circuler : il passera de main en main et finira chez des gens que tu ne connais pas. Les livres que tu proposes en disent long sur toi — compose ton colis en le sachant.": "This link is meant to travel: it will pass from hand to hand and end up with people you do not know. The books you offer say a good deal about you — build your parcel knowing that.",
  "Le mot qui accompagne": "The message that goes with it",
  "Un lien nu inquiète, à raison. Une phrase de ta main change tout : modifie-la comme tu veux.": "A bare link is unsettling, and rightly so. A sentence in your own words changes everything: edit it as you like.",
  "Ce lien est long parce qu'il contient le colis lui-même. Rien n'est stocké sur un serveur ; tout voyage dans le message.": "This link is long because it holds the parcel itself. Nothing is stored on a server; it all travels inside the message.",
@@ -647,7 +688,6 @@ TRAD.en = {
  "Le colis": "The parcel",
  "Le lieu choisi": "The place chosen",
  "C'est un lieu gardé : le colis n'y attend pas seul. Dépose-le quand quelqu'un est là pour le recevoir.": "Someone looks after this place: the parcel will not be waiting alone. Drop it off when there is someone there to take it.",
- "C'est une boîte à livres : personne ne la surveille.": "This is a public bookcase: nobody is watching over it.",
  "Ses disponibilités": "When they are free",
  "Fixer le moment": "Set the time",
  "Emballe le colis et écris « {0} » dessus.": "Wrap the parcel and write “{0}” on it.",
@@ -664,13 +704,10 @@ TRAD.en = {
  "À prendre {0}": "To collect on {0}",
  "C'est un lieu gardé : demande le colis sur place, à ton nom.": "Someone looks after this place: ask for the parcel there, in your name.",
  "Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.": "Parcels do sometimes vanish before collection, wrapping or no wrapping. It is nobody's fault.",
- "Personne ne t'attend sur place : le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un livre.": "Nobody is waiting for you there: the parcel is dropped off, then collected, without the two of you meeting. If anything feels off, don't go — it's only a book.",
  "Aucun livre pour l'instant.": "No books yet.",
  "Aucun lieu enregistré.": "No places saved.",
  "Aucun lieu enregistré. Ajoutes-en un dans tes réglages.": "No places saved. Add one in your settings.",
  "Retirer": "Remove",
- "{0} livre sur {1} au maximum.": "{0} of {1} books.",
- "{0} livres sur {1} au maximum.": "{0} of {1} books.",
  "{0} caractère restant.": "{0} character left.",
  "{0} caractères restants.": "{0} characters left.",
  "Limite atteinte.": "Limit reached.",
@@ -684,7 +721,6 @@ TRAD.en = {
  "Il te manque au moins un lieu où déposer. C'est à faire une fois.": "You need at least one place to drop things off. You only need to do this once.",
  "Retirer tous les livres de ce colis ?": "Remove every book from this parcel?",
  "Effacer ton prénom, tes lieux et le colis en cours sur cet appareil ?": "Erase your first name, your places and the parcel in progress on this device?",
- "lieu gardé": "kept for you",
  "boîte à livres": "public bookcase",
  "(lieu gardé)": "(kept for you)"
 };
@@ -756,7 +792,8 @@ function dessinerLangues(){
 }
 
 var profil = lire("profil", {prenom:"", lieux:[]});
-var colis  = lire("colis", {livres:[], lieux:[], nom:""});
+var colis  = lire("colis", {livres:[], lieux:[], nom:"", type:"l"});
+if (!colis.type) colis.type = "l";
 colis.lieux = (colis.lieux || []).map(function(x){ return (typeof x === "string") ? x : (x && x.n) || ""; })
                                  .filter(function(x){ return x; });
 
@@ -802,7 +839,7 @@ function estTenu(x){ return (typeof x === "string") ? false : x.t === 1; }
 function etiquetteLieu(x){
   var e = document.createElement("span");
   e.className = "etiq";
-  e.textContent = estTenu(x) ? L("lieu gardé") : L("boîte à livres");
+  e.textContent = estTenu(x) ? L("gardé") : L("libre accès");
   return e;
 }
 function carteLivre(l){
@@ -817,6 +854,7 @@ function carteLivre(l){
     d.appendChild(a);
   }
   var etiqs = [];
+  if (l.s) etiqs.push(L("taille") + " " + l.s);
   if (l.l) etiqs.push(nomLangue(l.l));
   if (l.e) etiqs.push(nomEtat(l.e));
   if (l.y) etiqs.push(String(l.y));
@@ -842,7 +880,7 @@ function montrer(nom, cible){
   }
   $("barre").style.display = (nom === "accueil") ? "none" : "block";
   var el = cible ? $(cible) : null;
-  if (el) el.scrollIntoView({block:"start"});
+  if (el && el.scrollIntoView) el.scrollIntoView({block:"start"});
   else window.scrollTo(0,0);
 }
 
@@ -864,12 +902,22 @@ document.addEventListener("click", function(e){
 function dessinerAccueil(){
   if (location.hash === "" ) $("alerte-lien").style.display = "none";
   if ($("colis-nom").value !== (colis.nom || "")) $("colis-nom").value = colis.nom || "";
+
+  var zt = $("colis-type");
+  vider(zt);
+  TYPES.forEach(function(pair){
+    zt.appendChild(boutonChoix(L(pair[1]), colis.type === pair[0], function(){
+      colis.type = pair[0];
+      ecrire("colis", colis);
+      dessinerAccueil();
+    }));
+  });
   var liste = $("liste-colis");
   vider(liste);
   if (!colis.livres.length){
     var v = document.createElement("p");
     v.className = "vide";
-    v.textContent = L("Aucun livre pour l'instant.");
+    v.textContent = L(estLivres() ? "Aucun livre pour l'instant." : "Aucun lot pour l'instant.");
     liste.appendChild(v);
   }
   colis.livres.forEach(function(l, i){
@@ -888,10 +936,10 @@ function dessinerAccueil(){
     liste.appendChild(c);
   });
 
-  $("compte-livres").textContent = Lf(colis.livres.length > 1
-    ? "{0} livres sur {1} au maximum." : "{0} livre sur {1} au maximum.",
+  $("compte-livres").textContent = Lf(estLivres() ? "{0} sur {1} livres." : "{0} sur {1} lots.",
     colis.livres.length, MAX_LIVRES);
   $("btn-ajouter").disabled = colis.livres.length >= MAX_LIVRES;
+  $("btn-ajouter").textContent = L(estLivres() ? "Ajouter un livre" : "Ajouter un lot");
 
   var zone = $("liste-lieux-coche");
   vider(zone);
@@ -906,7 +954,7 @@ function dessinerAccueil(){
     var nom = nomLieu(lieu);
     var actif = colis.lieux.indexOf(nom) !== -1;
     var b = boutonChoix((actif ? "\u2611  " : "\u2610  ") + nom +
-                        (estTenu(lieu) ? "  " + L("(lieu gardé)") : ""), actif, function(){
+                        (estTenu(lieu) ? "  " + L("(gardé)") : ""), actif, function(){
       var k = colis.lieux.indexOf(nom);
       if (k === -1) colis.lieux.push(nom); else colis.lieux.splice(k,1);
       ecrire("colis", colis);
@@ -924,7 +972,7 @@ function dessinerAccueil(){
   var manques = [];
   if (!profil.prenom) manques.push(L("ton prénom"));
   if (!profil.lieux.length) manques.push(L("au moins un lieu de dépôt"));
-  if (!colis.livres.length) manques.push(L("au moins un livre"));
+  if (!colis.livres.length) manques.push(L(estLivres() ? "au moins un livre" : "au moins un lot"));
   else if (profil.lieux.length && !colis.lieux.length) manques.push(L("un lieu coché pour ce colis"));
 
   var amorce = !profil.prenom || !profil.lieux.length;
@@ -973,7 +1021,7 @@ $("btn-vers-reglages").addEventListener("click", function(){
 $("btn-ajouter").addEventListener("click", function(){
   brouillonLivre = {l:"fr", e:3};
   $("f-titre").value = ""; $("f-auteur").value = "";
-  $("f-annee").value = ""; $("f-genre").value = ""; $("f-mot").value = "";
+  $("f-annee").value = ""; $("f-genre").value = ""; $("f-mot").value = ""; $("f-taille").value = "";
   $("compte-mot").textContent = L("80 caractères, pour que le lien reste transmissible.");
   dessinerFormulaireLivre();
   montrer("livre");
@@ -993,8 +1041,9 @@ $("btn-creer").addEventListener("click", async function(){
     })
   };
   if (colis.nom) charge.n = colis.nom;
+  if (colis.type !== "l") charge.k = colis.type;
   afficherLien(
-    lienVers("colis-de-livres", await enc(charge)),
+    lienVers(colis.type === "v" ? "colis-de-vetements" : (colis.type === "o" ? "colis" : "colis-de-livres"), await enc(charge)),
     L("Le lien du colis est prêt"),
     L("Envoie-le à qui tu veux. Il circulera tout seul."),
     true,
@@ -1003,7 +1052,25 @@ $("btn-creer").addEventListener("click", async function(){
 });
 
 /* ================= FORMULAIRE LIVRE ================= */
+function estLivres(){ return colis.type === "l"; }
+function typeCourant(c){ return (c && c.k) ? c.k : "l"; }
+
 function dessinerFormulaireLivre(){
+  var livres = estLivres();
+  $("champ-auteur").style.display = livres ? "block" : "none";
+  $("champ-langue").style.display = livres ? "block" : "none";
+  $("champ-annee").style.display  = livres ? "block" : "none";
+  $("champ-genre").style.display  = livres ? "block" : "none";
+  $("champ-taille").style.display = (colis.type === "v") ? "block" : "none";
+  $("livre-titre").textContent = L(livres ? "Un livre" : "Un lot");
+  $("livre-sous").textContent = L(livres
+    ? "Seul le titre est nécessaire."
+    : "Décris le lot d'un mot : « quatre débardeurs », « vaisselle dépareillée ».");
+  $("label-titre").textContent = L(livres ? "Titre" : "Ce que c'est");
+  $("f-mot").placeholder = L(livres
+    ? "Ce que tu en as pensé, à qui il pourrait plaire…"
+    : "Une précision utile : couleur, marque, pourquoi tu t'en sépares…");
+
   var zl = $("f-langue"); vider(zl);
   LANGUES.forEach(function(pair){
     zl.appendChild(boutonChoix(L(pair[1]), brouillonLivre.l === pair[0], function(){
@@ -1030,10 +1097,12 @@ $("f-mot").addEventListener("input", function(){
 $("btn-garder").addEventListener("click", function(){
   var titre = $("f-titre").value.trim();
   if (!titre){ $("f-titre").focus(); return; }
-  var l = {t:titre, l:brouillonLivre.l, e:brouillonLivre.e};
-  var a = $("f-auteur").value.trim(); if (a) l.a = a;
-  var y = parseInt($("f-annee").value,10); if (y) l.y = y;
-  var g = $("f-genre").value.trim(); if (g) l.g = g;
+  var l = {t:titre, e:brouillonLivre.e};
+  if (estLivres()) l.l = brouillonLivre.l;
+  var a = $("f-auteur").value.trim(); if (a && estLivres()) l.a = a;
+  var ta = $("f-taille").value.trim(); if (ta && colis.type === "v") l.s = ta;
+  var y = parseInt($("f-annee").value,10); if (y && estLivres()) l.y = y;
+  var g = $("f-genre").value.trim(); if (g && estLivres()) l.g = g;
   var m = $("f-mot").value.trim().slice(0, MAX_MOT); if (m) l.m = m;
   colis.livres.push(l);
   ecrire("colis", colis);
@@ -1055,7 +1124,7 @@ function dessinerReglages(){
   }
   var zn = $("r-nature");
   vider(zn);
-  [[0,"Boîte à livres"],[1,"Autre lieu gardé"]].forEach(function(pair){
+  [[0,"En libre accès"],[1,"Gardé par quelqu'un"]].forEach(function(pair){
     zn.appendChild(boutonChoix(L(pair[1]), natureLieu === pair[0], function(){
       natureLieu = pair[0];
       dessinerReglages();
@@ -1210,7 +1279,9 @@ function dessinerOffre(o){
   if (o.c.length > 1){
     var ens = document.createElement("p");
     ens.className = "compte";
-    ens.textContent = Lf("Ces {0} livres vont ensemble\u202f: le colis ne se divise pas.", o.c.length);
+    ens.textContent = Lf(typeCourant(o) === "l"
+      ? "Ces {0} livres vont ensemble\u202f: le colis ne se divise pas."
+      : "Ces {0} lots vont ensemble\u202f: le colis ne se divise pas.", o.c.length);
     zone.appendChild(ens);
   }
   o.c.forEach(function(l){ zone.appendChild(carteLivre(l)); });
@@ -1218,13 +1289,13 @@ function dessinerOffre(o){
   var zl = $("d-lieux");
   vider(zl);
   o.x.forEach(function(lieu, i){
-    var b = boutonChoix("\u25CB  " + nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(lieu gardé)") : ""), false, function(){
+    var b = boutonChoix("\u25CB  " + nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(gardé)") : ""), false, function(){
       demandeEnCours.lieu = lieu;
       demandeEnCours.iLieu = i;
       dessinerLieuxDemande();
     });
     b.dataset.index = i;
-    b.dataset.etiquette = nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(lieu gardé)") : "");
+    b.dataset.etiquette = nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(gardé)") : "");
     b.style.display = "block";
     b.style.width = "100%";
     b.style.textAlign = "left";
@@ -1335,7 +1406,7 @@ function dessinerDemande(d){
     : "Emballe le colis et écris « {0} » dessus.", d.p);
   $("demande-nature").textContent = L(estTenu(d.x)
     ? "C'est un lieu gardé : le colis n'y attend pas seul. Dépose-le quand quelqu'un est là pour le recevoir."
-    : "C'est une boîte à livres : personne ne la surveille.");
+    : "C'est un lieu en libre accès : personne ne le surveille.");
   $("demande-arbitrage").style.display = estTenu(d.x) ? "none" : "block";
   $("rappel-adresse").textContent = estTenu(d.x)
     ? L("Si le nom du lieu ne suffit pas à le trouver, donne l'adresse exacte dans le mot qui accompagne ta réponse — elle n'ira qu'à cette personne.")
@@ -1395,7 +1466,7 @@ function dessinerAccord(a){
   $("accord-ou").textContent = nomLieu(a.x);
   $("accord-limite").textContent = estTenu(a.x)
     ? L("C'est un lieu gardé : demande le colis sur place, à ton nom.")
-    : L("Le colis attend seul dans la boîte\u202f: plus tu tardes, plus il risque d'être parti.");
+    : L("Le colis attend seul\u202f: plus tu tardes, plus il risque d'être parti.");
   $("accord-risque").style.display = estTenu(a.x) ? "none" : "block";
   $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
   montrer("accord");
