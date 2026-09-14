@@ -189,25 +189,14 @@
     <h2>Comment ça marche</h2>
     <div class="rgpd">
       <strong>Il n'y a pas de site où voir les colis.</strong>
-      Pas de compte, pas de catalogue, pas de notifications. Un colis est écrit en entier dans son lien&#160;: il n'existe nulle part ailleurs. Les réponses arrivent dans ta messagerie, comme n'importe quel message.
+      Un colis est écrit en entier dans son lien, et les réponses arrivent dans ta messagerie.
     </div>
-
-    <h3>Quand tu donnes</h3>
     <ol>
-      <li>Choisis ce que tu donnes — livres, vêtements ou autre — compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer. Il se prend entier&#8239;: compose-le comme un ensemble.</li>
-      <li>L'appli fabrique un lien&#160;: envoie-le à qui tu veux.</li>
-      <li>Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.</li>
+      <li>Compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer.</li>
+      <li>Envoie le lien à qui tu veux&#160;: il circulera de proche en proche.</li>
+      <li>Réponds à la première demande, puis dépose le colis emballé, un prénom dessus.</li>
     </ol>
-
-    <h3>Quand tu reçois un lien</h3>
-    <ol>
-      <li>Le colis te tente&#8239;? Demande-le&#160;: choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.</li>
-      <li>La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.</li>
-      <li>Le colis est déjà là à l'heure annoncée. S'il attend en libre accès, ne traîne pas — personne ne le garde.</li>
-    </ol>
-
-    <h3>Dans les deux cas</h3>
-    <p>Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.</p>
+    <p>C'est un don, et c'est à qui reçoit de se déplacer. Un colis se prend entier.</p>
   </div>
 
   <div class="bloc amorce" id="alerte-lien" style="display:none">
@@ -227,7 +216,7 @@
     <div class="rangee" id="colis-type"></div>
     <label for="colis-nom">Un nom pour ce colis (facultatif)</label>
     <input type="text" id="colis-nom" maxlength="40" placeholder="Trois romans italiens">
-    <p class="compte">Il voyage avec le lien&#8239;: c'est lui qui dira, de relais en relais, à qui le colis pourrait plaire.</p>
+    <p class="compte">Il voyage avec le lien, de relais en relais.</p>
     <p class="compte" id="compte-livres"></p>
     <div id="liste-colis"></div>
     <button class="btn calme" id="btn-ajouter">Ajouter un livre</button>
@@ -300,15 +289,14 @@
   <div class="bloc">
     <label for="r-prenom">Ton prénom</label>
     <input type="text" id="r-prenom" autocomplete="given-name">
-    <p class="compte">Il dira qui met le colis en circulation. Le prénom suffit.</p>
+    <p class="compte">Le prénom suffit.</p>
   </div>
 
   <div class="bloc">
     <h2>Tes lieux de dépôt</h2>
-    <p class="compte">Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.</p>
-    <p class="compte">Un lieu privé peut se nommer sans son adresse&#160;: «&#160;Domicile Étoile&#160;», «&#160;Chez Miguel&#160;». Le nom voyage dans le lien, l'adresse ne se donne qu'à la personne à qui tu accordes le colis, dans ta réponse. Si le lieu appartient à quelqu'un d'autre, préviens-le&#8239;: c'est lui qui ouvrira la porte.</p>
-    <p class="compte"><strong>Sans idée&#8239;?</strong> Une boîte à livres pour des livres, le pied d'une bulle à vêtements pour des habits. Personne n'a rien à accepter — aucune démarche à faire. Un paquet posé au sol reste plus exposé qu'un livre dans une boîte&#8239;: dépose peu avant.</p>
-    <p class="compte">Ce qui distingue les deux&#160;: est-ce que quelqu'un garde le colis&#8239;? En libre accès, non — il attend seul&#160;: une boîte à livres, le pied d'une bulle à vêtements, un endroit convenu. Gardé, oui&#160;: un commerce qui sert de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.</p>
+    <p class="compte">Jusqu'à trois, décrits comme tu l'expliquerais à quelqu'un qui doit les trouver. Jamais devant chez toi.</p>
+    <p class="compte"><strong>En libre accès</strong>, le colis attend seul&#160;: boîte à livres, pied d'une bulle à vêtements. <strong>Gardé</strong>, quelqu'un le reçoit&#160;: commerce, hall d'immeuble, accueil d'un club.</p>
+    <p class="compte">Un lieu privé peut se nommer sans son adresse — «&#160;Chez Miguel&#160;» — et l'adresse se donne dans ta réponse. Préviens l'occupant&#8239;: c'est lui qui ouvrira la porte.</p>
     <div id="liste-lieux-reglages"></div>
     <label for="r-lieu">Ajouter un lieu</label>
     <input type="text" id="r-lieu" placeholder="La boîte du parc Pechère, près du métro Tomberg">
@@ -317,19 +305,14 @@
     <button class="btn calme" id="btn-ajouter-lieu">Ajouter ce lieu</button>
 
     <div class="avis">
-      <h3>Trouver un lieu en libre accès</h3>
-      <p>Le plus souvent, tu en connais déjà une&#8239;: sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.</p>
-      <p>Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Un lieu en libre accès ne demande rien à personne.</p>
-      <p>Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.</p>
-      <p>Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.</p>
-      <p><a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">Carte des boîtes à livres →</a></p>
-      <p>Grazie ne tient aucune liste de lieux et n'en vérifie aucun&#160;: c'est toi qui sais si celui que tu indiques convient encore.</p>
+      <p>Tu en connais sans doute déjà un. Sinon&#160;: <a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">carte des boîtes à livres →</a></p>
+      <p>Grazie ne tient aucune liste de lieux&#160;: c'est toi qui sais si celui que tu indiques convient encore.</p>
     </div>
   </div>
 
   <div class="bloc">
     <h2>Effacer</h2>
-    <p class="compte">Supprime de cet appareil ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner&#8239;: ils ne dépendent pas de cet appareil.</p>
+    <p class="compte">Ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner.</p>
     <button class="btn calme" id="btn-effacer">Effacer mes données</button>
   </div>
 
@@ -342,16 +325,16 @@
   <p class="sous" id="lien-sous"></p>
 
   <div class="rgpd" id="rgpd-bloc">
-    <strong>Ce que tu partages dit ce que tu lis.</strong>
-    Ce lien est fait pour circuler&#160;: il passera de main en main et finira chez des gens que tu ne connais pas. Ce que tu proposes en dit long sur toi — compose ton colis en le sachant.
+    <strong>Ce lien est fait pour circuler.</strong>
+    Il finira chez des gens que tu ne connais pas, et ce que tu proposes en dit long sur toi.
   </div>
 
   <div class="bloc">
     <label for="lien-message">Le mot qui accompagne</label>
     <textarea id="lien-message"></textarea>
-    <p class="compte">Un lien nu inquiète, à raison. Une phrase de ta main change tout&#160;: modifie-la comme tu veux.</p>
+    <p class="compte">Modifie-la comme tu veux&#160;: un lien nu inquiète.</p>
     <div class="lien" id="lien-texte"></div>
-    <p class="compte">Ce lien est long parce qu'il contient le colis lui-même. Rien n'est stocké sur un serveur&#8239;; tout voyage dans le message.</p>
+    <p class="compte">Le lien est long parce qu'il contient le colis&#8239;: rien n'est stocké ailleurs.</p>
     <button class="btn" id="btn-partager">Envoyer</button>
     <button class="btn calme" id="btn-copier">Copier</button>
   </div>
@@ -367,12 +350,7 @@
 
   <div class="rgpd">
     <strong>C'est un don&#160;: rien à payer, rien à rendre.</strong>
-    Le colis est offert. Celui ou celle qui le prend fait simplement le déplacement.
-  </div>
-
-  <div class="rgpd">
-    <strong>Ce colis n'est stocké nulle part.</strong>
-    Il est écrit en entier dans le lien que tu viens d'ouvrir&#8239;; il n'y a rien d'autre à consulter, et rien ne s'enregistre. Si tu n'en veux pas, transmets ce lien à quelqu'un pour qui il compterait plutôt que de le refermer.
+    Le colis est écrit en entier dans ce lien — il n'y a rien d'autre à consulter — et c'est à toi de te déplacer. S'il ne te tente pas, transmets le lien plutôt que de le refermer.
   </div>
 
   <div id="offre-livres"></div>
@@ -413,8 +391,8 @@
   <div class="bloc">
     <h2>Fixer le moment</h2>
     <p class="compte" id="demande-kraft"></p>
-    <p class="compte">Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être sur place&#160;: c'est à toi de décider quand tu passes avant.</p>
-    <p class="compte" id="demande-arbitrage">Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.</p>
+    <p class="compte">Choisis un moment dans ses disponibilités. À cette heure-là, le colis doit déjà être sur place.</p>
+    <p class="compte" id="demande-arbitrage">Déposer juste avant expose moins le colis&#8239;; déposer bien avant évite de vous croiser.</p>
     <label for="a-jour">Jour</label>
     <input type="date" id="a-jour">
     <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
@@ -442,8 +420,8 @@
   </div>
 
   <div class="avis">
-    <p id="accord-risque">Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.</p>
-    <p>Personne ne t'attend sur place&#160;: le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.</p>
+    <p id="accord-risque">Il arrive qu'un paquet disparaisse avant le retrait. Ce n'est la faute de personne.</p>
+    <p>Personne ne t'attend sur place. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.</p>
   </div>
 
   <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
@@ -529,6 +507,38 @@ var LANGUES_UI = [["fr","FR"],["en","EN"]];
 var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
 
 TRAD.en = {
+ "Vidage de printemps": "Spring clear-out",
+ "Petit électroménager": "Small kitchen appliances",
+ "Un lot, c'est un ensemble : « 4 t-shirts taille M », « 2 écharpes ». Trois lots au maximum.": "A batch is a set: “4 T-shirts, size M”, “2 scarves”. Three batches at most.",
+ "4 t-shirts taille M": "4 T-shirts, size M",
+ "Cafetière italienne, 6 tasses": "Stovetop coffee pot, 6 cups",
+
+ "Un colis est écrit en entier dans son lien, et les réponses arrivent dans ta messagerie.": "A parcel is written out in full inside its link, and replies reach you through your messaging app.",
+ "Compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer.": "Put together a parcel of one to three entries and tick the places where you can drop it off.",
+ "Envoie le lien à qui tu veux : il circulera de proche en proche.": "Send the link to whoever you like: it travels on from person to person.",
+ "Réponds à la première demande, puis dépose le colis emballé, un prénom dessus.": "Answer the first request, then drop the parcel off wrapped, with a first name on it.",
+ "C'est un don, et c'est à qui reçoit de se déplacer. Un colis se prend entier.": "It's a gift, and whoever receives it does the travelling. A parcel is taken as a whole.",
+ "Il voyage avec le lien, de relais en relais.": "It travels with the link, from hand to hand.",
+ "Le prénom suffit.": "A first name is enough.",
+ "Jusqu'à trois, décrits comme tu l'expliquerais à quelqu'un qui doit les trouver. Jamais devant chez toi.": "Up to three, described as you would to someone who has to find them. Never outside your own front door.",
+ ", le colis attend seul : boîte à livres, pied d'une bulle à vêtements.": ", the parcel waits alone: a public bookcase, the foot of a clothing bank.",
+ ", quelqu'un le reçoit : commerce, hall d'immeuble, accueil d'un club.": ", someone takes it in: a shop, a building lobby, a club reception.",
+ "Gardé": "Kept",
+ "Un lieu privé peut se nommer sans son adresse — « Chez Miguel » — et l'adresse se donne dans ta réponse. Préviens l'occupant : c'est lui qui ouvrira la porte.": "A private place can be named without its address — “Miguel's place” — and the address given in your reply. Warn whoever lives there: they are the one who will open the door.",
+ "Tu en connais sans doute déjà un. Sinon :": "You probably know one already. If not:",
+ "carte des boîtes à livres →": "map of public bookcases →",
+ "Grazie ne tient aucune liste de lieux : c'est toi qui sais si celui que tu indiques convient encore.": "Grazie keeps no list of places: you are the one who knows whether the one you name still works.",
+ "Ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner.": "Your first name, your places and the parcel in progress. Links already sent keep working.",
+ "Ce lien est fait pour circuler.": "This link is meant to travel.",
+ "Il finira chez des gens que tu ne connais pas, et ce que tu proposes en dit long sur toi.": "It will end up with people you do not know, and what you offer says a good deal about you.",
+ "Modifie-la comme tu veux : un lien nu inquiète.": "Edit it as you like: a bare link is unsettling.",
+ "Le lien est long parce qu'il contient le colis : rien n'est stocké ailleurs.": "The link is long because it holds the parcel: nothing is stored anywhere else.",
+ "Le colis est écrit en entier dans ce lien — il n'y a rien d'autre à consulter — et c'est à toi de te déplacer. S'il ne te tente pas, transmets le lien plutôt que de le refermer.": "The parcel is written out in full inside this link — there is nothing else to look at — and it is for you to do the travelling. If it doesn't tempt you, pass the link on rather than closing it.",
+ "Choisis un moment dans ses disponibilités. À cette heure-là, le colis doit déjà être sur place.": "Pick a moment within the times they gave. By then, the parcel must already be there.",
+ "Déposer juste avant expose moins le colis ; déposer bien avant évite de vous croiser.": "Dropping it just before exposes the parcel less; dropping it well before avoids running into each other.",
+ "Il arrive qu'un paquet disparaisse avant le retrait. Ce n'est la faute de personne.": "Parcels do sometimes vanish before collection. It is nobody's fault.",
+ "Personne ne t'attend sur place. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.": "Nobody is waiting for you there. If anything feels off, don't go — it's only a parcel.",
+
  "Quelque chose qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "Something that mattered, passed on to someone who doesn't know it yet.",
  "Ce lien est fait pour circuler : il passera de main en main et finira chez des gens que tu ne connais pas. Ce que tu proposes en dit long sur toi — compose ton colis en le sachant.": "This link is meant to travel: it will pass from hand to hand and end up with people you do not know. What you offer says a good deal about you — build your parcel knowing that.",
  "Personne ne t'attend sur place : le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.": "Nobody is waiting for you there: the parcel is dropped off, then collected, without the two of you meeting. If anything feels off, don't go — it's only a parcel.",
@@ -545,7 +555,6 @@ TRAD.en = {
  "Livres": "Books",
  "Vêtements": "Clothes",
  "Un lot": "A batch",
- "Décris le lot d'un mot : « quatre débardeurs », « vaisselle dépareillée ».": "Describe the batch in a few words: “four vest tops”, “odd crockery”.",
  "Ce que c'est": "What it is",
  "Une précision utile : couleur, marque, pourquoi tu t'en sépares…": "Anything useful: colour, brand, why you're parting with it…",
  "Taille": "Size",
@@ -903,6 +912,9 @@ function dessinerAccueil(){
   if (location.hash === "" ) $("alerte-lien").style.display = "none";
   if ($("colis-nom").value !== (colis.nom || "")) $("colis-nom").value = colis.nom || "";
 
+  $("colis-nom").placeholder = L(colis.type === "l" ? "Trois romans italiens"
+    : (colis.type === "v" ? "Vidage de printemps" : "Petit électroménager"));
+
   var zt = $("colis-type");
   vider(zt);
   TYPES.forEach(function(pair){
@@ -1065,8 +1077,9 @@ function dessinerFormulaireLivre(){
   $("livre-titre").textContent = L(livres ? "Un livre" : "Un lot");
   $("livre-sous").textContent = L(livres
     ? "Seul le titre est nécessaire."
-    : "Décris le lot d'un mot : « quatre débardeurs », « vaisselle dépareillée ».");
+    : "Un lot, c'est un ensemble : « 4 t-shirts taille M », « 2 écharpes ». Trois lots au maximum.");
   $("label-titre").textContent = L(livres ? "Titre" : "Ce que c'est");
+  $("f-titre").placeholder = livres ? "" : L(colis.type === "v" ? "4 t-shirts taille M" : "Cafetière italienne, 6 tasses");
   $("f-mot").placeholder = L(livres
     ? "Ce que tu en as pensé, à qui il pourrait plaire…"
     : "Une précision utile : couleur, marque, pourquoi tu t'en sépares…");
