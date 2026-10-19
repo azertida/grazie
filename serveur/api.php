@@ -108,8 +108,29 @@ function photo_valide($valeur): ?string {
     if ($bin === false || strlen($bin) < 100) erreur('Photo illisible');
     if (strlen($bin) > MAX_PHOTO_OCTETS) erreur('Photo trop lourde');
     if (substr($bin, 0, 3) !== "\xFF\xD8\xFF") erreur('Seules les photos JPEG sont acceptées');
-    if (strpos($bin, "Exif\0\0") !== false) erreur('Cette photo contient encore ses métadonnées');
-    return $bin;
+    $propre = sans_metadonnees($bin);
+    if ($propre === null) erreur('Photo illisible');
+    return $propre;
+}
+
+/* Retire d'un JPEG les blocs de métadonnées : EXIF et XMP (APP1, où se trouve la position GPS),
+   IPTC (APP13) et commentaires. Safari en glisse dans toute image qu'il fabrique, même sans GPS. */
+function sans_metadonnees(string $bin): ?string {
+    $n = strlen($bin);
+    $sortie = "\xFF\xD8";
+    $i = 2;
+    while ($i + 4 <= $n) {
+        if ($bin[$i] !== "\xFF") return null;
+        $marqueur = ord($bin[$i + 1]);
+        if ($marqueur === 0xD9) return $sortie . "\xFF\xD9";                  // fin d'image
+        if ($marqueur === 0xDA) return $sortie . substr($bin, $i);             // début des données de l'image : tout le reste est l'image
+        if ($marqueur === 0x01 || ($marqueur >= 0xD0 && $marqueur <= 0xD7)) { $sortie .= substr($bin, $i, 2); $i += 2; continue; }
+        $longueur = (ord($bin[$i + 2]) << 8) | ord($bin[$i + 3]);
+        if ($longueur < 2 || $i + 2 + $longueur > $n) return null;
+        if (!in_array($marqueur, [0xE1, 0xED, 0xFE], true)) $sortie .= substr($bin, $i, 2 + $longueur);
+        $i += 2 + $longueur;
+    }
+    return null;
 }
 
 function dossier_photos(): string {
