@@ -10,10 +10,15 @@
  *  - aucune fiche de personne : un prénom par annonce ou par réponse, rien d'autre ;
  *  - une annonce close est effacée tout de suite ; une annonce oubliée
  *    disparaît d'elle-même après DUREE_JOURS ;
- *  - aucune adresse IP ni autre trace n'est enregistrée par ce script.
+ *  - aucune adresse IP ni autre trace n'est enregistrée par ce script ;
+ *  - un don peut porter une photo : réduite sur le téléphone, sans métadonnées
+ *    (position GPS comprise — le serveur refuse une photo qui en contient),
+ *    rangée hors du site et montrée seulement à qui a le code du cercle ;
+ *    elle est effacée avec l'annonce.
  *
  * Emplacement : www/grazie/api.php — les données vivent hors du site,
- * dans ~/grazie-data/grazie.sqlite (créé automatiquement).
+ * dans ~/grazie-data/grazie.sqlite, et les photos dans ~/grazie-data/photos/
+ * (créés automatiquement).
  */
 
 date_default_timezone_set('Europe/Brussels');
@@ -27,6 +32,9 @@ const MAX_TITRE = 60;
 const MAX_MOT = 140;
 const MAX_NOM_CERCLE = 40;
 const MAX_ANNONCES_PAR_CERCLE = 150;
+const MAX_LIEN = 500;
+const MAX_PHOTO_OCTETS = 350000;              // une photo réduite sur le téléphone pèse ~100 à 200 Ko
+const MAX_REQUETE_OCTETS = 600000;
 
 /* ---------- En-têtes ---------- */
 
@@ -85,6 +93,33 @@ function prenom_valide($valeur): string {
     return $p;
 }
 
+/* Un lien facultatif : http ou https seulement. */
+function lien_valide($valeur): string {
+    $l = texte($valeur, MAX_LIEN);
+    if ($l === '') return '';
+    if (!preg_match('#^https?://[^\s/$.?\#][^\s]*$#i', $l) || !filter_var($l, FILTER_VALIDATE_URL)) erreur('Ce lien n\'est pas une adresse web valable');
+    return $l;
+}
+
+/* Une photo facultative : JPEG en base64, sans métadonnées EXIF (donc sans position GPS). */
+function photo_valide($valeur): ?string {
+    if ($valeur === null || $valeur === '') return null;
+    $bin = base64_decode((string)$valeur, true);
+    if ($bin === false || strlen($bin) < 100) erreur('Photo illisible');
+    if (strlen($bin) > MAX_PHOTO_OCTETS) erreur('Photo trop lourde');
+    if (substr($bin, 0, 3) !== "\xFF\xD8\xFF") erreur('Seules les photos JPEG sont acceptées');
+    if (strpos($bin, "Exif\0\0") !== false) erreur('Cette photo contient encore ses métadonnées');
+    return $bin;
+}
+
+function dossier_photos(): string {
+    $d = dirname(__DIR__, 2) . '/grazie-data/photos';
+    if (!is_dir($d) && !mkdir($d, 0700, true)) erreur('Stockage indisponible', 500);
+    return $d;
+}
+function chemin_photo(string $id): string { return dossier_photos() . '/' . $id . '.jpg'; }
+function effacer_photo(string $id): void { $f = chemin_photo($id); if (is_file($f)) @unlink($f); }
+
 function aujourdhui(): string { return date('Y-m-d'); }
 function il_y_a(int $jours): string { return date('Y-m-d', strtotime("-$jours days")); }
 
@@ -121,7 +156,15 @@ function base(): PDO {
         );
         CREATE INDEX IF NOT EXISTS idx_annonces ON annonces(cercle, cree);
     ');
-    // Effacement automatique des annonces oubliées.
+    // Version 2.1 : un lien et une photo facultatifs.
+    $cols = array_column($db->query('PRAGMA table_info(annonces)')->fetchAll(), 'name');
+    if (!in_array('lien', $cols, true))  $db->exec('ALTER TABLE annonces ADD COLUMN lien TEXT NOT NULL DEFAULT \'\'');
+    if (!in_array('photo', $cols, true)) $db->exec('ALTER TABLE annonces ADD COLUMN photo INTEGER NOT NULL DEFAULT 0');
+
+    // Effacement automatique des annonces oubliées, photos comprises.
+    $st = $db->prepare('SELECT id FROM annonces WHERE cree < ? AND photo = 1');
+    $st->execute([il_y_a(DUREE_JOURS)]);
+    foreach ($st->fetchAll(PDO::FETCH_COLUMN) as $vieille) effacer_photo($vieille);
     $db->prepare('DELETE FROM annonces WHERE cree < ?')->execute([il_y_a(DUREE_JOURS)]);
     return $db;
 }
@@ -151,7 +194,7 @@ function annonce(PDO $db, string $cercle, $id): array {
 $methode = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $entree = [];
 if ($methode === 'POST') {
-    $brut = file_get_contents('php://input', false, null, 0, 8192);
+    $brut = file_get_contents('php://input', false, null, 0, MAX_REQUETE_OCTETS);
     $entree = json_decode($brut ?: '[]', true);
     if (!is_array($entree)) erreur('Requête illisible');
 } elseif ($methode !== 'GET') {
@@ -188,16 +231,17 @@ try {
     if (!is_string($code) || !preg_match('/^[0-9a-f]{18}$/', $code)) erreur('Code de cercle manquant', 400);
     $cer = cercle($db, $code);
 
-    if ($action !== 'liste' && $methode !== 'POST') erreur('POST attendu', 405);
+    if (!in_array($action, ['liste', 'photo'], true) && $methode !== 'POST') erreur('POST attendu', 405);
 
     switch ($action) {
 
         /* ----- Lire les annonces du cercle ----- */
         case 'liste':
-            $st = $db->prepare('SELECT id, sens, categorie, titre, mot, prenom, cree, rep_prenom, rep_date
+            $st = $db->prepare('SELECT id, sens, categorie, titre, mot, lien, photo, prenom, cree, rep_prenom, rep_date
                                 FROM annonces WHERE cercle = ? ORDER BY cree DESC, rowid DESC');
             $st->execute([$code]);
-            $rep = ['nom' => $cer['nom'], 'annonces' => $st->fetchAll(), 'duree' => DUREE_JOURS];
+            $annonces = array_map(function ($a) { $a['photo'] = (int)$a['photo'] === 1; return $a; }, $st->fetchAll());
+            $rep = ['nom' => $cer['nom'], 'annonces' => $annonces, 'duree' => DUREE_JOURS];
             if (est_admin($cer, $_GET['admin'] ?? '')) $rep['admin'] = true;
             repondre($rep);
 
@@ -210,16 +254,30 @@ try {
             $titre = texte($entree['titre'] ?? '', MAX_TITRE);
             if ($titre === '') erreur('Titre manquant');
             $mot = texte($entree['mot'] ?? '', MAX_MOT);
+            $lien = lien_valide($entree['lien'] ?? '');
+            $photo = $sens === 'don' ? photo_valide($entree['photo'] ?? null) : null;   // photo réservée aux dons
             $prenom = prenom_valide($entree['prenom'] ?? '');
             $st = $db->prepare('SELECT COUNT(*) FROM annonces WHERE cercle = ?');
             $st->execute([$code]);
             if ((int)$st->fetchColumn() >= MAX_ANNONCES_PAR_CERCLE) erreur('Ce cercle a déjà beaucoup d\'annonces');
             $id = aleatoire(8);
             $jeton = aleatoire(16);
-            $db->prepare('INSERT INTO annonces (id, cercle, sens, categorie, titre, mot, prenom, jeton_hash, cree)
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-               ->execute([$id, $code, $sens, $categorie, $titre, $mot, $prenom, empreinte($jeton), aujourdhui()]);
+            if ($photo !== null && file_put_contents(chemin_photo($id), $photo, LOCK_EX) === false) erreur('Stockage indisponible', 500);
+            $db->prepare('INSERT INTO annonces (id, cercle, sens, categorie, titre, mot, lien, photo, prenom, jeton_hash, cree)
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+               ->execute([$id, $code, $sens, $categorie, $titre, $mot, $lien, $photo !== null ? 1 : 0, $prenom, empreinte($jeton), aujourdhui()]);
             repondre(['id' => $id, 'jeton' => $jeton]);
+
+        /* ----- Montrer la photo d'une annonce (code du cercle requis) ----- */
+        case 'photo':
+            $a = annonce($db, $code, $_GET['id'] ?? '');
+            $f = chemin_photo($a['id']);
+            if ((int)$a['photo'] !== 1 || !is_file($f)) erreur('Pas de photo', 404);
+            header('Content-Type: image/jpeg');
+            header('Cache-Control: private, max-age=86400');
+            header('Content-Length: ' . filesize($f));
+            readfile($f);
+            exit;
 
         /* ----- Clore son annonce : elle est effacée du serveur ----- */
         case 'clore':
@@ -228,6 +286,7 @@ try {
                 erreur('Seule la personne qui a publié peut clore cette annonce', 403);
             }
             $db->prepare('DELETE FROM annonces WHERE id = ?')->execute([$a['id']]);
+            effacer_photo($a['id']);
             repondre(['ok' => true]);
 
         /* ----- Répondre : « Je le prends » (don) ou « J'en ai un » (demande) ----- */
