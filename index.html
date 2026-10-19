@@ -76,6 +76,12 @@
   .annonce.prise{opacity:.72}
   .annonce .titre{font-family:Fraunces,Georgia,serif;font-size:1.15rem;font-weight:600;line-height:1.3;margin:6px 0 2px}
   .annonce .mot{font-style:italic;color:var(--gris);margin:4px 0 0}
+  .annonce .photo{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:10px;margin:10px 0 4px;background:var(--doux);cursor:zoom-in}
+  .annonce .photo.entiere{max-height:none;object-fit:contain;cursor:zoom-out}
+  .annonce .lien{display:inline-block;margin-top:6px;color:var(--bleu);font-weight:700;word-break:break-all}
+  input[type=url]{width:100%;font:inherit;font-size:16px;color:var(--encre);background:var(--papier);border:1.5px solid var(--trait);border-radius:9px;padding:11px 12px;margin-bottom:14px;-webkit-appearance:none}
+  .apercu{display:block;max-width:100%;max-height:220px;border-radius:10px;margin:4px 0 10px}
+  .fichier{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
   .annonce .qui{font-size:.85rem;color:var(--gris);margin-top:6px}
   .annonce .etat{margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait);font-size:.95rem}
   .annonce .etat p{margin-bottom:6px}
@@ -117,10 +123,12 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.0';
+  const VERSION = '2.1';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
-  const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20;
+  const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
+  const PHOTO_COTE = 1200;          // côté le plus long, en pixels, après réduction
+  const PHOTO_OCTETS = 300000;      // au-delà, on baisse la qualité
   const CATEGORIES = [['l', 'Livres'], ['v', 'Vêtements'], ['o', 'Autre']];
 
   /* ================= Langues ================= */
@@ -202,6 +210,18 @@
     '{0} caractères restants.': '{0} characters left.',
     'Visible par tout le cercle. Effacée quand tu la clos, ou d’elle-même au bout de {0} jours.': 'Visible to the whole circle. Erased when you close it, or on its own after {0} days.',
     'Publier': 'Publish',
+    'Une photo (facultatif)': 'A photo (optional)',
+    'Ajouter une photo': 'Add a photo',
+    'Changer de photo': 'Change photo',
+    'Retirer la photo': 'Remove photo',
+    'Cadre serré sur l’objet : une photo prise chez toi montre souvent plus que lui. Elle est réduite et nettoyée sur ton téléphone (position GPS comprise) avant d’être envoyée.': 'Frame it tightly: a photo taken at home often shows more than the object. It is shrunk and cleaned on your phone (location included) before being sent.',
+    'Préparation de la photo…': 'Preparing the photo…',
+    'Cette image n’a pas pu être lue.': 'This image could not be read.',
+    'Un lien (facultatif)': 'A link (optional)',
+    'Une photo en ligne, la fiche d’un produit…': 'A photo online, a product page…',
+    'Ce lien doit commencer par https://': 'This link must start with https://',
+    'Voir le lien': 'Open the link',
+    'Photo de l’objet': 'Photo of the item',
     'Annuler': 'Cancel',
     'Il manque quelques mots pour dire ce que c’est.': 'A few words are missing to say what it is.',
     'Publié.': 'Published.',
@@ -219,9 +239,9 @@
     'Sur ce téléphone': 'On this phone',
     'le code du cercle, ton prénom, et les jetons qui prouvent que tes annonces et tes réponses sont les tiennes.': 'the circle code, your first name, and the tokens proving your listings and replies are yours.',
     'Sur le serveur (alwaysdata, en France)': 'On the server (alwaysdata, in France)',
-    'le nom du cercle et, pour chaque annonce : ce qu’elle dit, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse, ni photo.': 'the circle name and, for each listing: what it says, a first name, its date, and the first name of whoever replied. Nothing else: no phone, no address, no photo.',
+    'le nom du cercle et, pour chaque annonce : ce qu’elle dit, son lien et sa photo s’il y en a, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse. Les photos arrivent réduites et sans position GPS.': 'the circle name and, for each listing: what it says, its link and photo if any, a first name, its date, and the first name of whoever replied. Nothing else: no phone, no address. Photos arrive shrunk and without location.',
     'Combien de temps': 'How long',
-    'une annonce close est effacée tout de suite ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.': 'a closed listing is erased at once; a forgotten one erases itself after {0} days.',
+    'une annonce close est effacée tout de suite, photo comprise ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.': 'a closed listing is erased at once, photo included; a forgotten one erases itself after {0} days.',
     'Gestion du cercle': 'Managing the circle',
     'Tu gères ce cercle sur cet appareil.': 'You manage this circle on this device.',
     'Renommer': 'Rename',
@@ -549,13 +569,36 @@
     $('versReglages').onclick = (e) => { e.preventDefault(); ecran = 'reglages'; afficher(); window.scrollTo(0, 0); };
     $app.querySelectorAll('[data-nouveau]').forEach((b) => {
       b.onclick = () => {
-        brouillon = { sens: b.dataset.nouveau, categorie: 'o', titre: '', mot: '' };
+        brouillon = { sens: b.dataset.nouveau, categorie: 'o', titre: '', mot: '', lien: '', photo: '' };
         ecran = 'annonce'; afficher(); window.scrollTo(0, 0);
       };
     });
     $app.querySelectorAll('[data-filtre]').forEach((b) => { b.onclick = () => { filtre = b.dataset.filtre; afficher(); }; });
     $('actualiser').onclick = (e) => agir(e.target, async () => {});
     $app.querySelectorAll('[data-action]').forEach((b) => { b.onclick = () => action(b); });
+    $app.querySelectorAll('img.photo').forEach((i) => { i.onclick = () => i.classList.toggle('entiere'); });
+  }
+
+  const urlPhoto = (id) => `${API}?${new URLSearchParams({ action: 'photo', c: cercle.c, id })}`;
+  const lienSur = (l) => typeof l === 'string' && /^https?:\/\//i.test(l);
+  const hote = (l) => { try { return new URL(l).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+  /* Réduit la photo sur le téléphone : côté max PHOTO_COTE, JPEG, sans métadonnées (le canvas n'en garde aucune). */
+  async function preparerPhoto(fichier) {
+    const url = URL.createObjectURL(fichier);
+    try {
+      const img = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = url; });
+      const k = Math.min(1, PHOTO_COTE / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      let q = 0.8, donnees = '';
+      do {
+        donnees = c.toDataURL('image/jpeg', q);
+        q -= 0.1;
+      } while (donnees.length * 0.75 > PHOTO_OCTETS && q > 0.35);
+      return donnees;
+    } finally { URL.revokeObjectURL(url); }
   }
 
   function carteAnnonce(a) {
@@ -588,7 +631,9 @@
       <article class="annonce ${don ? 'don' : 'demande'}${prise && !mienne && !ma_reponse ? ' prise' : ''}">
         <span class="etiq sens">${esc(L(don ? 'Don' : 'Demande'))}</span><span class="etiq cat">${esc(L(cat ? cat[1] : 'Autre'))}</span>
         <div class="titre">${esc(a.titre)}</div>
+        ${a.photo ? `<img class="photo" loading="lazy" alt="${esc(L('Photo de l’objet'))}" src="${esc(urlPhoto(a.id))}">` : ''}
         ${a.mot ? `<p class="mot">${esc(a.mot)}</p>` : ''}
+        ${lienSur(a.lien) ? `<a class="lien" href="${esc(a.lien)}" target="_blank" rel="noopener noreferrer">${esc(L('Voir le lien'))} · ${esc(hote(a.lien))} ↗</a>` : ''}
         <p class="qui">${esc(Lf('{0}, {1}', a.prenom, quand(a.cree)))}</p>
         <div class="etat">${etat}${gestion}</div>
       </article>`;
@@ -646,12 +691,36 @@
         <label for="mot">${esc(L('Une précision (facultatif)'))}</label>
         <textarea id="mot" maxlength="${MAX_MOT}" placeholder="${esc(L('État, taille, pour qui, jusqu’à quand…'))}">${esc(b.mot)}</textarea>
         <p class="compte" id="compteMot"></p>
+        ${don ? `
+        <label>${esc(L('Une photo (facultatif)'))}</label>
+        ${b.photo ? `<img class="apercu" src="${b.photo}" alt="">` : ''}
+        <input type="file" id="fichier" class="fichier" accept="image/*">
+        <div class="rangee">
+          <button type="button" class="choix" id="choisirPhoto">${esc(L(b.photo ? 'Changer de photo' : 'Ajouter une photo'))}</button>
+          ${b.photo ? `<button type="button" class="choix" id="retirerPhoto">${esc(L('Retirer la photo'))}</button>` : ''}
+        </div>
+        <p class="compte">${esc(L('Cadre serré sur l’objet : une photo prise chez toi montre souvent plus que lui. Elle est réduite et nettoyée sur ton téléphone (position GPS comprise) avant d’être envoyée.'))}</p>` : ''}
+        <label for="lien">${esc(L('Un lien (facultatif)'))}</label>
+        <input type="url" id="lien" maxlength="${MAX_LIEN}" value="${esc(b.lien)}" placeholder="${esc(L('Une photo en ligne, la fiche d’un produit…'))}" autocomplete="off" autocapitalize="off">
         <div class="rgpd">${esc(Lf('Visible par tout le cercle. Effacée quand tu la clos, ou d’elle-même au bout de {0} jours.', donnees?.duree || 90))}</div>
         <button class="btn${don ? ' terre' : ''}" id="publier">${esc(L('Publier'))}</button>
         <button class="btn calme" id="annuler">${esc(L('Annuler'))}</button>
       </div>`;
 
-    const garder = () => { b.titre = $('titre').value; b.mot = $('mot').value; };
+    const garder = () => { b.titre = $('titre').value; b.mot = $('mot').value; b.lien = $('lien').value; };
+    if (don) {
+      $('choisirPhoto').onclick = () => $('fichier').click();
+      $('fichier').onchange = async () => {
+        const f = $('fichier').files[0];
+        if (!f) return;
+        garder();
+        dire(L('Préparation de la photo…'));
+        try { b.photo = await preparerPhoto(f); }
+        catch { dire(L('Cette image n’a pas pu être lue.')); }
+        afficher();
+      };
+      if ($('retirerPhoto')) $('retirerPhoto').onclick = () => { garder(); b.photo = ''; afficher(); };
+    }
     const compter = () => { $('compteMot').textContent = Lf('{0} caractères restants.', MAX_MOT - $('mot').value.length); };
     compter();
     $('mot').oninput = compter;
@@ -661,9 +730,12 @@
     $('publier').onclick = async (e) => {
       garder();
       if (!b.titre.trim()) return dire(L('Il manque quelques mots pour dire ce que c’est.'));
+      b.lien = b.lien.trim();
+      if (b.lien && !/^https?:\/\/\S+$/i.test(b.lien)) return dire(L('Ce lien doit commencer par https://'));
       e.target.disabled = true;
       try {
-        const r = await api('publier', { sens: b.sens, categorie: b.categorie, titre: b.titre, mot: b.mot, prenom });
+        const photo = b.sens === 'don' && b.photo ? b.photo.split(',')[1] : '';
+        const r = await api('publier', { sens: b.sens, categorie: b.categorie, titre: b.titre, mot: b.mot, lien: b.lien, photo, prenom });
         miennes[r.id] = r.jeton; ecrire('miennes', miennes);
         brouillon = null; ecran = 'cercle'; filtre = 'tout';
         dire(L('Publié.'));
@@ -701,8 +773,8 @@
       <div class="bloc">
         <h2>${esc(L('Ce que Grazie garde'))}</h2>
         <p><strong>${esc(L('Sur ce téléphone'))}</strong>${DP} ${esc(L('le code du cercle, ton prénom, et les jetons qui prouvent que tes annonces et tes réponses sont les tiennes.'))}</p>
-        <p><strong>${esc(L('Sur le serveur (alwaysdata, en France)'))}</strong>${DP} ${esc(LN('le nom du cercle et, pour chaque annonce : ce qu’elle dit, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse, ni photo.'))}</p>
-        <p><strong>${esc(L('Combien de temps'))}</strong>${DP} ${esc(LN(Lf('une annonce close est effacée tout de suite ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.', duree)))}</p>
+        <p><strong>${esc(L('Sur le serveur (alwaysdata, en France)'))}</strong>${DP} ${esc(LN('le nom du cercle et, pour chaque annonce : ce qu’elle dit, son lien et sa photo s’il y en a, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse. Les photos arrivent réduites et sans position GPS.'))}</p>
+        <p><strong>${esc(L('Combien de temps'))}</strong>${DP} ${esc(LN(Lf('une annonce close est effacée tout de suite, photo comprise ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.', duree)))}</p>
       </div>
 
       <div class="bloc">
