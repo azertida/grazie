@@ -1,10 +1,42 @@
 # Grazie
 
+Donner ce qui a compté à quelqu'un qui ne le connaît pas encore.
+
+## Deux versions
+
+Grazie a d'abord existé sous une forme où **tout tenait dans le lien**&#8239;: pas de compte, pas de serveur, un colis écrit en entier dans son URL et qui circulait de proche en proche. Cette première version reste en ligne et intacte&#8239;:
+
+- à l'adresse [`/grazie/v1/`](https://azertida.github.io/grazie/v1/)&#8239;;
+- dans le dossier `v1/` de ce dépôt&#8239;;
+- sous l'étiquette Git `v1`.
+
+Les liens déjà envoyés avec elle continuent de s'ouvrir dans `v1/`.
+
+## Pourquoi changer
+
+Le principe du tout-dans-le-lien tient ses promesses&#8239;: rien n'est hébergé, rien n'est agrégé, rien ne quitte l'appareil sans un geste explicite. Mais à l'usage, l'appli n'était pas praticable.
+
+Un échange demandait trois liens et deux allers-retours&#8239;: l'offre, puis la demande renvoyée par qui veut le colis, puis l'accord renvoyé par qui le donne. Chaque changement d'état obligeait quelqu'un à fabriquer et renvoyer un nouveau lien, et chaque aller-retour était une étape de plus à expliquer.
+
+Cette lourdeur venait aussi du public visé&#8239;: des inconnus, au bout d'une chaîne de relais. D'où les boîtes à livres, les créneaux, la fenêtre de trente minutes, le dépôt sans se croiser. Entre proches, la plupart de ce dispositif n'a plus lieu d'être.
+
+## La suite
+
+La racine du dépôt accueillera une version pensée pour **un cercle de proches**, avec un petit serveur&#8239;: un lien de cercle unique, à garder, où l'on voit ce qui est proposé et où un geste suffit pour le prendre.
+
+Les données seront réduites au strict nécessaire&#8239;: un prénom, ce qui est donné, un état «&#160;disponible / pris&#160;». Elles seront effacées une fois l'objet parti.
+
+---
+
+## Première version&#160;: tout dans le lien
+
+*Ce qui suit décrit la version conservée dans `v1/`.*
+
 Donner des livres d'occasion, un colis à la fois, sans compte ni serveur.
 
 Un colis d'un à trois livres, un lien, une boîte à livres. Le lien circule de personne à personne&#8239;: celui qui veut le colis le garde, les autres le transmettent à quelqu'un pour qui il compterait.
 
-## Le principe
+### Le principe
 
 Rien n'est publié, rien n'est hébergé, rien n'est agrégé. Tout ce qui circule tient dans le **fragment** d'une URL — la partie après le `#`, que le navigateur ne transmet jamais au serveur. Le lien s'envoie par le canal qu'on utilise déjà&#8239;: Signal, WhatsApp, courriel, SMS.
 
@@ -16,21 +48,21 @@ Trois liens font un échange complet&#8239;:
 
 Le colis est un don, sans contrepartie ni réciprocité. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé, avec un prénom écrit dessus, à l'heure convenue.
 
-## Le nom du colis
+### Le nom du colis
 
 Facultatif, quarante caractères. Il voyage dans le lien, contrairement au mot qui accompagne l'envoi&#8239;: celui-ci s'arrête au premier destinataire, le nom du colis arrive intact au troisième relais. C'est donc lui qui oriente la circulation — «&#160;Trois romans italiens&#160;», ou mieux, «&#160;Pour quelqu'un qui apprend l'italien&#160;».
 
-## La fiche d'un livre
+### La fiche d'un livre
 
 Sept champs, dont le titre seul est nécessaire&#8239;: titre, auteur, langue, année, état, genre, et un mot de quatre-vingts caractères. La langue et l'état se choisissent parmi des valeurs fixes, affichées en toutes lettres plutôt que masquées dans un menu.
 
-## Ce que l'appli ne fait pas
+### Ce que l'appli ne fait pas
 
 Pas de compte, pas de profil, pas de notation, pas de prix, pas de messagerie, pas de fil à faire défiler, pas d'annuaire. La découverte se fait de bouche à oreille, ce qui limite la portée — et c'est la condition qui rend le reste possible&#8239;: sans réputation à fabriquer, il faut que les gens se connaissent, au moins de proche en proche.
 
 L'appli ne s'installe pas non plus. Sur iOS, les données d'un onglet Safari ne sont pas accessibles depuis une application installée&#8239;; comme l'usage démarre par un lien reçu, l'installation créerait deux bibliothèques divergentes. Il n'y a donc ni `manifest.json` ni service worker, délibérément.
 
-## Ce qui peut rater
+### Ce qui peut rater
 
 Un paquet peut disparaître d'une boîte à livres avant le retrait, malgré l'emballage. C'est prévu, et l'appli le dit à qui va se déplacer.
 
@@ -38,7 +70,7 @@ Deux personnes peuvent demander le même colis. En pratique c'est rare — qui v
 
 Un lien peut circuler longtemps. Passé un mois, l'appli signale que le colis est probablement parti, sans empêcher la demande.
 
-## Langues
+### Langues
 
 Français et anglais, sélecteur en tête de page. La langue retenue est celle enregistrée sur l'appareil&#8239;; à défaut, celle du navigateur&#8239;; à défaut, le français. Un lien n'impose jamais la langue de qui l'a envoyé.
 
@@ -46,9 +78,9 @@ Le français reste la langue source dans le code&#160;: les traductions sont un 
 
 Les dates et les heures suivent la locale, sans table de jours ni de mois.
 
-## Technique
+### Technique
 
-Un seul fichier, `index.html`. HTML, CSS et JavaScript natifs, aucune dépendance, aucune requête réseau, aucune police chargée depuis l'extérieur.
+Un seul fichier, `v1/index.html`. HTML, CSS et JavaScript natifs, aucune dépendance, aucune requête réseau, aucune police chargée depuis l'extérieur.
 
 Les données restent dans le `localStorage` du navigateur, sous le préfixe `grazie.`&#8239;: le prénom, jusqu'à trois boîtes à livres, et le colis en cours de composition. Rien n'est transmis sans une action explicite.
 
@@ -58,19 +90,21 @@ Le fragment commence par une lettre indiquant le mode&#160;: `z` compressé, `j`
 
 La longueur compte, parce que les messageries cessent de rendre cliquables les URL trop longues. Un colis de trois livres tient sous 400 caractères, commentaires compris. Le mot de commentaire est plafonné à 80 caractères pour cette raison.
 
-## Vie privée
+### Vie privée
 
 Une liste de livres en dit long sur la personne qui la propose&#8239;: opinions, croyances, santé, langue, ce qu'on traverse. L'appli le rappelle au moment de fabriquer le lien.
 
 Aucune donnée ne quitte l'appareil autrement que par un lien fabriqué et envoyé volontairement. Les lieux décrivent du mobilier urbain, pas un domicile. Le prénom suffit&#8239;; le nom n'est jamais demandé.
 
-## Les boîtes à livres
+### Les boîtes à livres
 
 Grazie ne tient aucune liste de boîtes et n'en intègre aucune base de données. Les trois boîtes se saisissent à la main, une fois, dans les réglages.
 
 C'est un choix, pas un manque. Les gens connaissent déjà les boîtes de leur quartier ou de leur trajet, et les décrivent mieux qu'une base — trois quarts des nœuds OpenStreetMap sont anonymes. Une base recensée servirait à découvrir des boîtes inconnues, ce qui n'est pas le besoin&#8239;: on dépose là où l'on passe. Et une liste embarquée serait fausse dès qu'une boîte disparaît, sans que personne s'en aperçoive.
 
 Les réglages renvoient vers [la carte MapComplete](https://mapcomplete.org/bookcases), construite sur les données OpenStreetMap et qui sert aussi d'éditeur. L'appli fonctionne entièrement sans elle.
+
+---
 
 ## Licence
 
