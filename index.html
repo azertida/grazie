@@ -123,7 +123,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.1.1';
+  const VERSION = '2.1.4';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
@@ -138,7 +138,7 @@
     'Grazie — entre proches': 'Grazie — among friends and family',
     'Un instant…': 'One moment…',
     'Entre proches': 'Among friends and family',
-    'Ce qui a compté, remis à quelqu’un de proche.': 'Things that mattered, passed on to someone close.',
+    'Un vide-grenier gratuit, juste entre nous. On donne, on cherche.': 'A free jumble sale, just among us. We give things away, we ask for things.',
     'Pour entrer, il te faut le lien de ton cercle': 'To get in, you need your circle’s link',
     'Un proche te l’envoie. Ouvre-le, ou colle-le ici.': 'Someone close sends it to you. Open it, or paste it here.',
     'Le lien du cercle': 'The circle link',
@@ -169,7 +169,7 @@
     'Rien pour l’instant. Propose quelque chose, ou dis ce que tu cherches.': 'Nothing yet. Offer something, or say what you’re looking for.',
     'Rien dans cette catégorie pour l’instant.': 'Nothing here yet.',
     'Comment ça marche': 'How it works',
-    'Ouvre le lien du cercle et garde-le : c’est toujours le même.': 'Open the circle link and keep it: it never changes.',
+    'Garde le lien qui t’a fait entrer : c’est par lui que tu reviens, il ne change pas.': 'Keep the link that brought you in: it\u2019s how you come back, and it never changes.',
     'Propose ce que tu donnes, ou dis ce que tu cherches.': 'Offer what you’re giving, or say what you’re looking for.',
     'Touche « Je le prends » ou « J’en ai un ». La personne le voit, et vous vous arrangez entre vous.': 'Tap “I’ll take it” or “I have one”. The other person sees it, and you sort it out between you.',
     'Livres': 'Books',
@@ -354,7 +354,7 @@
   }
   async function partager(texte) {
     if (navigator.share) {
-      try { await navigator.share({ title: 'Grazie', text: cercle?.nom ? `Grazie — ${cercle.nom}` : 'Grazie', url: texte }); return; }
+      try { await navigator.share({ title: 'Grazie', text: `Grazie${cercle?.nom ? ` — ${cercle.nom}` : ''}${DP} ${L('Un vide-grenier gratuit, juste entre nous. On donne, on cherche.')}`, url: texte }); return; }
       catch (e) { if (e && e.name === 'AbortError') return; }
     }
     copier(texte);
@@ -428,7 +428,7 @@
   function ecranAccueil() {
     $app.innerHTML = `
       <h1>Grazie</h1>
-      <p class="sous">${esc(L('Ce qui a compté, remis à quelqu’un de proche.'))}</p>
+      <p class="sous">${esc(L('Un vide-grenier gratuit, juste entre nous. On donne, on cherche.'))}</p>
       <div class="bloc">
         <h2>${esc(L('Pour entrer, il te faut le lien de ton cercle'))}</h2>
         <p>${esc(L('Un proche te l’envoie. Ouvre-le, ou colle-le ici.'))}</p>
@@ -508,7 +508,7 @@
   function ecranPrenom() {
     $app.innerHTML = `
       <h1>Grazie</h1>
-      <p class="sous">${esc(cercle.nom || L('Entre proches'))}</p>
+      <p class="sous">${esc(cercle.nom ? `${cercle.nom} · ${L('Un vide-grenier gratuit, juste entre nous. On donne, on cherche.')}` : L('Un vide-grenier gratuit, juste entre nous. On donne, on cherche.'))}</p>
       <div class="bloc">
         <label for="prenom">${esc(L('Ton prénom'))}</label>
         <input type="text" id="prenom" maxlength="${MAX_PRENOM}" autocomplete="given-name">
@@ -532,7 +532,7 @@
       <details${ouvert ? ' open' : ''}>
         <summary>${esc(L('Comment ça marche'))}</summary>
         <div class="bloc"><ol>
-          <li>${esc(LN('Ouvre le lien du cercle et garde-le : c’est toujours le même.'))}</li>
+          <li>${esc(LN('Garde le lien qui t’a fait entrer : c’est par lui que tu reviens, il ne change pas.'))}</li>
           <li>${esc(L('Propose ce que tu donnes, ou dis ce que tu cherches.'))}</li>
           <li>${esc(L('Touche « Je le prends » ou « J’en ai un ». La personne le voit, et vous vous arrangez entre vous.'))}</li>
         </ol></div>
