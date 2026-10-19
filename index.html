@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Grazie — donner un livre</title>
+<meta name="referrer" content="no-referrer">
+<title>Grazie — entre proches</title>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="%23EDE3D1"/><rect x="12" y="16" width="40" height="32" rx="3" fill="%23A9763F"/><rect x="28" y="16" width="8" height="32" fill="%232F4858"/><rect x="12" y="29" width="40" height="6" fill="%232F4858"/><path d="M32 16c-4-6-12-5-12 0" stroke="%232F4858" stroke-width="3" fill="none"/><path d="M32 16c4-6 12-5 12 0" stroke="%232F4858" stroke-width="3" fill="none"/></svg>'>
 <style>
   :root{
     --papier:#EDE3D1;
+    --carte:#F7F0E2;
     --encre:#231F1C;
     --terre:#A9763F;
     --bleu:#2F4858;
@@ -24,1499 +26,779 @@
     font-family:"Atkinson Hyperlegible",Georgia,"Iowan Old Style",serif;
     font-size:17px;
     line-height:1.55;
-    padding:24px 18px 64px;
+    padding:24px 16px 64px;
     -webkit-text-size-adjust:100%;
   }
   .page{max-width:620px;margin:0 auto}
   h1{
     font-family:Fraunces,"Iowan Old Style",Georgia,serif;
-    font-size:2.4rem;
-    font-weight:600;
-    letter-spacing:-.02em;
-    line-height:1.05;
+    font-size:2.4rem;font-weight:600;letter-spacing:-.02em;line-height:1.05;
   }
-  h2{
-    font-family:Fraunces,"Iowan Old Style",Georgia,serif;
-    font-size:1.35rem;
-    font-weight:600;
-    margin-bottom:10px;
-  }
-  h3{font-size:1rem;font-weight:700;margin-bottom:6px}
+  h2{font-family:Fraunces,"Iowan Old Style",Georgia,serif;font-size:1.35rem;font-weight:600;margin-bottom:10px}
   p{margin-bottom:12px}
-  ol{margin:0 0 16px 22px}
+  ol{margin:0 0 12px 22px}
   ol li{margin-bottom:7px;padding-left:3px}
   ol li::marker{font-weight:700;color:var(--terre)}
-  .sous{color:var(--gris);font-style:italic;margin-bottom:26px}
-  section{display:none}
-  section.actif{display:block}
-  .bloc{
-    background:#F7F0E2;
-    border:1px solid var(--trait);
-    border-radius:14px;
-    padding:18px;
-    margin-bottom:18px;
-  }
+  .sous{color:var(--gris);font-style:italic;margin:4px 0 22px}
+  .entete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .entete a{color:var(--terre);font-weight:700;text-decoration:none;font-size:.95rem;margin-top:10px;white-space:nowrap}
+  .bloc{background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:18px;margin-bottom:18px}
   label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px;letter-spacing:.02em}
-  input[type=text],input[type=number],input[type=date],input[type=time],textarea{
-    width:100%;
-    font:inherit;
-    font-size:16px;
-    color:var(--encre);
-    background:var(--papier);
-    border:1.5px solid var(--trait);
-    border-radius:9px;
-    padding:11px 12px;
-    margin-bottom:14px;
-    -webkit-appearance:none;
+  input[type=text],textarea{
+    width:100%;font:inherit;font-size:16px;color:var(--encre);
+    background:var(--papier);border:1.5px solid var(--trait);border-radius:9px;
+    padding:11px 12px;margin-bottom:14px;-webkit-appearance:none;
   }
-  textarea{min-height:76px;resize:vertical}
-  #lien-message{min-height:112px;overflow:hidden}
+  textarea{min-height:84px;resize:vertical}
   input:focus,textarea:focus{outline:2px solid var(--bleu);outline-offset:1px;border-color:var(--bleu)}
   .rangee{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
   .choix{
-    font:inherit;
-    font-size:.9rem;
-    background:var(--papier);
-    color:var(--encre);
-    border:1.5px solid var(--trait);
-    border-radius:999px;
-    padding:8px 14px;
-    cursor:pointer;
+    font:inherit;font-size:.9rem;background:var(--papier);color:var(--encre);
+    border:1.5px solid var(--trait);border-radius:999px;padding:8px 14px;cursor:pointer;
   }
   .choix[aria-pressed=true]{background:var(--encre);color:var(--papier);border-color:var(--encre)}
-  .choix.grand{font-size:1.05rem;padding:15px 17px;line-height:1.35;border-width:2px;border-radius:12px}
-  .choix:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
+  .choix:focus-visible,.btn:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
   .btn{
-    display:block;
-    width:100%;
-    font:inherit;
-    font-weight:700;
-    background:var(--bleu);
-    color:#F7F0E2;
-    border:none;
-    border-radius:11px;
-    padding:15px;
-    margin-bottom:10px;
-    cursor:pointer;
+    display:block;width:100%;font:inherit;font-weight:700;background:var(--bleu);color:var(--carte);
+    border:none;border-radius:11px;padding:14px;margin-bottom:10px;cursor:pointer;text-align:center;
   }
+  .btn.terre{background:var(--terre)}
   .btn.calme{background:transparent;color:var(--encre);border:1.5px solid var(--trait)}
+  .btn.petit{display:inline-block;width:auto;padding:9px 16px;font-size:.92rem;margin:4px 6px 0 0}
   .btn:disabled{opacity:.4;cursor:not-allowed}
-  .btn:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
-  .bloc.amorce{border-left:4px solid var(--terre);background:var(--doux)}
-  .livre{
-    border-left:3px solid var(--terre);
-    background:var(--doux);
-    border-radius:0 10px 10px 0;
-    padding:12px 14px;
-    margin-bottom:12px;
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+  .duo .btn{margin:0;padding:16px 10px;font-size:1.05rem}
+  .annonce{
+    background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--terre);
+    border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:14px;
   }
-  .livre .titre{font-family:Fraunces,Georgia,serif;font-size:1.1rem;font-weight:600}
-  .livre .auteur{color:var(--gris)}
+  .annonce.demande{border-left-color:var(--bleu)}
+  .annonce.prise{opacity:.72}
+  .annonce .titre{font-family:Fraunces,Georgia,serif;font-size:1.15rem;font-weight:600;line-height:1.3;margin:6px 0 2px}
+  .annonce .mot{font-style:italic;color:var(--gris);margin:4px 0 0}
+  .annonce .qui{font-size:.85rem;color:var(--gris);margin-top:6px}
+  .annonce .etat{margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait);font-size:.95rem}
+  .annonce .etat p{margin-bottom:6px}
   .etiq{
-    display:inline-block;
-    font-size:.75rem;
-    font-weight:700;
-    letter-spacing:.04em;
-    border:1px solid var(--bleu);
-    color:var(--bleu);
-    border-radius:999px;
-    padding:2px 9px;
-    margin:6px 6px 0 0;
+    display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    border:1px solid var(--terre);color:var(--terre);border-radius:999px;padding:1px 9px;margin-right:6px;
   }
-  .mot{font-style:italic;color:var(--gris);margin-top:8px}
-  .avis a{color:var(--terre);font-weight:700}
-  .avis h3{margin-top:4px}
-  .avis{
-    border-top:1px solid var(--trait);
-    margin-top:18px;
-    padding-top:14px;
-    font-size:.9rem;
-    color:var(--gris);
-  }
-  .rgpd{
-    background:var(--doux);
-    border-left:3px solid var(--bleu);
-    border-radius:0 10px 10px 0;
-    padding:12px 14px;
-    margin-bottom:16px;
-    font-size:.92rem;
-  }
+  .demande .etiq.sens{border-color:var(--bleu);color:var(--bleu)}
+  .etiq.cat{border-color:var(--trait);color:var(--gris)}
+  .rgpd{background:var(--doux);border-left:3px solid var(--bleu);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:16px;font-size:.92rem}
   .rgpd strong{display:block;font-size:1rem}
-  .lien{
-    font-family:ui-monospace,"DM Mono",Menlo,monospace;
-    font-size:.78rem;
-    word-break:break-all;
-    background:var(--doux);
-    border-radius:9px;
-    padding:11px;
-    margin-bottom:12px;
-    color:var(--gris);
-  }
-  .grille{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;margin-bottom:16px}
-  .grille .jour{font-size:.85rem;font-weight:700}
-  .grille .creneau{
-    font:inherit;font-size:.78rem;
-    border:1.5px solid var(--trait);border-radius:8px;
-    background:var(--papier);padding:7px 4px;cursor:pointer;text-align:center;
-  }
-  .grille .creneau[aria-pressed=true]{background:var(--bleu);color:#fff;border-color:var(--bleu)}
-  .cle{font-family:Fraunces,Georgia,serif;font-size:1.5rem;font-weight:600;line-height:1.25}
-  .compte{font-size:.85rem;color:var(--gris);margin-bottom:12px}
-  #langues{justify-content:flex-end;gap:5px;margin-bottom:10px}
+  .cle{font-family:ui-monospace,Menlo,monospace;font-size:.95rem;word-break:break-all;background:var(--doux);border-radius:9px;padding:12px;margin-bottom:12px}
+  .compte{font-size:.85rem;color:var(--gris);margin:-6px 0 12px}
+  .vide{color:var(--gris);font-style:italic;margin:6px 0 18px}
+  details{margin-bottom:18px}
+  summary{cursor:pointer;font-weight:700;color:var(--bleu);margin-bottom:8px}
+  .pied{font-size:.8rem;color:var(--gris);text-align:center;margin-top:28px}
+  .pied a{color:var(--gris)}
+  #langues{justify-content:flex-end;gap:5px;margin-bottom:6px}
   #langues .choix{font-size:.75rem;padding:5px 11px}
-  #barre{margin-bottom:18px;font-size:.9rem}
-  #barre a{color:var(--terre);text-decoration:none;font-weight:700}
-  nav{margin-top:26px;font-size:.9rem}
-  nav a{color:var(--bleu);text-decoration:underline;margin-right:16px}
-  .vide{color:var(--gris);font-style:italic;margin-bottom:14px}
-  @media (prefers-reduced-motion:no-preference){section.actif{animation:entree .18s ease-out}}
+  #message{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%);max-width:calc(100% - 32px);
+    background:var(--encre);color:var(--papier);padding:11px 18px;border-radius:12px;font-size:.95rem;z-index:5;
+  }
+  @media (prefers-reduced-motion:no-preference){#app.entree>*{animation:entree .18s ease-out}}
   @keyframes entree{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="page">
-
-<div id="langues" class="rangee"></div>
-
-<div id="barre" style="display:none"><a href="#" class="maison">← Grazie&#8239;: composer un colis</a></div>
-
-<!-- ================= ACCUEIL ================= -->
-<section id="ecran-accueil">
-  <h1>Grazie</h1>
-  <p class="sous">Quelque chose qui a compté, remis à quelqu'un qui ne le connaît pas encore.</p>
-
-  <div class="bloc">
-    <h2>Comment ça marche</h2>
-    <div class="rgpd">
-      <strong>Il n'y a pas de site où voir les colis.</strong>
-      Un colis est écrit en entier dans son lien, et les réponses arrivent dans ta messagerie.
-    </div>
-    <ol>
-      <li>Compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer.</li>
-      <li>Envoie le lien à qui tu veux&#160;: il circulera de proche en proche.</li>
-      <li>Réponds à la première demande, puis dépose le colis emballé, un prénom dessus.</li>
-    </ol>
-    <p>C'est un don, et c'est à qui reçoit de se déplacer. Un colis se prend entier.</p>
-  </div>
-
-  <div class="bloc amorce" id="alerte-lien" style="display:none">
-    <h2>Ce lien n'a pas pu être lu</h2>
-    <p>Il a probablement été tronqué en chemin. Demande qu'on te le renvoie en le copiant-collant plutôt qu'en le partageant.</p>
-  </div>
-
-  <div class="bloc amorce" id="bloc-avant">
-    <h2>Avant de composer</h2>
-    <p id="avant-texte"></p>
-    <button class="btn" id="btn-vers-reglages">Indiquer mon prénom et mes lieux</button>
-  </div>
-
-  <div class="bloc">
-    <h2>Ton colis</h2>
-    <label>Ce que tu donnes</label>
-    <div class="rangee" id="colis-type"></div>
-    <label for="colis-nom">Un nom pour ce colis (facultatif)</label>
-    <input type="text" id="colis-nom" maxlength="40" placeholder="Trois romans italiens">
-    <p class="compte">Il voyage avec le lien, de relais en relais.</p>
-    <p class="compte" id="compte-livres"></p>
-    <div id="liste-colis"></div>
-    <button class="btn calme" id="btn-ajouter">Ajouter un livre</button>
-    <button class="btn calme" id="btn-vider-colis" style="display:none">Vider ce colis</button>
-  </div>
-
-  <div class="bloc" id="bloc-lieux-accueil">
-    <h2>Où tu déposeras</h2>
-    <p class="compte">Touche les lieux que tu proposes pour ce colis. Au moins un.</p>
-    <div id="liste-lieux-coche"></div>
-  </div>
-
-  <p class="compte" id="manque"></p>
-  <button class="btn" id="btn-creer" disabled>Créer le lien du colis</button>
-
-  <nav><a href="#reglages">Tes lieux et ton prénom</a></nav>
-</section>
-
-<!-- ================= FORMULAIRE LIVRE ================= -->
-<section id="ecran-livre">
-  <h1 id="livre-titre">Un livre</h1>
-  <p class="sous" id="livre-sous">Seul le titre est nécessaire.</p>
-
-  <div class="bloc">
-    <label for="f-titre" id="label-titre">Titre</label>
-    <input type="text" id="f-titre" autocomplete="off">
-
-    <div id="champ-auteur">
-      <label for="f-auteur">Auteur</label>
-      <input type="text" id="f-auteur" autocomplete="off">
-    </div>
-
-    <div id="champ-taille">
-      <label for="f-taille">Taille</label>
-      <input type="text" id="f-taille" autocomplete="off" placeholder="M, 42, 8 ans…">
-    </div>
-
-    <div id="champ-langue">
-      <label>Langue</label>
-      <div class="rangee" id="f-langue"></div>
-    </div>
-
-    <label>État</label>
-    <div class="rangee" id="f-etat"></div>
-
-    <div id="champ-annee">
-      <label for="f-annee">Année de parution</label>
-      <input type="number" id="f-annee" min="1400" max="2100" inputmode="numeric">
-    </div>
-
-    <div id="champ-genre">
-      <label for="f-genre">Genre</label>
-      <input type="text" id="f-genre" autocomplete="off">
-    </div>
-
-    <label for="f-mot">Un mot</label>
-    <textarea id="f-mot" maxlength="80" placeholder="Ce que tu en as pensé, à qui il pourrait plaire…"></textarea>
-    <p class="compte" id="compte-mot" style="margin-top:-8px">80 caractères, pour que le lien reste transmissible.</p>
-  </div>
-
-  <button class="btn" id="btn-garder">Ajouter au colis</button>
-  <button class="btn calme" id="btn-annuler-livre">Annuler</button>
-</section>
-
-<!-- ================= RÉGLAGES ================= -->
-<section id="ecran-reglages">
-  <h1>Tes réglages</h1>
-  <p class="sous">Enregistrés sur cet appareil, jamais envoyés en bloc.</p>
-
-  <div class="bloc">
-    <label for="r-prenom">Ton prénom</label>
-    <input type="text" id="r-prenom" autocomplete="given-name">
-    <p class="compte">Le prénom suffit.</p>
-  </div>
-
-  <div class="bloc">
-    <h2>Tes lieux de dépôt</h2>
-    <p class="compte">Jusqu'à trois, décrits comme tu l'expliquerais à quelqu'un qui doit les trouver. Jamais devant chez toi.</p>
-    <p class="compte"><strong>En libre accès</strong>, le colis attend seul&#160;: boîte à livres, pied d'une bulle à vêtements. <strong>Gardé</strong>, quelqu'un le reçoit&#160;: commerce, hall d'immeuble, accueil d'un club.</p>
-    <p class="compte">Un lieu privé peut se nommer sans son adresse — «&#160;Chez Miguel&#160;» — et l'adresse se donne dans ta réponse. Préviens l'occupant&#8239;: c'est lui qui ouvrira la porte.</p>
-    <div id="liste-lieux-reglages"></div>
-    <label for="r-lieu">Ajouter un lieu</label>
-    <input type="text" id="r-lieu" placeholder="La boîte du parc Pechère, près du métro Tomberg">
-    <label>Quelle sorte de lieu&#8239;?</label>
-    <div class="rangee" id="r-nature"></div>
-    <button class="btn calme" id="btn-ajouter-lieu">Ajouter ce lieu</button>
-
-    <div class="avis">
-      <p>Tu en connais sans doute déjà un. Sinon&#160;: <a href="https://mapcomplete.org/bookcases" target="_blank" rel="noopener noreferrer">carte des boîtes à livres →</a></p>
-      <p>Grazie ne tient aucune liste de lieux&#160;: c'est toi qui sais si celui que tu indiques convient encore.</p>
-    </div>
-  </div>
-
-  <div class="bloc">
-    <h2>Effacer</h2>
-    <p class="compte">Ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner.</p>
-    <button class="btn calme" id="btn-effacer">Effacer mes données</button>
-  </div>
-
-  <button class="btn" id="btn-retour-accueil">Revenir au colis</button>
-</section>
-
-<!-- ================= LIEN CRÉÉ ================= -->
-<section id="ecran-lien">
-  <h1 id="lien-titre">Le lien est prêt</h1>
-  <p class="sous" id="lien-sous"></p>
-
-  <div class="rgpd" id="rgpd-bloc">
-    <strong>Ce lien est fait pour circuler.</strong>
-    Il finira chez des gens que tu ne connais pas, et ce que tu proposes en dit long sur toi.
-  </div>
-
-  <div class="bloc">
-    <label for="lien-message">Le mot qui accompagne</label>
-    <textarea id="lien-message"></textarea>
-    <p class="compte">Modifie-la comme tu veux&#160;: un lien nu inquiète.</p>
-    <div class="lien" id="lien-texte"></div>
-    <p class="compte">Le lien est long parce qu'il contient le colis&#8239;: rien n'est stocké ailleurs.</p>
-    <button class="btn" id="btn-partager">Envoyer</button>
-    <button class="btn calme" id="btn-copier">Copier</button>
-  </div>
-
-  <button class="btn calme" id="btn-nouveau-colis">Composer un nouveau colis</button>
-  <button class="btn calme" id="btn-lien-retour">Revenir sans rien changer</button>
-</section>
-
-<!-- ================= OFFRE REÇUE ================= -->
-<section id="ecran-offre">
-  <h1>Un colis pour toi</h1>
-  <p class="sous" id="offre-sous"></p>
-
-  <div class="rgpd">
-    <strong>C'est un don&#160;: rien à payer, rien à rendre.</strong>
-    Le colis est écrit en entier dans ce lien — il n'y a rien d'autre à consulter — et c'est à toi de te déplacer. S'il ne te tente pas, transmets le lien plutôt que de le refermer.
-  </div>
-
-  <div id="offre-livres"></div>
-
-  <div class="bloc" id="offre-demande">
-    <h2>Le demander</h2>
-    <label for="d-prenom">Ton prénom</label>
-    <input type="text" id="d-prenom" autocomplete="given-name">
-
-    <label>Où tu iras le chercher</label>
-    <div class="rangee" id="d-lieux"></div>
-
-    <label>Quand tu peux passer</label>
-    <div class="grille" id="d-grille"></div>
-
-    <button class="btn" id="btn-demander" disabled>Créer ma demande</button>
-  </div>
-
-  <div class="avis" id="offre-vieille"></div>
-  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
-</section>
-
-<!-- ================= DEMANDE REÇUE ================= -->
-<section id="ecran-demande">
-  <h1 id="demande-titre">Quelqu'un veut ton colis</h1>
-  <p class="sous" id="demande-sous"></p>
-
-  <div class="bloc">
-    <h3>Le colis</h3>
-    <div id="demande-livres"></div>
-    <h3>Le lieu choisi</h3>
-    <p id="demande-lieu"></p>
-    <p class="compte" id="demande-nature"></p>
-    <h3>Ses disponibilités</h3>
-    <p id="demande-dispos"></p>
-  </div>
-
-  <div class="bloc">
-    <h2>Fixer le moment</h2>
-    <p class="compte" id="demande-kraft"></p>
-    <p class="compte">Choisis un moment dans ses disponibilités. À cette heure-là, le colis doit déjà être sur place.</p>
-    <p class="compte" id="demande-arbitrage">Déposer juste avant expose moins le colis&#8239;; déposer bien avant évite de vous croiser.</p>
-    <label for="a-jour">Jour</label>
-    <input type="date" id="a-jour">
-    <label for="a-heure">À partir de quelle heure le colis peut être pris</label>
-    <input type="time" id="a-heure">
-    <p class="compte" id="rappel-adresse"></p>
-    <p class="compte" id="recap-depot"></p>
-    <button class="btn" id="btn-accepter" disabled>Créer la réponse</button>
-  </div>
-
-  <div class="avis">Si tu ne donnes pas ce colis, un mot dans la conversation vaut mieux qu'un silence.</div>
-  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
-</section>
-
-<!-- ================= ACCORD REÇU ================= -->
-<section id="ecran-accord">
-  <h1>C'est convenu</h1>
-  <p class="sous">Emballé, ton prénom dessus.</p>
-
-  <div class="bloc">
-    <p class="cle" id="accord-quand"></p>
-    <p class="cle" id="accord-fenetre"></p>
-    <p class="cle" id="accord-ou" style="color:var(--terre)"></p>
-    <p class="compte" id="accord-limite" style="margin-top:12px"></p>
-    <div class="avis" id="accord-livres"></div>
-  </div>
-
-  <div class="avis">
-    <p id="accord-risque">Il arrive qu'un paquet disparaisse avant le retrait. Ce n'est la faute de personne.</p>
-    <p>Personne ne t'attend sur place. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.</p>
-  </div>
-
-  <nav><a href="#" class="maison">Composer mon propre colis</a></nav>
-</section>
-
+  <div id="langues" class="rangee"></div>
+  <div id="app"><p class="vide">Un instant…</p></div>
 </div>
+<div id="message" role="status" hidden></div>
 
 <script>
-"use strict";
+(() => {
+  'use strict';
 
-/* ---------- constantes ---------- */
-var CLE = "grazie.";
-var MAX_LIVRES = 3;
-var MAX_LIEUX = 3;
-var MAX_MOT = 80;
-var MAX_NOM = 40;
-var TYPES = [["l","Livres"],["v","Vêtements"],["o","Autre"]];
-var PEREMPTION_JOURS = 30;
+  /* ================= Réglages ================= */
+  const API = 'https://azertida.alwaysdata.net/grazie/api.php';
+  const VERSION = '2.0';
+  const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
+  const NB = ' ';             // espace fine insécable avant ? ! : ;
+  const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20;
+  const CATEGORIES = [['l', 'Livres'], ['v', 'Vêtements'], ['o', 'Autre']];
 
-var LANGUES = [["fr","FR"],["nl","NL"],["en","EN"],["es","ES"],["it","IT"],["de","DE"],["xx","Autre"]];
-var ETATS = [[1,"Neuf"],[2,"Très bon"],[3,"Bon"],[4,"Usagé"],[5,"Abîmé mais lisible"]];
-var MOMENTS = [["m","matin"],["a","après-midi"],["s","soirée"]];
+  /* ================= Langues ================= */
+  const LANGUES_UI = [['fr', 'FR'], ['en', 'EN']];
+  const TRAD = {};
+  TRAD.en = {
+    'Grazie — entre proches': 'Grazie — among friends and family',
+    'Un instant…': 'One moment…',
+    'Entre proches': 'Among friends and family',
+    'Ce qui a compté, remis à quelqu’un de proche.': 'Things that mattered, passed on to someone close.',
+    'Pour entrer, il te faut le lien de ton cercle': 'To get in, you need your circle’s link',
+    'Un proche te l’envoie. Ouvre-le, ou colle-le ici.': 'Someone close sends it to you. Open it, or paste it here.',
+    'Le lien du cercle': 'The circle link',
+    'Entrer': 'Enter',
+    'Ce lien n’est pas un lien Grazie.': 'This isn’t a Grazie link.',
+    'Créer un cercle': 'Create a circle',
+    'Nom du cercle': 'Circle name',
+    'La famille, les voisins…': 'Family, neighbours…',
+    'Clé de gestion d’un cercle existant': 'Management key of an existing circle',
+    'Seulement si un cercle existe déjà sur ce serveur.': 'Only if a circle already exists on this server.',
+    'La création d’un nouveau cercle demande la clé d’un cercle existant.': 'Creating a new circle needs the key of an existing one.',
+    'Ta clé de gestion': 'Your management key',
+    'Elle te permet de renommer le cercle et de clore n’importe quelle annonce. Elle n’est montrée qu’une fois : garde-la en lieu sûr.': 'It lets you rename the circle and close any listing. It is shown only once: keep it somewhere safe.',
+    'Copier la clé': 'Copy the key',
+    'Le lien du cercle, à envoyer à tes proches': 'The circle link, to send to your people',
+    'Continuer': 'Continue',
+    'Ton prénom': 'Your first name',
+    'Il apparaît sur tes annonces et tes réponses. Le prénom suffit.': 'It appears on your listings and replies. A first name is enough.',
+    'Entrer dans le cercle': 'Enter the circle',
+    'Bienvenue dans le cercle': 'Welcome to the circle',
+    'Réglages': 'Settings',
+    'Ton cercle': 'Your circle',
+    'Je donne': 'I’m giving',
+    'Je cherche': 'I’m looking',
+    'Tout': 'All',
+    'Dons': 'Gifts',
+    'Demandes': 'Requests',
+    'Rien pour l’instant. Propose quelque chose, ou dis ce que tu cherches.': 'Nothing yet. Offer something, or say what you’re looking for.',
+    'Rien dans cette catégorie pour l’instant.': 'Nothing here yet.',
+    'Comment ça marche': 'How it works',
+    'Ouvre le lien du cercle et garde-le : c’est toujours le même.': 'Open the circle link and keep it: it never changes.',
+    'Propose ce que tu donnes, ou dis ce que tu cherches.': 'Offer what you’re giving, or say what you’re looking for.',
+    'Touche « Je le prends » ou « J’en ai un ». La personne le voit, et vous vous arrangez entre vous.': 'Tap “I’ll take it” or “I have one”. The other person sees it, and you sort it out between you.',
+    'Livres': 'Books',
+    'Vêtements': 'Clothes',
+    'Autre': 'Other',
+    'Don': 'Gift',
+    'Demande': 'Request',
+    'aujourd’hui': 'today',
+    'hier': 'yesterday',
+    'il y a {0} jours': '{0} days ago',
+    '{0}, {1}': '{0}, {1}',
+    'Je le prends': 'I’ll take it',
+    'J’en ai un': 'I have one',
+    'Personne n’a encore répondu.': 'No one has replied yet.',
+    'Retirer l’annonce': 'Remove the listing',
+    '{0} le prend. Arrangez-vous entre vous.': '{0} is taking it. Sort it out between you.',
+    '{0} en a un. Arrangez-vous entre vous.': '{0} has one. Sort it out between you.',
+    'C’est fait, clore l’annonce': 'Done, close the listing',
+    'Remettre disponible': 'Make it available again',
+    'Tu le prends. Arrange-toi avec {0}.': 'You’re taking it. Sort it out with {0}.',
+    'Tu en as un. Arrange-toi avec {0}.': 'You have one. Sort it out with {0}.',
+    'Je me désiste': 'I’m pulling out',
+    'Pris par {0}': 'Taken by {0}',
+    '{0} en a un': '{0} has one',
+    'Clore cette annonce ? Elle sera effacée pour tout le cercle.': 'Close this listing? It will be erased for the whole circle.',
+    'Retirer cette annonce ? Elle sera effacée pour tout le cercle.': 'Remove this listing? It will be erased for the whole circle.',
+    'Annonce close.': 'Listing closed.',
+    'C’est noté.': 'Noted.',
+    'Ce que tu donnes': 'What you’re giving',
+    'Ce que tu cherches': 'What you’re looking for',
+    'Sorte': 'Kind',
+    'En quelques mots': 'In a few words',
+    'Trois romans italiens': 'Three Italian novels',
+    'Manteau d’hiver, taille M': 'Winter coat, size M',
+    'Une perceuse pour un week-end': 'A drill for a weekend',
+    'Une précision (facultatif)': 'A detail (optional)',
+    'État, taille, pour qui, jusqu’à quand…': 'Condition, size, for whom, until when…',
+    '{0} caractères restants.': '{0} characters left.',
+    'Visible par tout le cercle. Effacée quand tu la clos, ou d’elle-même au bout de {0} jours.': 'Visible to the whole circle. Erased when you close it, or on its own after {0} days.',
+    'Publier': 'Publish',
+    'Annuler': 'Cancel',
+    'Il manque quelques mots pour dire ce que c’est.': 'A few words are missing to say what it is.',
+    'Publié.': 'Published.',
+    'Retour au cercle': 'Back to the circle',
+    'Le prénom suffit.': 'A first name is enough.',
+    'Enregistrer': 'Save',
+    'Prénom enregistré. Il s’applique à tes prochaines annonces et réponses.': 'First name saved. It applies to your next listings and replies.',
+    'Inviter': 'Invite',
+    'Envoie ce lien à tes proches. Qui l’a peut voir et publier dans le cercle : ne le mets pas en ligne.': 'Send this link to your people. Anyone who has it can see and post in the circle: don’t put it online.',
+    'Envoyer le lien': 'Send the link',
+    'Copier le lien': 'Copy the link',
+    'Copié.': 'Copied.',
+    'Copie impossible : sélectionne le texte.': 'Copying failed: select the text.',
+    'Ce que Grazie garde': 'What Grazie keeps',
+    'Sur ce téléphone': 'On this phone',
+    'le code du cercle, ton prénom, et les jetons qui prouvent que tes annonces et tes réponses sont les tiennes.': 'the circle code, your first name, and the tokens proving your listings and replies are yours.',
+    'Sur le serveur (alwaysdata, en France)': 'On the server (alwaysdata, in France)',
+    'le nom du cercle et, pour chaque annonce : ce qu’elle dit, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse, ni photo.': 'the circle name and, for each listing: what it says, a first name, its date, and the first name of whoever replied. Nothing else: no phone, no address, no photo.',
+    'Combien de temps': 'How long',
+    'une annonce close est effacée tout de suite ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.': 'a closed listing is erased at once; a forgotten one erases itself after {0} days.',
+    'Gestion du cercle': 'Managing the circle',
+    'Tu gères ce cercle sur cet appareil.': 'You manage this circle on this device.',
+    'Renommer': 'Rename',
+    'Je gère ce cercle': 'I manage this circle',
+    'Ta clé de gestion, si tu l’as.': 'Your management key, if you have it.',
+    'Utiliser cette clé': 'Use this key',
+    'Cette clé ne correspond pas à ce cercle.': 'This key doesn’t match this circle.',
+    'Clé reconnue.': 'Key recognised.',
+    'Tout effacer de ce téléphone': 'Erase everything from this phone',
+    'Clôt tes annonces, retire tes réponses, puis efface tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.': 'Closes your listings, withdraws your replies, then erases everything Grazie keeps here. To come back, you’ll need the circle link.',
+    'Tout effacer ? Tes annonces seront closes et tes réponses retirées.': 'Erase everything? Your listings will be closed and your replies withdrawn.',
+    'C’est effacé.': 'All erased.',
+    'Première version, tout dans le lien': 'First version, everything in the link',
+    'Ce cercle n’existe plus.': 'This circle no longer exists.',
+    'Cette annonce n’existe plus.': 'This listing no longer exists.',
+    'Quelqu’un a répondu juste avant toi.': 'Someone replied just before you.',
+    'Pas de connexion pour l’instant : réessaie dans un moment.': 'No connection right now: try again in a moment.',
+    'Erreur du serveur': 'Server error',
+    'Rejoindre ce cercle à la place du tien ?': 'Join this circle instead of yours?',
+    'Actualiser': 'Refresh'
+  };
 
-/* ---------- encodage fragment ---------- */
-function b64(bin){
-  var s = "";
-  for (var i=0;i<bin.length;i++) s += String.fromCharCode(bin[i]);
-  return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-}
-function deb64(txt){
-  var b = txt.replace(/-/g,"+").replace(/_/g,"/");
-  while (b.length % 4) b += "=";
-  var s = atob(b);
-  var bin = new Uint8Array(s.length);
-  for (var i=0;i<s.length;i++) bin[i] = s.charCodeAt(i);
-  return bin;
-}
-async function enc(obj){
-  var bin = new TextEncoder().encode(JSON.stringify(obj));
-  if (typeof CompressionStream === "function"){
+  const lireBrut = (k, def) => { try { const v = localStorage.getItem(P + k); return v === null ? def : JSON.parse(v); } catch { return def; } };
+  function choisirLangue() {
+    const voulue = lireBrut('langue', null);
+    const connues = LANGUES_UI.map((p) => p[0]);
+    if (voulue && connues.includes(voulue)) return voulue;
+    for (const l of (navigator.languages || [navigator.language || 'fr'])) {
+      const code = String(l).slice(0, 2).toLowerCase();
+      if (connues.includes(code)) return code;
+    }
+    return 'fr';
+  }
+  const langue = choisirLangue();
+  const DP = langue === 'fr' ? `${NB}:` : ':';   // deux-points selon la langue
+  // En français, espace fine insécable avant ? ! : ; et à l'intérieur des guillemets.
+  const typo = (t) => t.replace(/ ([?!:;»])/g, '\u202f$1').replace(/« /g, '«\u202f');
+  const L = (s) => { if (langue === 'fr') return typo(s); const d = TRAD[langue]; const v = d && d[s]; return v === undefined ? s : v; };
+  const Lf = (s, ...a) => L(s).replace(/\{(\d)\}/g, (_, i) => a[i]);
+  const LN = L;
+
+  /* ================= Stockage local ================= */
+  const lire = lireBrut;
+  const ecrire = (k, v) => { try { localStorage.setItem(P + k, JSON.stringify(v)); } catch {} };
+  const oublier = (k) => { try { localStorage.removeItem(P + k); } catch {} };
+
+  let cercle = lire('cercle', null);       // { c, nom, admin? }
+  let prenom = lire('prenom', '');
+  let miennes = lire('miennes', {});       // { idAnnonce: jeton } — annonces que j'ai publiées
+  let reponses = lire('reponses', {});     // { idAnnonce: jeton } — annonces auxquelles j'ai répondu
+  let donnees = null;                      // réponse du serveur
+  let ecran = 'cercle';
+  let filtre = 'tout';
+  let brouillon = null;                    // annonce en cours de rédaction
+
+  /* ================= Outils ================= */
+  const $app = document.getElementById('app');
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const versDate = (s) => { const [a, m, j] = s.split('-').map(Number); return new Date(a, m - 1, j); };
+
+  function quand(dateIso) {
+    const n = Math.round((versDate(iso(new Date())) - versDate(dateIso)) / 864e5);
+    if (n <= 0) return L('aujourd’hui');
+    if (n === 1) return L('hier');
+    return Lf('il y a {0} jours', n);
+  }
+
+  let minuterie;
+  function dire(texte) {
+    const m = $('message');
+    m.textContent = texte; m.hidden = false;
+    clearTimeout(minuterie); minuterie = setTimeout(() => { m.hidden = true; }, 3500);
+  }
+
+  async function api(action, corps = null, params = {}) {
+    let rep;
     try {
-      var cs = new CompressionStream("deflate-raw");
-      var w = cs.writable.getWriter();
-      w.write(bin); w.close();
-      var buf = await new Response(cs.readable).arrayBuffer();
-      return "z" + b64(new Uint8Array(buf));
-    } catch(e){}
-  }
-  return "j" + b64(bin);
-}
-async function dec(txt){
-  var tete = txt.charAt(0);
-  var corps = (tete === "z" || tete === "j") ? txt.slice(1) : txt;
-  var bin = deb64(corps);
-  if (tete === "z"){
-    var ds = new DecompressionStream("deflate-raw");
-    var w = ds.writable.getWriter();
-    w.write(bin); w.close();
-    var buf = await new Response(ds.readable).arrayBuffer();
-    bin = new Uint8Array(buf);
-  }
-  return JSON.parse(new TextDecoder().decode(bin));
-}
-function baseURL(){ return location.origin + location.pathname; }
-function lienVers(etiquette, charge){ return baseURL() + "#" + L(etiquette) + "/" + charge; }
-function separer(h){
-  var i = h.indexOf("/");
-  return (i === -1) ? {etiquette:"", corps:h} : {etiquette:h.slice(0,i), corps:h.slice(i+1)};
-}
-
-/* ---------- stockage ---------- */
-function lire(cle, defaut){
-  try { var v = localStorage.getItem(CLE+cle); return v ? JSON.parse(v) : defaut; }
-  catch(e){ return defaut; }
-}
-function ecrire(cle, val){
-  try { localStorage.setItem(CLE+cle, JSON.stringify(val)); } catch(e){}
-}
-
-/* ---------- langues ---------- */
-
-var LANGUES_UI = [["fr","FR"],["en","EN"]];
-var TRAD = {};   // rempli plus bas : TRAD.en = { "phrase française": "english sentence" }
-
-TRAD.en = {
- "Vidage de printemps": "Spring clear-out",
- "Petit électroménager": "Small kitchen appliances",
- "Un lot, c'est un ensemble : « 4 t-shirts taille M », « 2 écharpes ». Trois lots au maximum.": "A batch is a set: “4 T-shirts, size M”, “2 scarves”. Three batches at most.",
- "4 t-shirts taille M": "4 T-shirts, size M",
- "Cafetière italienne, 6 tasses": "Stovetop coffee pot, 6 cups",
-
- "Un colis est écrit en entier dans son lien, et les réponses arrivent dans ta messagerie.": "A parcel is written out in full inside its link, and replies reach you through your messaging app.",
- "Compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer.": "Put together a parcel of one to three entries and tick the places where you can drop it off.",
- "Envoie le lien à qui tu veux : il circulera de proche en proche.": "Send the link to whoever you like: it travels on from person to person.",
- "Réponds à la première demande, puis dépose le colis emballé, un prénom dessus.": "Answer the first request, then drop the parcel off wrapped, with a first name on it.",
- "C'est un don, et c'est à qui reçoit de se déplacer. Un colis se prend entier.": "It's a gift, and whoever receives it does the travelling. A parcel is taken as a whole.",
- "Il voyage avec le lien, de relais en relais.": "It travels with the link, from hand to hand.",
- "Le prénom suffit.": "A first name is enough.",
- "Jusqu'à trois, décrits comme tu l'expliquerais à quelqu'un qui doit les trouver. Jamais devant chez toi.": "Up to three, described as you would to someone who has to find them. Never outside your own front door.",
- ", le colis attend seul : boîte à livres, pied d'une bulle à vêtements.": ", the parcel waits alone: a public bookcase, the foot of a clothing bank.",
- ", quelqu'un le reçoit : commerce, hall d'immeuble, accueil d'un club.": ", someone takes it in: a shop, a building lobby, a club reception.",
- "Gardé": "Kept",
- "Un lieu privé peut se nommer sans son adresse — « Chez Miguel » — et l'adresse se donne dans ta réponse. Préviens l'occupant : c'est lui qui ouvrira la porte.": "A private place can be named without its address — “Miguel's place” — and the address given in your reply. Warn whoever lives there: they are the one who will open the door.",
- "Tu en connais sans doute déjà un. Sinon :": "You probably know one already. If not:",
- "carte des boîtes à livres →": "map of public bookcases →",
- "Grazie ne tient aucune liste de lieux : c'est toi qui sais si celui que tu indiques convient encore.": "Grazie keeps no list of places: you are the one who knows whether the one you name still works.",
- "Ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner.": "Your first name, your places and the parcel in progress. Links already sent keep working.",
- "Ce lien est fait pour circuler.": "This link is meant to travel.",
- "Il finira chez des gens que tu ne connais pas, et ce que tu proposes en dit long sur toi.": "It will end up with people you do not know, and what you offer says a good deal about you.",
- "Modifie-la comme tu veux : un lien nu inquiète.": "Edit it as you like: a bare link is unsettling.",
- "Le lien est long parce qu'il contient le colis : rien n'est stocké ailleurs.": "The link is long because it holds the parcel: nothing is stored anywhere else.",
- "Le colis est écrit en entier dans ce lien — il n'y a rien d'autre à consulter — et c'est à toi de te déplacer. S'il ne te tente pas, transmets le lien plutôt que de le refermer.": "The parcel is written out in full inside this link — there is nothing else to look at — and it is for you to do the travelling. If it doesn't tempt you, pass the link on rather than closing it.",
- "Choisis un moment dans ses disponibilités. À cette heure-là, le colis doit déjà être sur place.": "Pick a moment within the times they gave. By then, the parcel must already be there.",
- "Déposer juste avant expose moins le colis ; déposer bien avant évite de vous croiser.": "Dropping it just before exposes the parcel less; dropping it well before avoids running into each other.",
- "Il arrive qu'un paquet disparaisse avant le retrait. Ce n'est la faute de personne.": "Parcels do sometimes vanish before collection. It is nobody's fault.",
- "Personne ne t'attend sur place. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.": "Nobody is waiting for you there. If anything feels off, don't go — it's only a parcel.",
-
- "Quelque chose qui a compté, remis à quelqu'un qui ne le connaît pas encore.": "Something that mattered, passed on to someone who doesn't know it yet.",
- "Ce lien est fait pour circuler : il passera de main en main et finira chez des gens que tu ne connais pas. Ce que tu proposes en dit long sur toi — compose ton colis en le sachant.": "This link is meant to travel: it will pass from hand to hand and end up with people you do not know. What you offer says a good deal about you — build your parcel knowing that.",
- "Personne ne t'attend sur place : le colis est déposé, puis récupéré, sans que vous vous croisiez. Si quelque chose te met mal à l'aise, n'y va pas — ce n'est qu'un colis.": "Nobody is waiting for you there: the parcel is dropped off, then collected, without the two of you meeting. If anything feels off, don't go — it's only a parcel.",
- "Ajouter un lot": "Add a batch",
- "{0} sur {1} livres.": "{0} of {1} books.",
- "{0} sur {1} lots.": "{0} of {1} batches.",
- "Aucun lot pour l'instant.": "No batches yet.",
- "au moins un lot": "at least one batch",
-
- "colis-de-vetements": "parcel-of-clothes",
- "colis": "parcel",
-
- "Ce que tu donnes": "What you're giving",
- "Livres": "Books",
- "Vêtements": "Clothes",
- "Un lot": "A batch",
- "Ce que c'est": "What it is",
- "Une précision utile : couleur, marque, pourquoi tu t'en sépares…": "Anything useful: colour, brand, why you're parting with it…",
- "Taille": "Size",
- "taille": "size",
- "M, 42, 8 ans…": "M, 42, age 8…",
- "Ces {0} lots vont ensemble : le colis ne se divise pas.": "These {0} batches go together: the parcel cannot be split.",
- "En libre accès": "Open to anyone",
- "Gardé par quelqu'un": "Someone will keep it",
- "libre accès": "open access",
- "gardé": "kept for you",
- "(gardé)": "(kept for you)",
- "C'est un lieu en libre accès : personne ne le surveille.": "This place is open to anyone: nobody is watching over it.",
- "Le colis attend seul : plus tu tardes, plus il risque d'être parti.": "The parcel is waiting there alone: the longer you leave it, the more likely it is to be gone.",
- "Le colis est déjà là à l'heure annoncée. S'il attend en libre accès, ne traîne pas — personne ne le garde.": "The parcel is already there at the time you are given. If it is waiting somewhere open to anyone, don't leave it too long — nobody is looking after it.",
- "Choisis ce que tu donnes — livres, vêtements ou autre — compose un colis d'un à trois entrées et coche les lieux où tu peux le déposer. Il se prend entier : compose-le comme un ensemble.": "Choose what you're giving — books, clothes or something else — put together a parcel of one to three entries and tick the places where you can drop it off. It is taken as a whole: build it as a set.",
- "Ce qui distingue les deux : est-ce que quelqu'un garde le colis ? En libre accès, non — il attend seul : une boîte à livres, le pied d'une bulle à vêtements, un endroit convenu. Gardé, oui : un commerce qui sert de relais, un hall d'immeuble, l'accueil d'un club, un secrétariat. L'appli ne dira pas la même chose dans les deux cas.": "What sets the two apart: is anyone looking after the parcel? Open to anyone, no — it waits alone: a public bookcase, the foot of a clothing bank, an agreed spot. Kept, yes: a shop acting as a relay, a building lobby, a club reception, an office desk. The app says different things in each case.",
- "Sans idée ?": "No idea?",
- "Une boîte à livres pour des livres, le pied d'une bulle à vêtements pour des habits. Personne n'a rien à accepter — aucune démarche à faire. Un paquet posé au sol reste plus exposé qu'un livre dans une boîte : dépose peu avant.": "A public bookcase for books, the foot of a clothing bank for clothes. Nobody has to agree to anything — there is nothing to arrange. A parcel left on the ground is more exposed than a book in a bookcase: drop it off shortly before.",
- "Trouver un lieu en libre accès": "Finding somewhere open to anyone",
- "Un lieu gardé est plus sûr, mais il faut que quelqu'un accepte. Un lieu en libre accès ne demande rien à personne.": "A place where someone keeps it is safer, but they have to agree to it. Somewhere open to anyone asks nothing of anyone.",
-
- "colis-de-livres": "parcel-of-books",
- "demande": "request",
- "rendez-vous": "meeting-point",
-
- "Je te propose un colis à donner : {0}.": "I have a parcel to give away: {0}.",
- "Je te propose {0} livres à donner.": "I have {0} books to give away.",
- "Je te propose un livre à donner.": "I have a book to give away.",
- "C'est un don : rien à payer, rien à rendre.": "It's a gift: nothing to pay, nothing to give back.",
- "Le colis est offert. Celui ou celle qui le prend fait simplement le déplacement.": "The parcel is free. Whoever takes it simply does the travelling.",
- "À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.": "It's yours if you'd like it — otherwise pass it on to someone who'd love it.",
- "Ton colis me tente beaucoup. Voici ma demande.": "Your parcel is very tempting. Here is my request.",
- "Avec plaisir. Voici le lieu et le moment.": "With pleasure. Here are the place and the time.",
- "Tu déposes avant {0}. Le colis peut être pris à partir de {0}.": "You drop it off before {0}. The parcel can be collected from {0} onwards.",
- "à partir de {0}": "from {0} onwards",
-
- "Grazie — donner un livre": "Grazie — give a book away",
- "← Grazie : composer un colis": "← Grazie: put a parcel together",
- "Comment ça marche": "How it works",
- "Il n'y a pas de site où voir les colis.": "There is no website listing the parcels.",
- "Pas de compte, pas de catalogue, pas de notifications. Un colis est écrit en entier dans son lien : il n'existe nulle part ailleurs. Les réponses arrivent dans ta messagerie, comme n'importe quel message.": "No account, no catalogue, no notifications. A parcel is written out in full inside its link: it exists nowhere else. Replies reach you through your messaging app, like any other message.",
- "Quand tu donnes": "When you give",
- "L'appli fabrique un lien : envoie-le à qui tu veux.": "The app builds a link: send it to whoever you like.",
- "Réponds à la première demande en fixant le jour et l'heure, puis dépose le colis et repars.": "Answer the first request by setting the day and time, then drop the parcel off and leave.",
- "Quand tu reçois un lien": "When you receive a link",
- "Le colis te tente ? Demande-le : choisis un lieu parmi ceux proposés, dis quand tu peux passer. Sinon, transmets le lien à quelqu'un pour qui il compterait.": "Tempted by the parcel? Ask for it: pick one of the places offered and say when you can come by. If not, pass the link on to someone who'd love it.",
- "La réponse te donne le lieu, le jour et l'heure. Sans réponse, considère que le colis est parti ailleurs.": "The reply gives you the place, the day and the time. If no reply comes, assume the parcel went elsewhere.",
- "Dans les deux cas": "Either way",
- "Le colis est un don, sans contrepartie. Le déplacement est à la charge de qui reçoit. Le dépôt se fait emballé — papier kraft, journal, sac de course — avec un prénom écrit dessus.": "The parcel is a gift, with nothing expected back. Whoever receives it does the travelling. It is dropped off wrapped — brown paper, newspaper, a shopping bag — with a first name written on it.",
- "Avant de composer": "Before you start",
- "Indiquer mon prénom et mes lieux": "Set my first name and my places",
- "Ton colis": "Your parcel",
- "Un nom pour ce colis (facultatif)": "A name for this parcel (optional)",
- "Trois romans italiens": "Three Italian novels",
- "Il voyage avec le lien : c'est lui qui dira, de relais en relais, à qui le colis pourrait plaire.": "It travels with the link: it is what tells each person along the chain who the parcel might suit.",
- "Ajouter un livre": "Add a book",
- "Vider ce colis": "Empty this parcel",
- "Où tu déposeras": "Where you will drop it",
- "Touche les lieux que tu proposes pour ce colis. Au moins un.": "Tap the places you are offering for this parcel. At least one.",
- "Créer le lien du colis": "Create the parcel link",
- "Tes lieux et ton prénom": "Your places and your first name",
- "Ce lien n'a pas pu être lu": "This link could not be read",
- "Il a probablement été tronqué en chemin. Demande qu'on te le renvoie en le copiant-collant plutôt qu'en le partageant.": "It was probably cut short on the way. Ask for it again, copied and pasted rather than shared.",
- "Un livre": "A book",
- "Seul le titre est nécessaire.": "Only the title is needed.",
- "Titre": "Title",
- "Auteur": "Author",
- "Langue": "Language",
- "État": "Condition",
- "Année de parution": "Year of publication",
- "Genre": "Genre",
- "Un mot": "A word about it",
- "Ce que tu en as pensé, à qui il pourrait plaire…": "What you made of it, who it might suit…",
- "80 caractères, pour que le lien reste transmissible.": "80 characters, so the link stays easy to pass on.",
- "Ajouter au colis": "Add to the parcel",
- "Annuler": "Cancel",
- "Autre": "Other",
- "Neuf": "As new",
- "Très bon": "Very good",
- "Bon": "Good",
- "Usagé": "Worn",
- "Abîmé mais lisible": "Battered but readable",
- "Tes réglages": "Your settings",
- "Enregistrés sur cet appareil, jamais envoyés en bloc.": "Kept on this device, never sent all at once.",
- "Ton prénom": "Your first name",
- "Il dira qui met le colis en circulation. Le prénom suffit.": "It says who put the parcel into circulation. A first name is enough.",
- "Tes lieux de dépôt": "Your drop-off places",
- "Jusqu'à trois, autour de chez toi, du travail ou d'ailleurs. Décris-les comme tu l'expliquerais à quelqu'un qui doit les trouver.": "Up to three, near home, near work or anywhere else. Describe them as you would to someone who has to find them.",
- "Un lieu privé peut se nommer sans son adresse : « Domicile Étoile », « Chez Miguel ». Le nom voyage dans le lien, l'adresse ne se donne qu'à la personne à qui tu accordes le colis, dans ta réponse. Si le lieu appartient à quelqu'un d'autre, préviens-le : c'est lui qui ouvrira la porte.": "A private place can be named without its address: “Étoile home”, “Miguel's place”. The name travels in the link; the address is given only to the person you grant the parcel to, in your reply. If the place belongs to someone else, tell them: they are the one who will open the door.",
- "Choisis-les dans des endroits passants et visibles, et jamais devant chez toi.": "Choose them in busy, visible spots, and never outside your own front door.",
- "Ajouter un lieu": "Add a place",
- "La boîte du parc Pechère, près du métro Tomberg": "The bookcase in Pechère park, near Tomberg metro",
- "Quelle sorte de lieu ?": "What kind of place?",
- "Ajouter ce lieu": "Add this place",
- "Le plus souvent, tu en connais déjà une : sur ton chemin, près du travail, au bout de la rue. Écris-la simplement, avec un repère pour qui devra la trouver.": "Most of the time you already know one: on your way somewhere, near work, at the end of the street. Just write it down, with a landmark for whoever has to find it.",
- "Sinon, cette carte les recense à partir d'OpenStreetMap. Zoome sur ton quartier. Si tu en connais une qui n'y figure pas, tu peux l'ajouter depuis la même page.": "This map shows them, using OpenStreetMap data. Zoom in on your neighbourhood. If you know one that is missing, you can add it from the same page.",
- "Carte des boîtes à livres →": "Map of public bookcases →",
- "Grazie ne tient aucune liste de lieux et n'en vérifie aucun : c'est toi qui sais si celui que tu indiques convient encore.": "Grazie keeps no list of places and checks none of them: you are the one who knows whether the place you name still works.",
- "Effacer": "Erase",
- "Supprime de cet appareil ton prénom, tes lieux et le colis en cours. Les liens déjà envoyés continuent de fonctionner : ils ne dépendent pas de cet appareil.": "Removes your first name, your places and the parcel in progress from this device. Links already sent keep working: they do not depend on this device.",
- "Effacer mes données": "Erase my data",
- "Revenir au colis": "Back to the parcel",
- "Le lien est prêt": "The link is ready",
- "Ce que tu partages dit ce que tu lis.": "What you share says what you read.",
- "Le mot qui accompagne": "The message that goes with it",
- "Un lien nu inquiète, à raison. Une phrase de ta main change tout : modifie-la comme tu veux.": "A bare link is unsettling, and rightly so. A sentence in your own words changes everything: edit it as you like.",
- "Ce lien est long parce qu'il contient le colis lui-même. Rien n'est stocké sur un serveur ; tout voyage dans le message.": "This link is long because it holds the parcel itself. Nothing is stored on a server; it all travels inside the message.",
- "Envoyer": "Send",
- "Copier": "Copy",
- "Copié": "Copied",
- "Copie impossible, sélectionne le lien ci-dessus": "Copying failed, select the link above",
- "Sélectionne le lien ci-dessus pour le copier": "Select the link above to copy it",
- "Composer un nouveau colis": "Start a new parcel",
- "Revenir sans rien changer": "Go back, change nothing",
- "Le lien du colis est prêt": "The parcel link is ready",
- "Envoie-le à qui tu veux. Il circulera tout seul.": "Send it to whoever you like. It will travel on its own.",
- "Ta demande est prête": "Your request is ready",
- "Renvoie ce lien à la personne qui t'a transmis le colis.": "Send this link back to whoever passed the parcel on to you.",
- "Ta réponse est prête": "Your reply is ready",
- "Renvoie ce lien à {0}.": "Send this link back to {0}.",
- "Un colis pour toi": "A parcel for you",
- "{0} met ce colis en circulation. Si tu n'en veux pas, transmets le lien à quelqu'un qu'il pourrait intéresser.": "{0} has put this parcel into circulation. If you don't want it, pass the link on to someone who might.",
- "Colis en circulation.": "Parcel in circulation.",
- "Ce colis n'est stocké nulle part.": "This parcel is stored nowhere.",
- "Il est écrit en entier dans le lien que tu viens d'ouvrir ; il n'y a rien d'autre à consulter, et rien ne s'enregistre. Si tu n'en veux pas, transmets ce lien à quelqu'un pour qui il compterait plutôt que de le refermer.": "It is written out in full inside the link you have just opened; there is nothing else to look at, and nothing is recorded. If you don't want it, pass this link on to someone who'd love it rather than closing it.",
- "Ces {0} livres vont ensemble : le colis ne se divise pas.": "These {0} books go together: the parcel cannot be split.",
- "Le demander": "Ask for it",
- "Où tu iras le chercher": "Where you will collect it",
- "Quand tu peux passer": "When you can come by",
- "Créer ma demande": "Create my request",
- "Colis proposé le {0}.": "Parcel offered on {0}.",
- "Ce colis a été proposé il y a plus d'un mois. Il est probablement parti — tu peux demander quand même.": "This parcel was offered more than a month ago. It has probably gone — you can still ask.",
- "Composer mon propre colis": "Put together my own parcel",
- "aujourd'hui": "today",
- "matin": "morning",
- "après-midi": "afternoon",
- "soirée": "evening",
- "Quelqu'un veut ton colis": "Someone wants your parcel",
- "{0} a demandé ton colis.": "{0} has asked for your parcel.",
- "Le colis": "The parcel",
- "Le lieu choisi": "The place chosen",
- "C'est un lieu gardé : le colis n'y attend pas seul. Dépose-le quand quelqu'un est là pour le recevoir.": "Someone looks after this place: the parcel will not be waiting alone. Drop it off when there is someone there to take it.",
- "Ses disponibilités": "When they are free",
- "Fixer le moment": "Set the time",
- "Emballe le colis et écris « {0} » dessus.": "Wrap the parcel and write “{0}” on it.",
- "Emballe le colis, écris « {0} » dessus et confie-le à la personne sur place.": "Wrap the parcel, write “{0}” on it and hand it to whoever is there.",
- "Choisis un moment dans ses disponibilités. À l'heure indiquée, le colis doit déjà être sur place : c'est à toi de décider quand tu passes avant.": "Pick a moment within the times they gave. By the hour you set, the parcel must already be there: it is up to you when you go beforehand.",
- "Juste avant, le colis reste peu exposé mais vous pouvez vous croiser. Bien avant, vous ne vous croisez pas mais il attend plus longtemps. À toi de voir ce qui compte le plus ce jour-là.": "Drop it just before and the parcel is barely exposed, but you may run into each other. Drop it well before and you won't meet, but it waits longer. Up to you which matters more that day.",
- "Si le nom du lieu ne suffit pas à le trouver, donne l'adresse exacte dans le mot qui accompagne ta réponse — elle n'ira qu'à cette personne.": "If the name of the place isn't enough to find it, give the exact address in the message that goes with your reply — it will reach that person only.",
- "Jour": "Day",
- "À partir de quelle heure le colis peut être pris": "From what time the parcel can be collected",
- "Créer la réponse": "Create the reply",
- "Si tu ne donnes pas ce colis, un mot dans la conversation vaut mieux qu'un silence.": "If you are not giving this parcel away, a word in the conversation is better than silence.",
- "C'est convenu": "It's agreed",
- "Emballé, ton prénom dessus.": "Wrapped, with your first name on it.",
- "À prendre {0}": "To collect on {0}",
- "C'est un lieu gardé : demande le colis sur place, à ton nom.": "Someone looks after this place: ask for the parcel there, in your name.",
- "Il arrive qu'un paquet disparaisse avant le retrait, malgré l'emballage. Ce n'est la faute de personne.": "Parcels do sometimes vanish before collection, wrapping or no wrapping. It is nobody's fault.",
- "Aucun livre pour l'instant.": "No books yet.",
- "Aucun lieu enregistré.": "No places saved.",
- "Aucun lieu enregistré. Ajoutes-en un dans tes réglages.": "No places saved. Add one in your settings.",
- "Retirer": "Remove",
- "{0} caractère restant.": "{0} character left.",
- "{0} caractères restants.": "{0} characters left.",
- "Limite atteinte.": "Limit reached.",
- "ton prénom": "your first name",
- "au moins un lieu de dépôt": "at least one drop-off place",
- "au moins un livre": "at least one book",
- "un lieu coché pour ce colis": "a place ticked for this parcel",
- "Pour créer le lien, il manque {0}.": "To create the link, still missing: {0}.",
- "Il te faut un prénom et au moins un lieu où déposer. C'est à faire une fois.": "You need a first name and at least one place to drop things off. You only need to do this once.",
- "Il te manque ton prénom. C'est à faire une fois.": "Your first name is missing. You only need to do this once.",
- "Il te manque au moins un lieu où déposer. C'est à faire une fois.": "You need at least one place to drop things off. You only need to do this once.",
- "Retirer tous les livres de ce colis ?": "Remove every book from this parcel?",
- "Effacer ton prénom, tes lieux et le colis en cours sur cet appareil ?": "Erase your first name, your places and the parcel in progress on this device?",
- "boîte à livres": "public bookcase",
- "(lieu gardé)": "(kept for you)"
-};
-
-function normTexte(x){
-  return String(x).replace(/[\u202f\u00a0]/g, " ").replace(/\s+/g, " ").trim();
-}
-function choisirLangue(){
-  var voulue = lire("langue", null);
-  var connues = LANGUES_UI.map(function(p){ return p[0]; });
-  if (voulue && connues.indexOf(voulue) !== -1) return voulue;
-  var proposees = navigator.languages || [navigator.language || "fr"];
-  for (var i=0;i<proposees.length;i++){
-    var code = String(proposees[i]).slice(0,2).toLowerCase();
-    if (connues.indexOf(code) !== -1) return code;
-  }
-  return "fr";
-}
-var langue = choisirLangue();
-
-function L(s){
-  var d = TRAD[langue];
-  if (!d) return s;
-  var v = d[normTexte(s)];
-  return (v === undefined) ? s : v;
-}
-function Lf(s){
-  var args = Array.prototype.slice.call(arguments, 1);
-  return L(s).replace(/\{(\d)\}/g, function(_, i){ return args[i]; });
-}
-function heureTexte(hh, mm){
-  return String(hh).padStart(2,"0") + (langue === "fr" ? "h" : ":") + String(mm).padStart(2,"0");
-}
-function localeComplete(){
-  return langue === "fr" ? "fr-BE" : (langue === "nl" ? "nl-BE" : "en-GB");
-}
-function traduireDOM(){
-  document.documentElement.lang = langue;
-  document.title = L(document.title);
-  if (langue === "fr") return;
-  var marche = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-  var aTraiter = [];
-  while (marche.nextNode()) aTraiter.push(marche.currentNode);
-  aTraiter.forEach(function(n){
-    if (!n.nodeValue || !/[A-Za-z\u00C0-\u017F]{2}/.test(n.nodeValue)) return;
-    if (n.parentNode && /^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) return;
-    var t = L(n.nodeValue);
-    if (t !== n.nodeValue) n.nodeValue = t;
-  });
-  ["placeholder","title","aria-label"].forEach(function(att){
-    var els = document.querySelectorAll("[" + att + "]");
-    for (var i=0;i<els.length;i++){
-      var v = els[i].getAttribute(att);
-      var t = L(v);
-      if (t !== v) els[i].setAttribute(att, t);
-    }
-  });
-}
-function dessinerLangues(){
-  var z = $("langues");
-  vider(z);
-  LANGUES_UI.forEach(function(pair){
-    z.appendChild(boutonChoix(pair[1], langue === pair[0], function(){
-      if (langue === pair[0]) return;
-      ecrire("langue", pair[0]);
-      location.reload();
-    }));
-  });
-}
-
-var profil = lire("profil", {prenom:"", lieux:[]});
-var colis  = lire("colis", {livres:[], lieux:[], nom:"", type:"l"});
-if (!colis.type) colis.type = "l";
-colis.lieux = (colis.lieux || []).map(function(x){ return (typeof x === "string") ? x : (x && x.n) || ""; })
-                                 .filter(function(x){ return x; });
-
-var brouillonLivre = {l:"fr", e:3};
-var natureLieu = 0;   // 0 = libre (boîte à livres), 1 = tenu (commerce)
-
-/* ---------- utilitaires ---------- */
-function $(id){ return document.getElementById(id); }
-function vider(el){ while (el.firstChild) el.removeChild(el.firstChild); }
-function nomLangue(code){
-  for (var i=0;i<LANGUES.length;i++) if (LANGUES[i][0]===code) return LANGUES[i][1];
-  return "";
-}
-function nomEtat(code){
-  for (var i=0;i<ETATS.length;i++) if (ETATS[i][0]===code) return L(ETATS[i][1]);
-  return "";
-}
-function dateCourte(iso){
-  var d = new Date(iso + "T12:00:00");
-  return d.toLocaleDateString(localeComplete(), {weekday:"long", day:"numeric", month:"long"});
-}
-function jourCourt(d){
-  return d.toLocaleDateString(localeComplete(), {weekday:"long"}) + " " + d.getDate();
-}
-function aujourdhui(){
-  var d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-}
-function joursDepuis(iso){
-  return Math.round((new Date(aujourdhui()) - new Date(iso)) / 86400000);
-}
-function boutonChoix(texte, actif, action){
-  var b = document.createElement("button");
-  b.type = "button";
-  b.className = "choix";
-  b.textContent = texte;
-  b.setAttribute("aria-pressed", actif ? "true" : "false");
-  b.addEventListener("click", action);
-  return b;
-}
-function nomLieu(x){ return (typeof x === "string") ? x : x.n; }
-function estTenu(x){ return (typeof x === "string") ? false : x.t === 1; }
-function etiquetteLieu(x){
-  var e = document.createElement("span");
-  e.className = "etiq";
-  e.textContent = estTenu(x) ? L("gardé") : L("libre accès");
-  return e;
-}
-function carteLivre(l){
-  var d = document.createElement("div");
-  d.className = "livre";
-  var t = document.createElement("div");
-  t.className = "titre"; t.textContent = l.t;
-  d.appendChild(t);
-  if (l.a){
-    var a = document.createElement("div");
-    a.className = "auteur"; a.textContent = l.a;
-    d.appendChild(a);
-  }
-  var etiqs = [];
-  if (l.s) etiqs.push(L("taille") + " " + l.s);
-  if (l.l) etiqs.push(nomLangue(l.l));
-  if (l.e) etiqs.push(nomEtat(l.e));
-  if (l.y) etiqs.push(String(l.y));
-  if (l.g) etiqs.push(l.g);
-  for (var i=0;i<etiqs.length;i++){
-    var e = document.createElement("span");
-    e.className = "etiq"; e.textContent = etiqs[i];
-    d.appendChild(e);
-  }
-  if (l.m){
-    var m = document.createElement("div");
-    m.className = "mot"; m.textContent = "« " + l.m + " »";
-    d.appendChild(m);
-  }
-  return d;
-}
-
-/* ---------- navigation ---------- */
-var ECRANS = ["accueil","livre","reglages","lien","offre","demande","accord"];
-function montrer(nom, cible){
-  for (var i=0;i<ECRANS.length;i++){
-    $("ecran-"+ECRANS[i]).classList.toggle("actif", ECRANS[i]===nom);
-  }
-  $("barre").style.display = (nom === "accueil") ? "none" : "block";
-  var el = cible ? $(cible) : null;
-  if (el && el.scrollIntoView) el.scrollIntoView({block:"start"});
-  else window.scrollTo(0,0);
-}
-
-function allerAccueil(){
-  if (location.hash){
-    try { history.replaceState(null, "", location.pathname); }
-    catch(e){ location.hash = ""; }
-  }
-  $("alerte-lien").style.display = "none";
-  dessinerAccueil();
-  montrer("accueil");
-}
-document.addEventListener("click", function(e){
-  var a = e.target.closest ? e.target.closest("a.maison") : null;
-  if (a){ e.preventDefault(); allerAccueil(); }
-});
-
-/* ================= ACCUEIL ================= */
-function dessinerAccueil(){
-  if (location.hash === "" ) $("alerte-lien").style.display = "none";
-  if ($("colis-nom").value !== (colis.nom || "")) $("colis-nom").value = colis.nom || "";
-
-  $("colis-nom").placeholder = L(colis.type === "l" ? "Trois romans italiens"
-    : (colis.type === "v" ? "Vidage de printemps" : "Petit électroménager"));
-
-  var zt = $("colis-type");
-  vider(zt);
-  TYPES.forEach(function(pair){
-    zt.appendChild(boutonChoix(L(pair[1]), colis.type === pair[0], function(){
-      colis.type = pair[0];
-      ecrire("colis", colis);
-      dessinerAccueil();
-    }));
-  });
-  var liste = $("liste-colis");
-  vider(liste);
-  if (!colis.livres.length){
-    var v = document.createElement("p");
-    v.className = "vide";
-    v.textContent = L(estLivres() ? "Aucun livre pour l'instant." : "Aucun lot pour l'instant.");
-    liste.appendChild(v);
-  }
-  colis.livres.forEach(function(l, i){
-    var c = carteLivre(l);
-    var sup = document.createElement("button");
-    sup.type = "button";
-    sup.className = "choix";
-    sup.style.marginTop = "10px";
-    sup.textContent = L("Retirer");
-    sup.addEventListener("click", function(){
-      colis.livres.splice(i,1);
-      ecrire("colis", colis);
-      dessinerAccueil();
-    });
-    c.appendChild(sup);
-    liste.appendChild(c);
-  });
-
-  $("compte-livres").textContent = Lf(estLivres() ? "{0} sur {1} livres." : "{0} sur {1} lots.",
-    colis.livres.length, MAX_LIVRES);
-  $("btn-ajouter").disabled = colis.livres.length >= MAX_LIVRES;
-  $("btn-ajouter").textContent = L(estLivres() ? "Ajouter un livre" : "Ajouter un lot");
-
-  var zone = $("liste-lieux-coche");
-  vider(zone);
-  if (!profil.lieux.length){
-    var p = document.createElement("p");
-    p.className = "vide";
-    p.textContent = L("Aucun lieu enregistré. Ajoutes-en un dans tes réglages.");
-    zone.appendChild(p);
-  }
-  var rangee = document.createElement("div");
-  profil.lieux.forEach(function(lieu){
-    var nom = nomLieu(lieu);
-    var actif = colis.lieux.indexOf(nom) !== -1;
-    var b = boutonChoix((actif ? "\u2611  " : "\u2610  ") + nom +
-                        (estTenu(lieu) ? "  " + L("(gardé)") : ""), actif, function(){
-      var k = colis.lieux.indexOf(nom);
-      if (k === -1) colis.lieux.push(nom); else colis.lieux.splice(k,1);
-      ecrire("colis", colis);
-      dessinerAccueil();
-    });
-    b.style.display = "block";
-    b.style.width = "100%";
-    b.style.textAlign = "left";
-    b.style.marginBottom = "10px";
-    b.className += " grand";
-    rangee.appendChild(b);
-  });
-  zone.appendChild(rangee);
-
-  var manques = [];
-  if (!profil.prenom) manques.push(L("ton prénom"));
-  if (!profil.lieux.length) manques.push(L("au moins un lieu de dépôt"));
-  if (!colis.livres.length) manques.push(L(estLivres() ? "au moins un livre" : "au moins un lot"));
-  else if (profil.lieux.length && !colis.lieux.length) manques.push(L("un lieu coché pour ce colis"));
-
-  var amorce = !profil.prenom || !profil.lieux.length;
-  $("bloc-avant").style.display = amorce ? "block" : "none";
-  if (amorce){
-    $("avant-texte").textContent = L(!profil.prenom && !profil.lieux.length
-      ? "Il te faut un prénom et au moins un lieu où déposer. C'est à faire une fois."
-      : (!profil.prenom
-          ? "Il te manque ton prénom. C'est à faire une fois."
-          : "Il te manque au moins un lieu où déposer. C'est à faire une fois."));
-  }
-
-  $("manque").textContent = manques.length
-    ? Lf("Pour créer le lien, il manque {0}.", manques.join(", "))
-    : "";
-  $("btn-creer").disabled = manques.length > 0;
-  $("btn-vider-colis").style.display = colis.livres.length ? "block" : "none";
-}
-
-$("colis-nom").addEventListener("input", function(){
-  colis.nom = this.value.trim().slice(0, MAX_NOM);
-  ecrire("colis", colis);
-});
-
-$("btn-vider-colis").addEventListener("click", function(){
-  if (!confirm(L("Retirer tous les livres de ce colis\u202f?"))) return;
-  colis.livres = [];
-  colis.nom = "";
-  $("colis-nom").value = "";
-  ecrire("colis", colis);
-  dessinerAccueil();
-});
-
-$("btn-nouveau-colis").addEventListener("click", function(){
-  colis.livres = [];
-  colis.nom = "";
-  $("colis-nom").value = "";
-  ecrire("colis", colis);
-  allerAccueil();
-});
-
-$("btn-vers-reglages").addEventListener("click", function(){
-  location.hash = "reglages";
-});
-
-$("btn-ajouter").addEventListener("click", function(){
-  brouillonLivre = {l:"fr", e:3};
-  $("f-titre").value = ""; $("f-auteur").value = "";
-  $("f-annee").value = ""; $("f-genre").value = ""; $("f-mot").value = ""; $("f-taille").value = "";
-  $("compte-mot").textContent = L("80 caractères, pour que le lien reste transmissible.");
-  dessinerFormulaireLivre();
-  montrer("livre");
-});
-
-$("btn-creer").addEventListener("click", async function(){
-  var charge = {
-    v:"o",
-    p:profil.prenom,
-    d:aujourdhui(),
-    c:colis.livres,
-    x:colis.lieux.map(function(nom){
-      for (var i=0;i<profil.lieux.length;i++){
-        if (nomLieu(profil.lieux[i]) === nom) return profil.lieux[i];
+      if (corps) {
+        rep = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ action, c: cercle?.c, ...corps }) });
+      } else {
+        const q = new URLSearchParams({ action, c: cercle?.c || '', ...params });
+        rep = await fetch(`${API}?${q}`);
       }
-      return {n:nom};
-    })
-  };
-  if (colis.nom) charge.n = colis.nom;
-  if (colis.type !== "l") charge.k = colis.type;
-  afficherLien(
-    lienVers(colis.type === "v" ? "colis-de-vetements" : (colis.type === "o" ? "colis" : "colis-de-livres"), await enc(charge)),
-    L("Le lien du colis est prêt"),
-    L("Envoie-le à qui tu veux. Il circulera tout seul."),
-    true,
-    "accueil"
-  );
-});
-
-/* ================= FORMULAIRE LIVRE ================= */
-function estLivres(){ return colis.type === "l"; }
-function typeCourant(c){ return (c && c.k) ? c.k : "l"; }
-
-function dessinerFormulaireLivre(){
-  var livres = estLivres();
-  $("champ-auteur").style.display = livres ? "block" : "none";
-  $("champ-langue").style.display = livres ? "block" : "none";
-  $("champ-annee").style.display  = livres ? "block" : "none";
-  $("champ-genre").style.display  = livres ? "block" : "none";
-  $("champ-taille").style.display = (colis.type === "v") ? "block" : "none";
-  $("livre-titre").textContent = L(livres ? "Un livre" : "Un lot");
-  $("livre-sous").textContent = L(livres
-    ? "Seul le titre est nécessaire."
-    : "Un lot, c'est un ensemble : « 4 t-shirts taille M », « 2 écharpes ». Trois lots au maximum.");
-  $("label-titre").textContent = L(livres ? "Titre" : "Ce que c'est");
-  $("f-titre").placeholder = livres ? "" : L(colis.type === "v" ? "4 t-shirts taille M" : "Cafetière italienne, 6 tasses");
-  $("f-mot").placeholder = L(livres
-    ? "Ce que tu en as pensé, à qui il pourrait plaire…"
-    : "Une précision utile : couleur, marque, pourquoi tu t'en sépares…");
-
-  var zl = $("f-langue"); vider(zl);
-  LANGUES.forEach(function(pair){
-    zl.appendChild(boutonChoix(L(pair[1]), brouillonLivre.l === pair[0], function(){
-      brouillonLivre.l = pair[0];
-      dessinerFormulaireLivre();
-    }));
-  });
-  var ze = $("f-etat"); vider(ze);
-  ETATS.forEach(function(pair){
-    ze.appendChild(boutonChoix(L(pair[1]), brouillonLivre.e === pair[0], function(){
-      brouillonLivre.e = pair[0];
-      dessinerFormulaireLivre();
-    }));
-  });
-}
-
-$("f-mot").addEventListener("input", function(){
-  var reste = MAX_MOT - this.value.length;
-  $("compte-mot").textContent = reste > 0
-    ? Lf(reste > 1 ? "{0} caractères restants." : "{0} caractère restant.", reste)
-    : L("Limite atteinte.");
-});
-
-$("btn-garder").addEventListener("click", function(){
-  var titre = $("f-titre").value.trim();
-  if (!titre){ $("f-titre").focus(); return; }
-  var l = {t:titre, e:brouillonLivre.e};
-  if (estLivres()) l.l = brouillonLivre.l;
-  var a = $("f-auteur").value.trim(); if (a && estLivres()) l.a = a;
-  var ta = $("f-taille").value.trim(); if (ta && colis.type === "v") l.s = ta;
-  var y = parseInt($("f-annee").value,10); if (y && estLivres()) l.y = y;
-  var g = $("f-genre").value.trim(); if (g && estLivres()) l.g = g;
-  var m = $("f-mot").value.trim().slice(0, MAX_MOT); if (m) l.m = m;
-  colis.livres.push(l);
-  ecrire("colis", colis);
-  dessinerAccueil();
-  montrer("accueil", "liste-colis");
-});
-$("btn-annuler-livre").addEventListener("click", function(){ montrer("accueil", "liste-colis"); });
-
-/* ================= RÉGLAGES ================= */
-function dessinerReglages(){
-  $("r-prenom").value = profil.prenom;
-  var zone = $("liste-lieux-reglages");
-  vider(zone);
-  if (!profil.lieux.length){
-    var v = document.createElement("p");
-    v.className = "vide";
-    v.textContent = L("Aucun lieu enregistré.");
-    zone.appendChild(v);
-  }
-  var zn = $("r-nature");
-  vider(zn);
-  [[0,"En libre accès"],[1,"Gardé par quelqu'un"]].forEach(function(pair){
-    zn.appendChild(boutonChoix(L(pair[1]), natureLieu === pair[0], function(){
-      natureLieu = pair[0];
-      dessinerReglages();
-    }));
-  });
-
-  profil.lieux.forEach(function(lieu, i){
-    var d = document.createElement("div");
-    d.className = "livre";
-    var t = document.createElement("div");
-    t.textContent = nomLieu(lieu);
-    d.appendChild(t);
-    d.appendChild(etiquetteLieu(lieu));
-    var sup = document.createElement("button");
-    sup.type = "button";
-    sup.className = "choix";
-    sup.style.marginTop = "10px";
-    sup.textContent = L("Retirer");
-    sup.addEventListener("click", function(){
-      var k = colis.lieux.indexOf(nomLieu(profil.lieux[i]));
-      if (k !== -1){ colis.lieux.splice(k,1); ecrire("colis", colis); }
-      profil.lieux.splice(i,1);
-      ecrire("profil", profil);
-      dessinerReglages();
-    });
-    d.appendChild(sup);
-    zone.appendChild(d);
-  });
-  $("btn-ajouter-lieu").disabled = profil.lieux.length >= MAX_LIEUX;
-}
-$("r-prenom").addEventListener("input", function(){
-  profil.prenom = this.value.trim();
-  ecrire("profil", profil);
-});
-$("btn-ajouter-lieu").addEventListener("click", function(){
-  var nom = $("r-lieu").value.trim();
-  if (!nom || profil.lieux.length >= MAX_LIEUX) return;
-  var lieu = {n:nom};
-  if (natureLieu === 1) lieu.t = 1;
-  profil.lieux.push(lieu);
-  ecrire("profil", profil);
-  $("r-lieu").value = "";
-  natureLieu = 0;
-  dessinerReglages();
-});
-$("btn-effacer").addEventListener("click", function(){
-  if (!confirm(L("Effacer ton prénom, tes lieux et le colis en cours sur cet appareil\u202f?"))) return;
-  try {
-    var aSupprimer = [];
-    for (var i = 0; i < localStorage.length; i++){
-      var k = localStorage.key(i);
-      if (k && k.indexOf(CLE) === 0) aSupprimer.push(k);
+    } catch {
+      throw new Error(LN('Pas de connexion pour l’instant : réessaie dans un moment.'));
     }
-    aSupprimer.forEach(function(k){ localStorage.removeItem(k); });
-  } catch(e){}
-  profil = {prenom:"", lieux:[]};
-  colis = {livres:[], lieux:[], nom:""};
-  dessinerReglages();
-  dessinerAccueil();
-});
-
-$("btn-retour-accueil").addEventListener("click", allerAccueil);
-
-/* ================= ÉCRAN LIEN ================= */
-var lienCourant = "";
-var retourDepuisLien = "accueil";
-function messageDefaut(retour, avecRgpd){
-  if (avecRgpd){
-    var n = colis.livres.length;
-    return (colis.nom
-        ? Lf("Je te propose un colis à donner : {0}.", colis.nom)
-        : Lf(n > 1 ? "Je te propose {0} livres à donner." : "Je te propose un livre à donner.", n)) +
-      " " + L("À toi si ça te tente — sinon, fais suivre à quelqu'un que cela pourrait intéresser.");
+    const json = await rep.json().catch(() => ({}));
+    if (!rep.ok) {
+      const msg = { 'Cette annonce n\'existe plus': 'Cette annonce n’existe plus.',
+                    'Quelqu\'un a répondu juste avant toi': 'Quelqu’un a répondu juste avant toi.' }[json.erreur];
+      const e = new Error(L(msg || json.erreur || 'Erreur du serveur'));
+      e.statut = rep.status; e.brut = json.erreur || '';
+      throw e;
+    }
+    return json;
   }
-  if (retour === "offre") return L("Ton colis me tente beaucoup. Voici ma demande.");
-  return L("Avec plaisir. Voici le lieu et le moment.");
-}
-function ajusterMessage(){
-  var t = $("lien-message");
-  t.style.height = "auto";
-  if (t.scrollHeight) t.style.height = (t.scrollHeight + 4) + "px";
-}
-function texteComplet(){
-  var m = $("lien-message").value.trim();
-  return m ? m + "\n" + lienCourant : lienCourant;
-}
-function afficherLien(url, titre, sous, avecRgpd, retour){
-  // Le fragment pointe encore sur le lien qu'on vient de traiter.
-  // Tant qu'il y reste, rouvrir ce même lien ne provoque aucun événement
-  // et l'écran ne bouge pas. On nettoie l'adresse.
-  if (location.hash){
-    try { history.replaceState(null, "", location.pathname); } catch(e){}
-  }
-  lienCourant = url;
-  retourDepuisLien = retour;
-  $("lien-titre").textContent = L(titre);
-  $("lien-sous").textContent = L(sous);
-  $("lien-texte").textContent = url;
-  $("rgpd-bloc").style.display = avecRgpd ? "block" : "none";
-  $("btn-nouveau-colis").style.display = avecRgpd ? "block" : "none";
-  $("lien-message").value = messageDefaut(retour, avecRgpd);
-  montrer("lien");
-  ajusterMessage();
-}
-$("lien-message").addEventListener("input", ajusterMessage);
 
-$("btn-partager").addEventListener("click", function(){
-  if (navigator.share){
-    navigator.share({text:texteComplet()}).catch(function(){});
-  } else {
-    copier();
+  const lienCercle = () => `${location.origin}${location.pathname}#c=${cercle.c}`;
+  function lireLien(texte) {
+    const m = String(texte).match(/[#&]c=([0-9a-f]{18})/);
+    return m ? m[1] : null;
   }
-});
-$("btn-copier").addEventListener("click", copier);
-function copier(){
-  var b = $("btn-copier");
-  if (navigator.clipboard){
-    navigator.clipboard.writeText(texteComplet()).then(function(){
-      b.textContent = L("Copié");
-      setTimeout(function(){ b.textContent = L("Copier"); }, 2000);
-    }).catch(function(){
-      b.textContent = L("Copie impossible, sélectionne le lien ci-dessus");
+
+  async function copier(texte) {
+    try { await navigator.clipboard.writeText(texte); dire(L('Copié.')); }
+    catch { dire(LN('Copie impossible : sélectionne le texte.')); }
+  }
+  async function partager(texte) {
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Grazie', text: cercle?.nom ? `Grazie — ${cercle.nom}` : 'Grazie', url: texte }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    copier(texte);
+  }
+
+  function boutonsLangue() {
+    const z = $('langues');
+    z.innerHTML = LANGUES_UI.map(([code, nom]) =>
+      `<button type="button" class="choix" data-langue="${code}" aria-pressed="${code === langue}">${nom}</button>`).join('');
+    z.querySelectorAll('[data-langue]').forEach((b) => {
+      b.onclick = () => { if (b.dataset.langue === langue) return; ecrire('langue', b.dataset.langue); location.reload(); };
     });
-  } else {
-    b.textContent = L("Sélectionne le lien ci-dessus pour le copier");
+    document.documentElement.lang = langue;
+    document.title = L('Grazie — entre proches');
   }
-}
-$("btn-lien-retour").addEventListener("click", function(){
-  if (retourDepuisLien === "accueil") allerAccueil();
-  else montrer(retourDepuisLien);
-});
 
-/* ================= OFFRE REÇUE ================= */
-var offreCourante = null;
-var demandeEnCours = {lieu:null, dispos:[]};
-
-function dessinerOffre(o){
-  offreCourante = o;
-  demandeEnCours = {lieu:null, iLieu:-1, dispos:[]};
-
-  $("offre-sous").textContent = o.p
-    ? Lf("{0} met ce colis en circulation. Si tu n'en veux pas, transmets le lien à quelqu'un qu'il pourrait intéresser.", o.p)
-    : L("Colis en circulation.");
-
-  var zone = $("offre-livres");
-  vider(zone);
-  if (o.n){
-    var h = document.createElement("h2");
-    h.textContent = o.n;
-    zone.appendChild(h);
+  /* ================= Données ================= */
+  async function charger() {
+    const params = cercle.admin ? { admin: cercle.admin } : {};
+    donnees = await api('liste', null, params);
+    if (donnees.nom !== cercle.nom) { cercle.nom = donnees.nom; ecrire('cercle', cercle); }
+    // Ménage local : annonces disparues, réponses libérées par l'auteur.
+    const ids = new Set(donnees.annonces.map((a) => a.id));
+    let change = false;
+    for (const id of Object.keys(miennes)) if (!ids.has(id)) { delete miennes[id]; change = true; }
+    for (const id of Object.keys(reponses)) {
+      const a = donnees.annonces.find((x) => x.id === id);
+      if (!a || !a.rep_prenom) { delete reponses[id]; change = true; }
+    }
+    if (change) { ecrire('miennes', miennes); ecrire('reponses', reponses); }
   }
-  if (o.c.length > 1){
-    var ens = document.createElement("p");
-    ens.className = "compte";
-    ens.textContent = Lf(typeCourant(o) === "l"
-      ? "Ces {0} livres vont ensemble\u202f: le colis ne se divise pas."
-      : "Ces {0} lots vont ensemble\u202f: le colis ne se divise pas.", o.c.length);
-    zone.appendChild(ens);
-  }
-  o.c.forEach(function(l){ zone.appendChild(carteLivre(l)); });
 
-  var zl = $("d-lieux");
-  vider(zl);
-  o.x.forEach(function(lieu, i){
-    var b = boutonChoix("\u25CB  " + nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(gardé)") : ""), false, function(){
-      demandeEnCours.lieu = lieu;
-      demandeEnCours.iLieu = i;
-      dessinerLieuxDemande();
+  async function rafraichir() {
+    if (cercle && prenom) {
+      try { await charger(); }
+      catch (err) {
+        if (err.statut === 404 && /Cercle/.test(err.brut)) {
+          dire(L('Ce cercle n’existe plus.'));
+          oublier('cercle'); cercle = null; miennes = {}; reponses = {};
+          ecrire('miennes', miennes); ecrire('reponses', reponses);
+        } else dire(err.message);
+      }
+    }
+    afficher();
+  }
+
+  async function agir(bouton, travail) {
+    if (bouton) bouton.disabled = true;
+    try { await travail(); }
+    catch (err) { dire(err.message); }
+    await rafraichir();
+  }
+
+  /* ================= Écrans ================= */
+  let dernierEcran = null;
+  function afficher() {
+    boutonsLangue();
+    // Petite animation seulement quand on change d'écran, pas à chaque actualisation.
+    const nom = !cercle ? 'accueil' : ecran === 'cle' ? 'cle' : !prenom ? 'prenom' : ecran;
+    $app.classList.toggle('entree', nom !== dernierEcran);
+    dernierEcran = nom;
+    if (!cercle) return ecranAccueil();
+    if (ecran === 'cle') return ecranCle();
+    if (!prenom) return ecranPrenom();
+    if (ecran === 'annonce') return ecranAnnonce();
+    if (ecran === 'reglages') return ecranReglages();
+    return ecranCercle();
+  }
+
+  /* ----- Pas encore de cercle ----- */
+  function ecranAccueil() {
+    $app.innerHTML = `
+      <h1>Grazie</h1>
+      <p class="sous">${esc(L('Ce qui a compté, remis à quelqu’un de proche.'))}</p>
+      <div class="bloc">
+        <h2>${esc(L('Pour entrer, il te faut le lien de ton cercle'))}</h2>
+        <p>${esc(L('Un proche te l’envoie. Ouvre-le, ou colle-le ici.'))}</p>
+        <label for="lienColle">${esc(L('Le lien du cercle'))}</label>
+        <input type="text" id="lienColle" autocomplete="off" inputmode="url">
+        <button class="btn" id="entrer">${esc(L('Entrer'))}</button>
+      </div>
+      <details>
+        <summary>${esc(L('Créer un cercle'))}</summary>
+        <div class="bloc">
+          <label for="nomCercle">${esc(L('Nom du cercle'))}</label>
+          <input type="text" id="nomCercle" maxlength="40" placeholder="${esc(L('La famille, les voisins…'))}">
+          <label for="cleExistante">${esc(L('Clé de gestion d’un cercle existant'))}</label>
+          <input type="text" id="cleExistante" autocomplete="off">
+          <p class="compte">${esc(L('Seulement si un cercle existe déjà sur ce serveur.'))}</p>
+          <button class="btn calme" id="creer">${esc(L('Créer un cercle'))}</button>
+        </div>
+      </details>
+      ${pied()}`;
+    $('entrer').onclick = async () => {
+      const c = lireLien($('lienColle').value);
+      if (!c) return dire(L('Ce lien n’est pas un lien Grazie.'));
+      rejoindre(c);
+      await rafraichir();
+    };
+    $('creer').onclick = (e) => agirCreation(e.target);
+  }
+
+  async function agirCreation(bouton) {
+    bouton.disabled = true;
+    try {
+      const nom = $('nomCercle').value.trim();
+      const cle = $('cleExistante').value.trim();
+      const r = await api('creer_cercle', { nom, cle_existante: cle });
+      cercle = { c: r.c, admin: r.admin, nom };
+      ecrire('cercle', cercle);
+      ecran = 'cle';
+      afficher();
+    } catch (err) {
+      dire(err.statut === 403 ? L('La création d’un nouveau cercle demande la clé d’un cercle existant.') : err.message);
+      bouton.disabled = false;
+    }
+  }
+
+  function rejoindre(c) {
+    if (cercle && cercle.c === c) return;
+    if (cercle && !confirm(LN('Rejoindre ce cercle à la place du tien ?'))) return;
+    cercle = { c, nom: '' };
+    miennes = {}; reponses = {};
+    ecrire('cercle', cercle); ecrire('miennes', miennes); ecrire('reponses', reponses);
+    ecran = 'cercle';
+  }
+
+  /* ----- Clé de gestion, montrée une fois ----- */
+  function ecranCle() {
+    $app.innerHTML = `
+      <h1>Grazie</h1>
+      <p class="sous">${esc(cercle.nom || L('Ton cercle'))}</p>
+      <div class="bloc">
+        <h2>${esc(L('Ta clé de gestion'))}</h2>
+        <p>${esc(LN('Elle te permet de renommer le cercle et de clore n’importe quelle annonce. Elle n’est montrée qu’une fois : garde-la en lieu sûr.'))}</p>
+        <div class="cle">${esc(cercle.admin)}</div>
+        <button class="btn calme" id="copierCle">${esc(L('Copier la clé'))}</button>
+      </div>
+      <div class="bloc">
+        <h2>${esc(L('Le lien du cercle, à envoyer à tes proches'))}</h2>
+        <div class="cle">${esc(lienCercle())}</div>
+        <button class="btn calme" id="envoyerLien">${esc(L('Envoyer le lien'))}</button>
+      </div>
+      <button class="btn" id="continuer">${esc(L('Continuer'))}</button>`;
+    $('copierCle').onclick = () => copier(cercle.admin);
+    $('envoyerLien').onclick = () => partager(lienCercle());
+    $('continuer').onclick = () => { ecran = 'cercle'; rafraichir(); };
+  }
+
+  /* ----- Première fois : le prénom ----- */
+  function ecranPrenom() {
+    $app.innerHTML = `
+      <h1>Grazie</h1>
+      <p class="sous">${esc(cercle.nom || L('Entre proches'))}</p>
+      <div class="bloc">
+        <label for="prenom">${esc(L('Ton prénom'))}</label>
+        <input type="text" id="prenom" maxlength="${MAX_PRENOM}" autocomplete="given-name">
+        <p class="compte">${esc(L('Il apparaît sur tes annonces et tes réponses. Le prénom suffit.'))}</p>
+        <button class="btn" id="valider" disabled>${esc(L('Entrer dans le cercle'))}</button>
+      </div>
+      ${modeEmploi(true)}`;
+    const champ = $('prenom'), bouton = $('valider');
+    champ.oninput = () => { bouton.disabled = !champ.value.trim(); };
+    bouton.onclick = async () => {
+      prenom = champ.value.trim().slice(0, MAX_PRENOM);
+      ecrire('prenom', prenom);
+      dire(L('Bienvenue dans le cercle'));
+      await rafraichir();
+    };
+    champ.focus();
+  }
+
+  function modeEmploi(ouvert) {
+    return `
+      <details${ouvert ? ' open' : ''}>
+        <summary>${esc(L('Comment ça marche'))}</summary>
+        <div class="bloc"><ol>
+          <li>${esc(LN('Ouvre le lien du cercle et garde-le : c’est toujours le même.'))}</li>
+          <li>${esc(L('Propose ce que tu donnes, ou dis ce que tu cherches.'))}</li>
+          <li>${esc(L('Touche « Je le prends » ou « J’en ai un ». La personne le voit, et vous vous arrangez entre vous.'))}</li>
+        </ol></div>
+      </details>`;
+  }
+
+  function pied() {
+    return `<p class="pied">Grazie · version ${VERSION} · <a href="v1/">${esc(L('Première version, tout dans le lien'))}</a></p>`;
+  }
+
+  /* ----- Le cercle : la liste des annonces ----- */
+  function ecranCercle() {
+    const toutes = donnees?.annonces || [];
+    const visibles = toutes.filter((a) => filtre === 'tout' || (filtre === 'dons' ? a.sens === 'don' : a.sens === 'demande'));
+    const filtres = [['tout', 'Tout'], ['dons', 'Dons'], ['demandes', 'Demandes']];
+    $app.innerHTML = `
+      <div class="entete">
+        <div><h1>Grazie</h1><p class="sous">${esc(cercle.nom || L('Ton cercle'))}</p></div>
+        <a href="#" id="versReglages">${esc(L('Réglages'))}</a>
+      </div>
+      <div class="duo">
+        <button class="btn terre" data-nouveau="don">${esc(L('Je donne'))}</button>
+        <button class="btn" data-nouveau="demande">${esc(L('Je cherche'))}</button>
+      </div>
+      ${toutes.length ? `<div class="rangee">${filtres.map(([k, t]) =>
+        `<button type="button" class="choix" data-filtre="${k}" aria-pressed="${filtre === k}">${esc(L(t))}</button>`).join('')}</div>` : ''}
+      ${!toutes.length ? `<p class="vide">${esc(L('Rien pour l’instant. Propose quelque chose, ou dis ce que tu cherches.'))}</p>`
+        : !visibles.length ? `<p class="vide">${esc(L('Rien dans cette catégorie pour l’instant.'))}</p>`
+        : visibles.map(carteAnnonce).join('')}
+      <button class="btn calme" id="actualiser">${esc(L('Actualiser'))}</button>
+      ${modeEmploi(!toutes.length)}
+      ${pied()}`;
+
+    $('versReglages').onclick = (e) => { e.preventDefault(); ecran = 'reglages'; afficher(); window.scrollTo(0, 0); };
+    $app.querySelectorAll('[data-nouveau]').forEach((b) => {
+      b.onclick = () => {
+        brouillon = { sens: b.dataset.nouveau, categorie: 'o', titre: '', mot: '' };
+        ecran = 'annonce'; afficher(); window.scrollTo(0, 0);
+      };
     });
-    b.dataset.index = i;
-    b.dataset.etiquette = nomLieu(lieu) + (estTenu(lieu) ? "  " + L("(gardé)") : "");
-    b.style.display = "block";
-    b.style.width = "100%";
-    b.style.textAlign = "left";
-    b.style.marginBottom = "10px";
-    b.className += " grand";
-    zl.appendChild(b);
-  });
-
-  dessinerGrille();
-  majBoutonDemande();
-
-  var vieux = $("offre-vieille");
-  if (o.d && joursDepuis(o.d) > PEREMPTION_JOURS){
-    vieux.textContent = L("Ce colis a été proposé il y a plus d'un mois. Il est probablement parti — tu peux demander quand même.");
-  } else if (o.d){
-    vieux.textContent = Lf("Colis proposé le {0}.", dateCourte(o.d));
-  } else {
-    vieux.textContent = "";
+    $app.querySelectorAll('[data-filtre]').forEach((b) => { b.onclick = () => { filtre = b.dataset.filtre; afficher(); }; });
+    $('actualiser').onclick = (e) => agir(e.target, async () => {});
+    $app.querySelectorAll('[data-action]').forEach((b) => { b.onclick = () => action(b); });
   }
-  montrer("offre");
-}
-function dessinerLieuxDemande(){
-  var enfants = $("d-lieux").children;
-  for (var i=0;i<enfants.length;i++){
-    var choisi = Number(enfants[i].dataset.index) === demandeEnCours.iLieu;
-    enfants[i].setAttribute("aria-pressed", choisi ? "true" : "false");
-    enfants[i].textContent = (choisi ? "\u25CF  " : "\u25CB  ") + enfants[i].dataset.etiquette;
+
+  function carteAnnonce(a) {
+    const don = a.sens === 'don';
+    const cat = CATEGORIES.find((c) => c[0] === a.categorie);
+    const mienne = !!miennes[a.id];
+    const ma_reponse = !!reponses[a.id];
+    const prise = !!a.rep_prenom;
+    let etat = '';
+    if (mienne && cercle) {
+      if (prise) {
+        etat = `<p>${esc(Lf(don ? '{0} le prend. Arrangez-vous entre vous.' : '{0} en a un. Arrangez-vous entre vous.', a.rep_prenom))}</p>
+          <button class="btn petit" data-action="clore" data-id="${a.id}">${esc(L('C’est fait, clore l’annonce'))}</button>
+          <button class="btn petit calme" data-action="liberer" data-id="${a.id}">${esc(L('Remettre disponible'))}</button>`;
+      } else {
+        etat = `<p class="qui">${esc(L('Personne n’a encore répondu.'))}</p>
+          <button class="btn petit calme" data-action="retirer" data-id="${a.id}">${esc(L('Retirer l’annonce'))}</button>`;
+      }
+    } else if (ma_reponse && prise) {
+      etat = `<p>${esc(Lf(don ? 'Tu le prends. Arrange-toi avec {0}.' : 'Tu en as un. Arrange-toi avec {0}.', a.prenom))}</p>
+        <button class="btn petit calme" data-action="desister" data-id="${a.id}">${esc(L('Je me désiste'))}</button>`;
+    } else if (prise) {
+      etat = `<p class="qui">${esc(Lf(don ? 'Pris par {0}' : '{0} en a un', a.rep_prenom))}</p>`;
+    } else {
+      etat = `<button class="btn petit${don ? ' terre' : ''}" data-action="prendre" data-id="${a.id}">${esc(L(don ? 'Je le prends' : 'J’en ai un'))}</button>`;
+    }
+    const gestion = cercle?.admin && !mienne
+      ? `<button class="btn petit calme" data-action="moderer" data-id="${a.id}">${esc(L('Retirer l’annonce'))}</button>` : '';
+    return `
+      <article class="annonce ${don ? 'don' : 'demande'}${prise && !mienne && !ma_reponse ? ' prise' : ''}">
+        <span class="etiq sens">${esc(L(don ? 'Don' : 'Demande'))}</span><span class="etiq cat">${esc(L(cat ? cat[1] : 'Autre'))}</span>
+        <div class="titre">${esc(a.titre)}</div>
+        ${a.mot ? `<p class="mot">${esc(a.mot)}</p>` : ''}
+        <p class="qui">${esc(Lf('{0}, {1}', a.prenom, quand(a.cree)))}</p>
+        <div class="etat">${etat}${gestion}</div>
+      </article>`;
   }
-  majBoutonDemande();
-}
-function dessinerGrille(){
-  var g = $("d-grille");
-  vider(g);
-  var base = new Date();
-  for (var j=0;j<7;j++){
-    var d = new Date(base.getTime() + j*86400000);
-    var iso = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    var etiq = document.createElement("div");
-    etiq.className = "jour";
-    etiq.textContent = (j===0 ? L("aujourd'hui") : jourCourt(d));
-    g.appendChild(etiq);
-    MOMENTS.forEach(function(mo){
-      (function(isoLocal, codeLocal, nomLocal){
-        var cle = isoLocal + codeLocal;
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "creneau";
-        b.textContent = L(nomLocal);
-        b.setAttribute("aria-pressed","false");
-        b.addEventListener("click", function(){
-          var k = demandeEnCours.dispos.indexOf(cle);
-          if (k === -1) demandeEnCours.dispos.push(cle); else demandeEnCours.dispos.splice(k,1);
-          b.setAttribute("aria-pressed", k === -1 ? "true" : "false");
-          majBoutonDemande();
+
+  function action(b) {
+    const id = b.dataset.id;
+    switch (b.dataset.action) {
+      case 'prendre':
+        return agir(b, async () => {
+          const r = await api('prendre', { id, prenom, jeton_auteur: miennes[id] || '' });
+          reponses[id] = r.jeton; ecrire('reponses', reponses);
+          dire(L('C’est noté.'));
         });
-        g.appendChild(b);
-      })(iso, mo[0], mo[1]);
-    });
+      case 'desister':
+        return agir(b, async () => {
+          await api('liberer', { id, jeton: reponses[id] });
+          delete reponses[id]; ecrire('reponses', reponses);
+        });
+      case 'liberer':
+        return agir(b, () => api('liberer', { id, jeton: miennes[id] }));
+      case 'clore':
+      case 'retirer':
+        if (!confirm(LN(b.dataset.action === 'clore' ? 'Clore cette annonce ? Elle sera effacée pour tout le cercle.'
+                                                      : 'Retirer cette annonce ? Elle sera effacée pour tout le cercle.'))) return;
+        return agir(b, async () => {
+          await api('clore', { id, jeton: miennes[id] });
+          delete miennes[id]; ecrire('miennes', miennes);
+          dire(L('Annonce close.'));
+        });
+      case 'moderer':
+        if (!confirm(LN('Retirer cette annonce ? Elle sera effacée pour tout le cercle.'))) return;
+        return agir(b, () => api('clore', { id, admin: cercle.admin }));
+    }
   }
-}
-function majBoutonDemande(){
-  $("btn-demander").disabled = !(demandeEnCours.lieu &&
-    demandeEnCours.dispos.length && $("d-prenom").value.trim());
-}
-$("d-prenom").addEventListener("input", majBoutonDemande);
 
-$("btn-demander").addEventListener("click", async function(){
-  var charge = {
-    v:"d",
-    p:$("d-prenom").value.trim(),
-    c:offreCourante.c.map(function(l){ return l.t; }),
-    x:demandeEnCours.lieu,
-    j:demandeEnCours.dispos.slice().sort()
-  };
-  if (offreCourante.n) charge.n = offreCourante.n;
-  afficherLien(
-    lienVers("demande", await enc(charge)),
-    L("Ta demande est prête"),
-    L("Renvoie ce lien à la personne qui t'a transmis le colis."),
-    false,
-    "offre"
-  );
-});
+  /* ----- Publier un don ou une demande ----- */
+  function ecranAnnonce() {
+    const b = brouillon;
+    const don = b.sens === 'don';
+    const exemples = { l: 'Trois romans italiens', v: 'Manteau d’hiver, taille M', o: 'Une perceuse pour un week-end' };
+    $app.innerHTML = `
+      <h1>${esc(L(don ? 'Je donne' : 'Je cherche'))}</h1>
+      <p class="sous">${esc(cercle.nom || L('Ton cercle'))}</p>
+      <div class="bloc">
+        <div class="rangee">
+          <button type="button" class="choix" data-sens="don" aria-pressed="${don}">${esc(L('Je donne'))}</button>
+          <button type="button" class="choix" data-sens="demande" aria-pressed="${!don}">${esc(L('Je cherche'))}</button>
+        </div>
+        <label>${esc(L('Sorte'))}</label>
+        <div class="rangee">${CATEGORIES.map(([k, t]) =>
+          `<button type="button" class="choix" data-cat="${k}" aria-pressed="${b.categorie === k}">${esc(L(t))}</button>`).join('')}</div>
+        <label for="titre">${esc(L(don ? 'Ce que tu donnes' : 'Ce que tu cherches'))}</label>
+        <input type="text" id="titre" maxlength="${MAX_TITRE}" value="${esc(b.titre)}" placeholder="${esc(L(exemples[b.categorie]))}">
+        <label for="mot">${esc(L('Une précision (facultatif)'))}</label>
+        <textarea id="mot" maxlength="${MAX_MOT}" placeholder="${esc(L('État, taille, pour qui, jusqu’à quand…'))}">${esc(b.mot)}</textarea>
+        <p class="compte" id="compteMot"></p>
+        <div class="rgpd">${esc(Lf('Visible par tout le cercle. Effacée quand tu la clos, ou d’elle-même au bout de {0} jours.', donnees?.duree || 90))}</div>
+        <button class="btn${don ? ' terre' : ''}" id="publier">${esc(L('Publier'))}</button>
+        <button class="btn calme" id="annuler">${esc(L('Annuler'))}</button>
+      </div>`;
 
-/* ================= DEMANDE REÇUE ================= */
-var demandeRecue = null;
-
-function dessinerDemande(d){
-  demandeRecue = d;
-  $("demande-sous").textContent = Lf("{0} a demandé ton colis.", d.p);
-
-  var zl = $("demande-livres");
-  vider(zl);
-  if (d.n){
-    var hn = document.createElement("p");
-    hn.style.fontWeight = "700";
-    hn.textContent = d.n;
-    zl.appendChild(hn);
+    const garder = () => { b.titre = $('titre').value; b.mot = $('mot').value; };
+    const compter = () => { $('compteMot').textContent = Lf('{0} caractères restants.', MAX_MOT - $('mot').value.length); };
+    compter();
+    $('mot').oninput = compter;
+    $app.querySelectorAll('[data-sens]').forEach((x) => { x.onclick = () => { garder(); b.sens = x.dataset.sens; afficher(); }; });
+    $app.querySelectorAll('[data-cat]').forEach((x) => { x.onclick = () => { garder(); b.categorie = x.dataset.cat; afficher(); }; });
+    $('annuler').onclick = () => { brouillon = null; ecran = 'cercle'; afficher(); };
+    $('publier').onclick = async (e) => {
+      garder();
+      if (!b.titre.trim()) return dire(L('Il manque quelques mots pour dire ce que c’est.'));
+      e.target.disabled = true;
+      try {
+        const r = await api('publier', { sens: b.sens, categorie: b.categorie, titre: b.titre, mot: b.mot, prenom });
+        miennes[r.id] = r.jeton; ecrire('miennes', miennes);
+        brouillon = null; ecran = 'cercle'; filtre = 'tout';
+        dire(L('Publié.'));
+        await rafraichir(); window.scrollTo(0, 0);
+      } catch (err) {
+        dire(err.message); e.target.disabled = false;
+      }
+    };
   }
-  d.c.forEach(function(t){
-    var p = document.createElement("p");
-    p.textContent = "— " + t;
-    zl.appendChild(p);
+
+  /* ----- Réglages ----- */
+  function ecranReglages() {
+    const duree = donnees?.duree || 90;
+    $app.innerHTML = `
+      <div class="entete">
+        <div><h1>${esc(L('Réglages'))}</h1><p class="sous">${esc(cercle.nom || L('Ton cercle'))}</p></div>
+        <a href="#" id="retour">${esc(L('Retour au cercle'))}</a>
+      </div>
+
+      <div class="bloc">
+        <label for="prenom">${esc(L('Ton prénom'))}</label>
+        <input type="text" id="prenom" maxlength="${MAX_PRENOM}" value="${esc(prenom)}" autocomplete="given-name">
+        <p class="compte">${esc(L('Le prénom suffit.'))}</p>
+        <button class="btn calme" id="garderPrenom">${esc(L('Enregistrer'))}</button>
+      </div>
+
+      <div class="bloc">
+        <h2>${esc(L('Inviter'))}</h2>
+        <p>${esc(LN('Envoie ce lien à tes proches. Qui l’a peut voir et publier dans le cercle : ne le mets pas en ligne.'))}</p>
+        <div class="cle">${esc(lienCercle())}</div>
+        <button class="btn" id="envoyerLien">${esc(L('Envoyer le lien'))}</button>
+        <button class="btn calme" id="copierLien">${esc(L('Copier le lien'))}</button>
+      </div>
+
+      <div class="bloc">
+        <h2>${esc(L('Ce que Grazie garde'))}</h2>
+        <p><strong>${esc(L('Sur ce téléphone'))}</strong>${DP} ${esc(L('le code du cercle, ton prénom, et les jetons qui prouvent que tes annonces et tes réponses sont les tiennes.'))}</p>
+        <p><strong>${esc(L('Sur le serveur (alwaysdata, en France)'))}</strong>${DP} ${esc(LN('le nom du cercle et, pour chaque annonce : ce qu’elle dit, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse, ni photo.'))}</p>
+        <p><strong>${esc(L('Combien de temps'))}</strong>${DP} ${esc(LN(Lf('une annonce close est effacée tout de suite ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.', duree)))}</p>
+      </div>
+
+      <div class="bloc">
+        <h2>${esc(L('Gestion du cercle'))}</h2>
+        ${cercle.admin ? `
+          <p>${esc(L('Tu gères ce cercle sur cet appareil.'))}</p>
+          <label for="nomCercle">${esc(L('Nom du cercle'))}</label>
+          <input type="text" id="nomCercle" maxlength="40" value="${esc(cercle.nom)}">
+          <button class="btn calme" id="renommer">${esc(L('Renommer'))}</button>
+          <details><summary>${esc(L('Ta clé de gestion'))}</summary><div class="cle">${esc(cercle.admin)}</div></details>
+          <details><summary>${esc(L('Créer un cercle'))}</summary>
+            <label for="nomNouveau">${esc(L('Nom du cercle'))}</label>
+            <input type="text" id="nomNouveau" maxlength="40" placeholder="${esc(L('La famille, les voisins…'))}">
+            <button class="btn calme" id="creerAutre">${esc(L('Créer un cercle'))}</button>
+          </details>` : `
+          <details><summary>${esc(L('Je gère ce cercle'))}</summary>
+            <label for="cleSaisie">${esc(L('Ta clé de gestion, si tu l’as.'))}</label>
+            <input type="text" id="cleSaisie" autocomplete="off">
+            <button class="btn calme" id="utiliserCle">${esc(L('Utiliser cette clé'))}</button>
+          </details>`}
+      </div>
+
+      <div class="bloc">
+        <h2>${esc(L('Tout effacer de ce téléphone'))}</h2>
+        <p class="compte" style="margin-top:0">${esc(L('Clôt tes annonces, retire tes réponses, puis efface tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.'))}</p>
+        <button class="btn calme" id="effacer">${esc(L('Tout effacer de ce téléphone'))}</button>
+      </div>
+      ${pied()}`;
+
+    $('retour').onclick = (e) => { e.preventDefault(); ecran = 'cercle'; afficher(); window.scrollTo(0, 0); };
+    $('garderPrenom').onclick = () => {
+      const p = $('prenom').value.trim().slice(0, MAX_PRENOM);
+      if (!p) return;
+      prenom = p; ecrire('prenom', prenom);
+      dire(L('Prénom enregistré. Il s’applique à tes prochaines annonces et réponses.'));
+    };
+    $('envoyerLien').onclick = () => partager(lienCercle());
+    $('copierLien').onclick = () => copier(lienCercle());
+    if (cercle.admin) {
+      $('renommer').onclick = (e) => agir(e.target, async () => {
+        await api('renommer', { nom: $('nomCercle').value, admin: cercle.admin });
+        dire(L('C’est noté.'));
+      });
+      $('creerAutre').onclick = async (e) => {
+        e.target.disabled = true;
+        try {
+          const nom = $('nomNouveau').value.trim();
+          const r = await api('creer_cercle', { nom, cle_existante: cercle.admin });
+          cercle = { c: r.c, admin: r.admin, nom };
+          miennes = {}; reponses = {};
+          ecrire('cercle', cercle); ecrire('miennes', miennes); ecrire('reponses', reponses);
+          ecran = 'cle'; afficher(); window.scrollTo(0, 0);
+        } catch (err) { dire(err.message); e.target.disabled = false; }
+      };
+    } else {
+      $('utiliserCle').onclick = async (e) => {
+        const cle = $('cleSaisie').value.trim();
+        if (!cle) return;
+        e.target.disabled = true;
+        try {
+          const r = await api('liste', null, { admin: cle });
+          if (!r.admin) { dire(L('Cette clé ne correspond pas à ce cercle.')); e.target.disabled = false; return; }
+          cercle.admin = cle; ecrire('cercle', cercle);
+          dire(L('Clé reconnue.'));
+          afficher();
+        } catch (err) { dire(err.message); e.target.disabled = false; }
+      };
+    }
+    $('effacer').onclick = async (e) => {
+      if (!confirm(LN('Tout effacer ? Tes annonces seront closes et tes réponses retirées.'))) return;
+      e.target.disabled = true;
+      for (const [id, jeton] of Object.entries(miennes)) await api('clore', { id, jeton }).catch(() => {});
+      for (const [id, jeton] of Object.entries(reponses)) await api('liberer', { id, jeton }).catch(() => {});
+      ['cercle', 'prenom', 'miennes', 'reponses'].forEach(oublier);
+      cercle = null; prenom = ''; miennes = {}; reponses = {}; donnees = null; ecran = 'cercle';
+      dire(L('C’est effacé.'));
+      afficher(); window.scrollTo(0, 0);
+    };
+  }
+
+  /* ================= Démarrage ================= */
+  function demarrer() {
+    const c = lireLien(location.hash);
+    if (c) {
+      history.replaceState(null, '', location.pathname);
+      rejoindre(c);
+    }
+    rafraichir();
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && cercle && prenom && ecran === 'cercle') rafraichir();
   });
-  $("demande-lieu").textContent = nomLieu(d.x);
-  $("demande-kraft").textContent = Lf(estTenu(d.x)
-    ? "Emballe le colis, écris « {0} » dessus et confie-le à la personne sur place."
-    : "Emballe le colis et écris « {0} » dessus.", d.p);
-  $("demande-nature").textContent = L(estTenu(d.x)
-    ? "C'est un lieu gardé : le colis n'y attend pas seul. Dépose-le quand quelqu'un est là pour le recevoir."
-    : "C'est un lieu en libre accès : personne ne le surveille.");
-  $("demande-arbitrage").style.display = estTenu(d.x) ? "none" : "block";
-  $("rappel-adresse").textContent = estTenu(d.x)
-    ? L("Si le nom du lieu ne suffit pas à le trouver, donne l'adresse exacte dans le mot qui accompagne ta réponse — elle n'ira qu'à cette personne.")
-    : "";
 
-  var textes = d.j.map(function(cle){
-    var iso = cle.slice(0,10), code = cle.slice(10);
-    var nom = "";
-    MOMENTS.forEach(function(m){ if (m[0]===code) nom = L(m[1]); });
-    return dateCourte(iso) + " " + nom;
-  });
-  $("demande-dispos").textContent = textes.join(" · ");
-
-  $("a-jour").min = aujourdhui();
-  $("recap-depot").textContent = "";
-  majBoutonAccord();
-  montrer("demande");
-}
-function majBoutonAccord(){
-  var pret = $("a-jour").value && $("a-heure").value;
-  $("btn-accepter").disabled = !pret;
-  if (pret){
-    var h = $("a-heure").value.split(":");
-    $("recap-depot").textContent = Lf("Tu déposes avant {0}. Le colis peut être pris à partir de {0}.", heureTexte(h[0], h[1]));
-  } else {
-    $("recap-depot").textContent = "";
-  }
-}
-$("a-jour").addEventListener("input", majBoutonAccord);
-$("a-heure").addEventListener("input", majBoutonAccord);
-
-$("btn-accepter").addEventListener("click", async function(){
-  var charge = {
-    v:"a",
-    c:demandeRecue.c,
-    x:demandeRecue.x,
-    j:$("a-jour").value,
-    h:$("a-heure").value
-  };
-  if (demandeRecue.n) charge.n = demandeRecue.n;
-  afficherLien(
-    lienVers("rendez-vous", await enc(charge)),
-    L("Ta réponse est prête"),
-    Lf("Renvoie ce lien à {0}.", demandeRecue.p),
-    false,
-    "demande"
-  );
-});
-
-/* ================= ACCORD REÇU ================= */
-function dessinerAccord(a){
-  var h = a.h.split(":");
-  var debutTexte = heureTexte(h[0], h[1]);
-
-  $("accord-quand").textContent = Lf("À prendre {0}", dateCourte(a.j));
-  $("accord-fenetre").textContent = Lf("à partir de {0}", debutTexte);
-  $("accord-ou").textContent = nomLieu(a.x);
-  $("accord-limite").textContent = estTenu(a.x)
-    ? L("C'est un lieu gardé : demande le colis sur place, à ton nom.")
-    : L("Le colis attend seul\u202f: plus tu tardes, plus il risque d'être parti.");
-  $("accord-risque").style.display = estTenu(a.x) ? "none" : "block";
-  $("accord-livres").textContent = (a.n ? a.n + " — " : "") + a.c.join(" · ");
-  montrer("accord");
-}
-
-/* ================= ROUTAGE ================= */
-async function router(){
-  var h = location.hash.slice(1);
-
-  if (h === "reglages"){
-    dessinerReglages();
-    montrer("reglages");
-    return;
-  }
-  if (!h){
-    dessinerAccueil();
-    montrer("accueil");
-    return;
-  }
-  var charge = null;
-  try { charge = await dec(separer(h).corps); } catch(e){ charge = null; }
-
-  if (!charge || !charge.v){
-    dessinerAccueil();
-    $("alerte-lien").style.display = "block";
-    montrer("accueil");
-    return;
-  }
-  if (charge.v === "o") dessinerOffre(charge);
-  else if (charge.v === "d") dessinerDemande(charge);
-  else if (charge.v === "a") dessinerAccord(charge);
-  else { dessinerAccueil(); montrer("accueil"); }
-}
-window.addEventListener("hashchange", router);
-traduireDOM();
-dessinerLangues();
-router();
+  demarrer();
+})();
 </script>
 </body>
 </html>
