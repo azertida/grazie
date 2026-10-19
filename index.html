@@ -123,7 +123,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.1';
+  const VERSION = '2.1.1';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
@@ -597,8 +597,26 @@
         donnees = c.toDataURL('image/jpeg', q);
         q -= 0.1;
       } while (donnees.length * 0.75 > PHOTO_OCTETS && q > 0.35);
-      return donnees;
+      return retirerMetadonnees(donnees);
     } finally { URL.revokeObjectURL(url); }
+  }
+
+  /* Safari glisse un bloc EXIF dans les JPEG qu'il fabrique : on retire les blocs APP1 (EXIF, XMP),
+     APP13 (IPTC) et les commentaires avant l'envoi. Le serveur refait le même ménage. */
+  function retirerMetadonnees(dataUrl) {
+    const bin = atob(dataUrl.split(',')[1]);
+    if (bin.charCodeAt(0) !== 0xFF || bin.charCodeAt(1) !== 0xD8) return dataUrl;
+    let sortie = '\xFF\xD8', i = 2;
+    while (i + 4 <= bin.length) {
+      if (bin.charCodeAt(i) !== 0xFF) return dataUrl;
+      const m = bin.charCodeAt(i + 1);
+      if (m === 0xDA || m === 0xD9) { sortie += bin.slice(i); break; }
+      if (m === 0x01 || (m >= 0xD0 && m <= 0xD7)) { sortie += bin.slice(i, i + 2); i += 2; continue; }
+      const lg = (bin.charCodeAt(i + 2) << 8) | bin.charCodeAt(i + 3);
+      if (m !== 0xE1 && m !== 0xED && m !== 0xFE) sortie += bin.slice(i, i + 2 + lg);
+      i += 2 + lg;
+    }
+    return 'data:image/jpeg;base64,' + btoa(sortie);
   }
 
   function carteAnnonce(a) {
