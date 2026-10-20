@@ -80,6 +80,7 @@ Grazie ne s'installe pas, comme la première version&#8239;: on rouvre le lien d
 ### Architecture
 
 - **L'appli**&#8239;: `index.html` (HTML, CSS et JavaScript, sans dépendance), servi par GitHub Pages. Le numéro de version (`VERSION`) s'affiche en bas de chaque écran.
+- **Les polices**&#8239;: Fraunces (titres) et Atkinson Hyperlegible (texte), hébergées avec l'appli dans `polices/`, licence SIL OFL 1.1 (voir les fichiers `LICENCE-*.txt`). Aucun appel à Google ni à un autre service.
 - **Le serveur**&#8239;: `serveur/api.php` (PHP 8 + SQLite), hébergé chez alwaysdata (France), sur le modèle de Corsia. Il est placé dans `www/grazie/api.php`, et ses données dans `~/grazie-data/` (base et photos), hors de la partie publique du site. La base se crée et se met à jour toute seule.
 - Le serveur n'accepte que les requêtes venant de `https://azertida.github.io`.
 - Ce dépôt contient une copie de `serveur/api.php` pour garder son historique. GitHub Pages ne l'exécute pas&#8239;: seule la copie déposée chez l'hébergeur est active.

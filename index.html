@@ -8,6 +8,11 @@
 <title>Grazie — entre proches</title>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="%23EDE3D1"/><rect x="12" y="16" width="40" height="32" rx="3" fill="%23A9763F"/><rect x="28" y="16" width="8" height="32" fill="%232F4858"/><rect x="12" y="29" width="40" height="6" fill="%232F4858"/><path d="M32 16c-4-6-12-5-12 0" stroke="%232F4858" stroke-width="3" fill="none"/><path d="M32 16c4-6 12-5 12 0" stroke="%232F4858" stroke-width="3" fill="none"/></svg>'>
 <style>
+  /* Polices hébergées avec l'appli (dossier polices/, licence SIL OFL 1.1) : aucun appel extérieur. */
+  @font-face{font-family:'Fraunces';font-weight:600;font-display:swap;src:url('polices/fraunces-latin-600-normal.woff2') format('woff2')}
+  @font-face{font-family:'Fraunces';font-weight:700;font-display:swap;src:url('polices/fraunces-latin-700-normal.woff2') format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url('polices/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url('polices/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2')}
   :root{
     --papier:#EDE3D1;
     --carte:#F7F0E2;
@@ -129,7 +134,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.3.1';
+  const VERSION = '2.3.2';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
