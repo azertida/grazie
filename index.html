@@ -42,6 +42,12 @@
   .sous{color:var(--gris);font-style:italic;margin:4px 0 22px}
   .entete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
   .entete a{color:var(--terre);font-weight:700;text-decoration:none;font-size:.95rem;margin-top:10px;white-space:nowrap}
+  .bloc.toc{border-left:4px solid var(--terre);background:var(--doux)}
+  .bloc.toc p{margin-bottom:6px}
+  .membre{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed var(--trait)}
+  .membre:first-of-type{border-top:none}
+  .membre .qui{font-size:.85rem;color:var(--gris)}
+  .membre .btn{margin:0;flex:none}
   .bloc{background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:18px;margin-bottom:18px}
   label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px;letter-spacing:.02em}
   input[type=text],textarea{
@@ -123,7 +129,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.1.4';
+  const VERSION = '2.3';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
@@ -251,8 +257,6 @@
     'Cette clé ne correspond pas à ce cercle.': 'This key doesn’t match this circle.',
     'Clé reconnue.': 'Key recognised.',
     'Tout effacer de ce téléphone': 'Erase everything from this phone',
-    'Clôt tes annonces, retire tes réponses, puis efface tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.': 'Closes your listings, withdraws your replies, then erases everything Grazie keeps here. To come back, you’ll need the circle link.',
-    'Tout effacer ? Tes annonces seront closes et tes réponses retirées.': 'Erase everything? Your listings will be closed and your replies withdrawn.',
     'C’est effacé.': 'All erased.',
     'Première version, tout dans le lien': 'First version, everything in the link',
     'Ce cercle n’existe plus.': 'This circle no longer exists.',
@@ -261,7 +265,35 @@
     'Pas de connexion pour l’instant : réessaie dans un moment.': 'No connection right now: try again in a moment.',
     'Erreur du serveur': 'Server error',
     'Rejoindre ce cercle à la place du tien ?': 'Join this circle instead of yours?',
-    'Actualiser': 'Refresh'
+    'Actualiser': 'Refresh',
+    'Changer le lien du cercle': 'Change the circle link',
+    'Ce lien ne mène plus à aucun cercle. Demande le nouveau à qui te l\u2019a envoyé.': 'This link no longer leads to a circle. Ask whoever sent it for the new one.',
+    'L\u2019ancien lien ne mènera plus nulle part. Les membres du cercle suivent tout seuls à leur prochaine visite ; seuls les proches qui ne sont pas encore entrés auront besoin du nouveau lien.': 'The old link will no longer lead anywhere. Circle members follow on their own at their next visit; only people who haven\u2019t joined yet will need the new link.',
+    'Retire d\u2019abord la personne que tu ne veux plus voir dans le cercle, sinon elle suivra comme les autres.': 'First remove the person you no longer want in the circle, or they will follow like everyone else.',
+    'Changer le lien ? L\u2019ancien ne mènera plus nulle part.': 'Change the link? The old one will no longer lead anywhere.',
+    'Nouveau lien prêt. Les membres suivront tout seuls.': 'New link ready. Members will follow on their own.',
+    'Toc toc !': 'Knock knock!',
+    '{0} est entré·e dans le cercle': '{0} has joined the circle',
+    'par le lien de {0}': 'through {0}\u2019s link',
+    'par le premier lien': 'through the first link',
+    'par le lien d\u2019un membre parti': 'through the link of someone who has left',
+    'Vu': 'Got it',
+    'Qui est dans le cercle': 'Who is in the circle',
+    'Toi seule vois cette liste : les membres ne voient pas qui d\u2019autre est entré.': 'Only you see this list: members don\u2019t see who else has joined.',
+    'depuis le {0}': 'since {0}',
+    'toi': 'you',
+    'Retirer': 'Remove',
+    'Retirer {0} du cercle ? Ses annonces et ses réponses seront effacées. Si {0} a encore le lien, il ou elle pourra revenir et réapparaîtra ici.': 'Remove {0} from the circle? Their listings and replies will be erased. If {0} still has the link, they can come back and will show up here again.',
+    '{0} ne fait plus partie du cercle.': '{0} is no longer in the circle.',
+    'Ce lien ne t\u2019ouvre plus ce cercle.': 'This link no longer opens this circle for you.',
+    'Personne d\u2019autre pour l\u2019instant.': 'No one else yet.',
+    'Chargement…': 'Loading…',
+    'ton prénom, ta date d\u2019arrivée et le lien par lequel tu es entré·e. Seule la personne qui a créé le cercle voit qui en fait partie ; les autres membres, non.': 'your first name, the date you joined and the link you came in through. Only the person who created the circle sees who is in it; other members don\u2019t.',
+    'Dans le cercle': 'In the circle',
+    'Quand tu quittes le cercle, ou si tu en es retiré·e, tout ce qui te concerne est effacé du serveur.': 'When you leave the circle, or are removed from it, everything about you is erased from the server.',
+    'Te fait quitter le cercle : tes annonces et tes réponses sont effacées du serveur, puis tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.': 'Makes you leave the circle: your listings and replies are erased from the server, then everything Grazie keeps here. To come back, you\u2019ll need the circle link.',
+    'Tout effacer ? Tu quitteras le cercle, et tes annonces et tes réponses seront effacées.': 'Erase everything? You will leave the circle, and your listings and replies will be erased.',
+    'Ce lien porte ton nom : la personne qui gère le cercle saura que quelqu\u2019un est arrivé par toi.': 'This link carries your name: the person managing the circle will know someone came in through you.'
   };
 
   const lireBrut = (k, def) => { try { const v = localStorage.getItem(P + k); return v === null ? def : JSON.parse(v); } catch { return def; } };
@@ -296,6 +328,10 @@
   let ecran = 'cercle';
   let filtre = 'tout';
   let brouillon = null;                    // annonce en cours de rédaction
+  let membre = lire('membre', null);       // { id, jeton } — ma place dans le cercle
+  let parrainLien = lire('parrain', '');   // membre dont j'ai utilisé le lien d'invitation
+  let membres = null;                      // liste des membres (gestion seulement)
+  let membresVus = lire('membresVus', null); // identifiants déjà vus par la gestion
 
   /* ================= Outils ================= */
   const $app = document.getElementById('app');
@@ -318,14 +354,16 @@
     clearTimeout(minuterie); minuterie = setTimeout(() => { m.hidden = true; }, 3500);
   }
 
+  const identite = () => (membre ? { m: membre.id, j: membre.jeton } : {});
+
   async function api(action, corps = null, params = {}) {
     let rep;
     try {
       if (corps) {
         rep = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                                 body: JSON.stringify({ action, c: cercle?.c, ...corps }) });
+                                 body: JSON.stringify({ action, c: cercle?.c, ...identite(), ...corps }) });
       } else {
-        const q = new URLSearchParams({ action, c: cercle?.c || '', ...params });
+        const q = new URLSearchParams({ action, c: cercle?.c || '', ...identite(), ...params });
         rep = await fetch(`${API}?${q}`);
       }
     } catch {
@@ -342,10 +380,13 @@
     return json;
   }
 
-  const lienCercle = () => `${location.origin}${location.pathname}#c=${cercle.c}`;
+  // Le lien d'invitation porte la signature de qui l'envoie, pour que la gestion sache par qui on est arrivé.
+  const lienCercle = () => `${location.origin}${location.pathname}#c=${cercle.c}${membre ? `&p=${membre.id}` : ''}`;
   function lireLien(texte) {
     const m = String(texte).match(/[#&]c=([0-9a-f]{18})/);
-    return m ? m[1] : null;
+    if (!m) return null;
+    const p = String(texte).match(/[#&]p=([0-9a-f]{12})/);
+    return { c: m[1], p: p ? p[1] : '' };
   }
 
   async function copier(texte) {
@@ -385,17 +426,50 @@
       if (!a || !a.rep_prenom) { delete reponses[id]; change = true; }
     }
     if (change) { ecrire('miennes', miennes); ecrire('reponses', reponses); }
+    if (cercle.admin) {
+      try {
+        membres = (await api('membres', null, { admin: cercle.admin })).membres;
+        if (!membresVus) { membresVus = membres.map((x) => x.id); ecrire('membresVus', membresVus); }   // première fois : rien de « nouveau »
+      } catch { membres = null; }
+    }
+  }
+
+  /* Entrer dans le cercle avec son prénom. Sert aussi, sans rien demander, à qui était là avant la version 2.2. */
+  async function entrer() {
+    const r = await api('rejoindre', { prenom, parrain: parrainLien });
+    membre = { id: r.id, jeton: r.jeton }; ecrire('membre', membre);
+    if (cercle.admin && membresVus) { membresVus.push(r.id); ecrire('membresVus', membresVus); }
+    parrainLien = ''; oublier('parrain');
+  }
+
+  /* Le lien du cercle a changé : ma place de membre me donne le nouveau code. */
+  async function retrouver() {
+    try {
+      const r = await api('retrouver', {});
+      if (!r.c || r.c === cercle.c) return false;
+      cercle.c = r.c; if (r.nom) cercle.nom = r.nom;
+      ecrire('cercle', cercle);
+      return true;
+    } catch { return false; }
+  }
+
+  function sortirDuCercle(message) {
+    ['cercle', 'membre', 'miennes', 'reponses', 'membresVus', 'parrain'].forEach(oublier);
+    cercle = null; membre = null; miennes = {}; reponses = {}; membres = null; membresVus = null; donnees = null; ecran = 'cercle';
+    if (message) dire(message);
   }
 
   async function rafraichir() {
     if (cercle && prenom) {
-      try { await charger(); }
+      try {
+        if (!membre) await entrer();
+        await charger();
+      }
       catch (err) {
-        if (err.statut === 404 && /Cercle/.test(err.brut)) {
-          dire(L('Ce cercle n’existe plus.'));
-          oublier('cercle'); cercle = null; miennes = {}; reponses = {};
-          ecrire('miennes', miennes); ecrire('reponses', reponses);
-        } else dire(err.message);
+        if (err.statut === 404 && /Cercle/.test(err.brut) && membre && await retrouver()) { await rafraichir(); return; }
+        if (err.statut === 404 && /Cercle/.test(err.brut)) sortirDuCercle(L('Ce lien ne mène plus à aucun cercle. Demande le nouveau à qui te l’a envoyé.'));
+        else if (err.statut === 403 && err.brut === 'Membre inconnu') sortirDuCercle(L('Ce lien ne t’ouvre plus ce cercle.'));
+        else dire(err.message);
       }
     }
     afficher();
@@ -418,7 +492,7 @@
     dernierEcran = nom;
     if (!cercle) return ecranAccueil();
     if (ecran === 'cle') return ecranCle();
-    if (!prenom) return ecranPrenom();
+    if (!prenom || (!membre && !donnees)) return ecranPrenom();
     if (ecran === 'annonce') return ecranAnnonce();
     if (ecran === 'reglages') return ecranReglages();
     return ecranCercle();
@@ -449,9 +523,9 @@
       </details>
       ${pied()}`;
     $('entrer').onclick = async () => {
-      const c = lireLien($('lienColle').value);
-      if (!c) return dire(L('Ce lien n’est pas un lien Grazie.'));
-      rejoindre(c);
+      const l = lireLien($('lienColle').value);
+      if (!l) return dire(L('Ce lien n’est pas un lien Grazie.'));
+      rejoindre(l);
       await rafraichir();
     };
     $('creer').onclick = (e) => agirCreation(e.target);
@@ -463,6 +537,7 @@
       const nom = $('nomCercle').value.trim();
       const cle = $('cleExistante').value.trim();
       const r = await api('creer_cercle', { nom, cle_existante: cle });
+      sortirDuCercle();
       cercle = { c: r.c, admin: r.admin, nom };
       ecrire('cercle', cercle);
       ecran = 'cle';
@@ -473,13 +548,14 @@
     }
   }
 
-  function rejoindre(c) {
-    if (cercle && cercle.c === c) return;
+  function rejoindre(l) {
+    if (cercle && cercle.c === l.c) return;
     if (cercle && !confirm(LN('Rejoindre ce cercle à la place du tien ?'))) return;
-    cercle = { c, nom: '' };
-    miennes = {}; reponses = {};
-    ecrire('cercle', cercle); ecrire('miennes', miennes); ecrire('reponses', reponses);
-    ecran = 'cercle';
+    if (cercle && membre) api('quitter', {}).catch(() => {});   // on quitte proprement l'ancien cercle
+    sortirDuCercle();
+    cercle = { c: l.c, nom: '' };
+    parrainLien = l.p || '';
+    ecrire('cercle', cercle); ecrire('parrain', parrainLien);
   }
 
   /* ----- Clé de gestion, montrée une fois ----- */
@@ -520,6 +596,12 @@
     champ.oninput = () => { bouton.disabled = !champ.value.trim(); };
     bouton.onclick = async () => {
       prenom = champ.value.trim().slice(0, MAX_PRENOM);
+      bouton.disabled = true;
+      try { await entrer(); }
+      catch (err) {
+        if (err.statut === 404 && /Cercle/.test(err.brut)) { sortirDuCercle(L('Ce lien ne mène plus à aucun cercle. Demande le nouveau à qui te l’a envoyé.')); afficher(); return; }
+        dire(err.message); bouton.disabled = false; return;
+      }
       ecrire('prenom', prenom);
       dire(L('Bienvenue dans le cercle'));
       await rafraichir();
@@ -544,6 +626,25 @@
   }
 
   /* ----- Le cercle : la liste des annonces ----- */
+  function parQui(x) {
+    if (!x.parrain) return L('par le premier lien');
+    if (!x.parrain_prenom) return L('par le lien d’un membre parti');
+    return Lf('par le lien de {0}', x.parrain_prenom);
+  }
+  function dateLongue(d) {
+    return new Intl.DateTimeFormat(langue === 'fr' ? 'fr-BE' : 'en-GB', { day: 'numeric', month: 'long' }).format(versDate(d)).replace(/^1 /, langue === 'fr' ? '1er ' : '1 ');
+  }
+  function bandeauNouveaux() {
+    if (!cercle.admin || !membres || !membresVus) return '';
+    const nouveaux = membres.filter((x) => !membresVus.includes(x.id) && x.id !== membre?.id);
+    if (!nouveaux.length) return '';
+    return `<div class="bloc toc">
+        <h2>${esc(L('Toc toc !'))}</h2>
+        ${nouveaux.map((x) => `<p>${esc(Lf('{0} est entré·e dans le cercle', x.prenom))}, ${esc(parQui(x))}.</p>`).join('')}
+        <button class="btn petit calme" id="vuNouveaux">${esc(L('Vu'))}</button>
+      </div>`;
+  }
+
   function ecranCercle() {
     const toutes = donnees?.annonces || [];
     const visibles = toutes.filter((a) => filtre === 'tout' || (filtre === 'dons' ? a.sens === 'don' : a.sens === 'demande'));
@@ -553,6 +654,7 @@
         <div><h1>Grazie</h1><p class="sous">${esc(cercle.nom || L('Ton cercle'))}</p></div>
         <a href="#" id="versReglages">${esc(L('Réglages'))}</a>
       </div>
+      ${bandeauNouveaux()}
       <div class="duo">
         <button class="btn terre" data-nouveau="don">${esc(L('Je donne'))}</button>
         <button class="btn" data-nouveau="demande">${esc(L('Je cherche'))}</button>
@@ -567,6 +669,9 @@
       ${pied()}`;
 
     $('versReglages').onclick = (e) => { e.preventDefault(); ecran = 'reglages'; afficher(); window.scrollTo(0, 0); };
+    if ($('vuNouveaux')) $('vuNouveaux').onclick = () => {
+      membresVus = membres.map((x) => x.id); ecrire('membresVus', membresVus); afficher();
+    };
     $app.querySelectorAll('[data-nouveau]').forEach((b) => {
       b.onclick = () => {
         brouillon = { sens: b.dataset.nouveau, categorie: 'o', titre: '', mot: '', lien: '', photo: '' };
@@ -579,7 +684,7 @@
     $app.querySelectorAll('img.photo').forEach((i) => { i.onclick = () => i.classList.toggle('entiere'); });
   }
 
-  const urlPhoto = (id) => `${API}?${new URLSearchParams({ action: 'photo', c: cercle.c, id })}`;
+  const urlPhoto = (id) => `${API}?${new URLSearchParams({ action: 'photo', c: cercle.c, id, ...identite() })}`;
   const lienSur = (l) => typeof l === 'string' && /^https?:\/\//i.test(l);
   const hote = (l) => { try { return new URL(l).hostname.replace(/^www\./, ''); } catch { return ''; } };
 
@@ -662,7 +767,7 @@
     switch (b.dataset.action) {
       case 'prendre':
         return agir(b, async () => {
-          const r = await api('prendre', { id, prenom, jeton_auteur: miennes[id] || '' });
+          const r = await api('prendre', { id, jeton_auteur: miennes[id] || '' });
           reponses[id] = r.jeton; ecrire('reponses', reponses);
           dire(L('C’est noté.'));
         });
@@ -764,6 +869,18 @@
     };
   }
 
+  function listeMembres() {
+    if (!membres) return `<p class="vide">${esc(L('Chargement…'))}</p>`;
+    const autres = membres.filter((x) => x.id !== membre?.id);
+    const lignes = membres.map((x) => `
+      <div class="membre">
+        <div><strong>${esc(x.prenom)}</strong>${x.id === membre?.id ? ` (${esc(L('toi'))})` : ''}
+          <div class="qui">${esc(Lf('depuis le {0}', dateLongue(x.arrivee)))}${x.id === membre?.id ? '' : ` · ${esc(parQui(x))}`}</div></div>
+        ${x.id === membre?.id ? '' : `<button class="btn petit calme" data-retirer="${esc(x.id)}">${esc(L('Retirer'))}</button>`}
+      </div>`).join('');
+    return lignes + (autres.length ? '' : `<p class="vide">${esc(L('Personne d’autre pour l’instant.'))}</p>`);
+  }
+
   /* ----- Réglages ----- */
   function ecranReglages() {
     const duree = donnees?.duree || 90;
@@ -784,6 +901,7 @@
         <h2>${esc(L('Inviter'))}</h2>
         <p>${esc(LN('Envoie ce lien à tes proches. Qui l’a peut voir et publier dans le cercle : ne le mets pas en ligne.'))}</p>
         <div class="cle">${esc(lienCercle())}</div>
+        <p class="compte">${esc(L('Ce lien porte ton nom : la personne qui gère le cercle saura que quelqu’un est arrivé par toi.'))}</p>
         <button class="btn" id="envoyerLien">${esc(L('Envoyer le lien'))}</button>
         <button class="btn calme" id="copierLien">${esc(L('Copier le lien'))}</button>
       </div>
@@ -791,14 +909,23 @@
       <div class="bloc">
         <h2>${esc(L('Ce que Grazie garde'))}</h2>
         <p><strong>${esc(L('Sur ce téléphone'))}</strong>${DP} ${esc(L('le code du cercle, ton prénom, et les jetons qui prouvent que tes annonces et tes réponses sont les tiennes.'))}</p>
+        <p><strong>${esc(L('Dans le cercle'))}</strong>${DP} ${esc(L('ton prénom, ta date d’arrivée et le lien par lequel tu es entré·e. Seule la personne qui a créé le cercle voit qui en fait partie ; les autres membres, non.'))}</p>
         <p><strong>${esc(L('Sur le serveur (alwaysdata, en France)'))}</strong>${DP} ${esc(LN('le nom du cercle et, pour chaque annonce : ce qu’elle dit, son lien et sa photo s’il y en a, un prénom, sa date, et le prénom de qui a répondu. Rien d’autre : ni téléphone, ni adresse. Les photos arrivent réduites et sans position GPS.'))}</p>
-        <p><strong>${esc(L('Combien de temps'))}</strong>${DP} ${esc(LN(Lf('une annonce close est effacée tout de suite, photo comprise ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.', duree)))}</p>
+        <p><strong>${esc(L('Combien de temps'))}</strong>${DP} ${esc(LN(Lf('une annonce close est effacée tout de suite, photo comprise ; une annonce oubliée s’efface d’elle-même au bout de {0} jours.', duree)))} ${esc(L('Quand tu quittes le cercle, ou si tu en es retiré·e, tout ce qui te concerne est effacé du serveur.'))}</p>
       </div>
 
       <div class="bloc">
         <h2>${esc(L('Gestion du cercle'))}</h2>
         ${cercle.admin ? `
           <p>${esc(L('Tu gères ce cercle sur cet appareil.'))}</p>
+          <h3 style="margin:14px 0 4px">${esc(L('Qui est dans le cercle'))}</h3>
+          <p class="compte" style="margin:0 0 6px">${esc(L('Toi seule vois cette liste : les membres ne voient pas qui d’autre est entré.'))}</p>
+          <div id="listeMembres">${listeMembres()}</div>
+          <details><summary>${esc(L('Changer le lien du cercle'))}</summary>
+            <p class="compte" style="margin-top:0">${esc(L('L’ancien lien ne mènera plus nulle part. Les membres du cercle suivent tout seuls à leur prochaine visite ; seuls les proches qui ne sont pas encore entrés auront besoin du nouveau lien.'))}</p>
+            <p class="compte">${esc(L('Retire d’abord la personne que tu ne veux plus voir dans le cercle, sinon elle suivra comme les autres.'))}</p>
+            <button class="btn calme" id="changerLien">${esc(L('Changer le lien du cercle'))}</button>
+          </details>
           <label for="nomCercle">${esc(L('Nom du cercle'))}</label>
           <input type="text" id="nomCercle" maxlength="40" value="${esc(cercle.nom)}">
           <button class="btn calme" id="renommer">${esc(L('Renommer'))}</button>
@@ -817,7 +944,7 @@
 
       <div class="bloc">
         <h2>${esc(L('Tout effacer de ce téléphone'))}</h2>
-        <p class="compte" style="margin-top:0">${esc(L('Clôt tes annonces, retire tes réponses, puis efface tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.'))}</p>
+        <p class="compte" style="margin-top:0">${esc(L('Te fait quitter le cercle : tes annonces et tes réponses sont effacées du serveur, puis tout ce que Grazie garde ici. Pour revenir, il te faudra le lien du cercle.'))}</p>
         <button class="btn calme" id="effacer">${esc(L('Tout effacer de ce téléphone'))}</button>
       </div>
       ${pied()}`;
@@ -827,11 +954,32 @@
       const p = $('prenom').value.trim().slice(0, MAX_PRENOM);
       if (!p) return;
       prenom = p; ecrire('prenom', prenom);
+      api('mon_prenom', { prenom }).catch(() => {});
       dire(L('Prénom enregistré. Il s’applique à tes prochaines annonces et réponses.'));
     };
     $('envoyerLien').onclick = () => partager(lienCercle());
     $('copierLien').onclick = () => copier(lienCercle());
     if (cercle.admin) {
+      $app.querySelectorAll('[data-retirer]').forEach((b) => {
+        b.onclick = () => {
+          const x = membres.find((y) => y.id === b.dataset.retirer);
+          if (!x || !confirm(Lf('Retirer {0} du cercle ? Ses annonces et ses réponses seront effacées. Si {0} a encore le lien, il ou elle pourra revenir et réapparaîtra ici.', x.prenom))) return;
+          agir(b, async () => {
+            await api('retirer_membre', { id: x.id, admin: cercle.admin });
+            dire(Lf('{0} ne fait plus partie du cercle.', x.prenom));
+          });
+        };
+      });
+      $('changerLien').onclick = async (e) => {
+        if (!confirm(LN('Changer le lien ? L’ancien ne mènera plus nulle part.'))) return;
+        e.target.disabled = true;
+        try {
+          const r = await api('changer_lien', { admin: cercle.admin });
+          cercle.c = r.c; ecrire('cercle', cercle);
+          dire(L('Nouveau lien prêt. Les membres suivront tout seuls.'));
+          afficher(); window.scrollTo(0, 0);
+        } catch (err) { dire(err.message); e.target.disabled = false; }
+      };
       $('renommer').onclick = (e) => agir(e.target, async () => {
         await api('renommer', { nom: $('nomCercle').value, admin: cercle.admin });
         dire(L('C’est noté.'));
@@ -841,9 +989,9 @@
         try {
           const nom = $('nomNouveau').value.trim();
           const r = await api('creer_cercle', { nom, cle_existante: cercle.admin });
+          sortirDuCercle();
           cercle = { c: r.c, admin: r.admin, nom };
-          miennes = {}; reponses = {};
-          ecrire('cercle', cercle); ecrire('miennes', miennes); ecrire('reponses', reponses);
+          ecrire('cercle', cercle);
           ecran = 'cle'; afficher(); window.scrollTo(0, 0);
         } catch (err) { dire(err.message); e.target.disabled = false; }
       };
@@ -862,12 +1010,11 @@
       };
     }
     $('effacer').onclick = async (e) => {
-      if (!confirm(LN('Tout effacer ? Tes annonces seront closes et tes réponses retirées.'))) return;
+      if (!confirm(LN('Tout effacer ? Tu quitteras le cercle, et tes annonces et tes réponses seront effacées.'))) return;
       e.target.disabled = true;
-      for (const [id, jeton] of Object.entries(miennes)) await api('clore', { id, jeton }).catch(() => {});
-      for (const [id, jeton] of Object.entries(reponses)) await api('liberer', { id, jeton }).catch(() => {});
-      ['cercle', 'prenom', 'miennes', 'reponses'].forEach(oublier);
-      cercle = null; prenom = ''; miennes = {}; reponses = {}; donnees = null; ecran = 'cercle';
+      if (membre) await api('quitter', {}).catch(() => {});
+      sortirDuCercle();
+      oublier('prenom'); prenom = '';
       dire(L('C’est effacé.'));
       afficher(); window.scrollTo(0, 0);
     };
@@ -875,10 +1022,10 @@
 
   /* ================= Démarrage ================= */
   function demarrer() {
-    const c = lireLien(location.hash);
-    if (c) {
+    const l = lireLien(location.hash);
+    if (l) {
       history.replaceState(null, '', location.pathname);
-      rejoindre(c);
+      rejoindre(l);
     }
     rafraichir();
   }
