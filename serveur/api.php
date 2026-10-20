@@ -4,10 +4,15 @@
  *
  * Principes (repris de Corsia) :
  *  - un « cercle » = un code secret partagé par lien ; sans code, on ne voit rien ;
+ *    la gestion peut changer ce code : l'ancien lien ne mène plus nulle part,
+ *    et les membres retrouvent seuls le nouveau grâce à leur place de membre ;
  *  - une annonce = un don (« je donne ») ou une demande (« je cherche ») ;
  *  - celle ou celui qui publie reçoit un jeton que seul son téléphone connaît
  *    (le serveur n'en garde qu'une empreinte) ; idem pour qui répond ;
- *  - aucune fiche de personne : un prénom par annonce ou par réponse, rien d'autre ;
+ *  - pour lire ou publier, il faut être membre du cercle : un prénom, une date
+ *    d'arrivée et le membre dont on a utilisé le lien d'invitation ; seule la
+ *    personne qui gère le cercle voit cette liste, et peut retirer quelqu'un ;
+ *    quitter le cercle (ou en être retiré) efface tout ce qui concerne la personne ;
  *  - une annonce close est effacée tout de suite ; une annonce oubliée
  *    disparaît d'elle-même après DUREE_JOURS ;
  *  - aucune adresse IP ni autre trace n'est enregistrée par ce script ;
@@ -33,6 +38,7 @@ const MAX_MOT = 140;
 const MAX_NOM_CERCLE = 40;
 const MAX_ANNONCES_PAR_CERCLE = 150;
 const MAX_LIEN = 500;
+const MAX_MEMBRES_PAR_CERCLE = 100;
 const MAX_PHOTO_OCTETS = 350000;              // une photo réduite sur le téléphone pèse ~100 à 200 Ko
 const MAX_REQUETE_OCTETS = 600000;
 
@@ -176,11 +182,29 @@ function base(): PDO {
             rep_date    TEXT NOT NULL DEFAULT \'\'
         );
         CREATE INDEX IF NOT EXISTS idx_annonces ON annonces(cercle, cree);
+        CREATE TABLE IF NOT EXISTS membres (
+            id          TEXT PRIMARY KEY,
+            cercle      TEXT NOT NULL REFERENCES cercles(code) ON DELETE CASCADE,
+            prenom      TEXT NOT NULL,
+            jeton_hash  TEXT NOT NULL,
+            arrivee     TEXT NOT NULL,              -- "2026-10-20"
+            parrain     TEXT NOT NULL DEFAULT \'\'   -- membre dont le lien a servi (vide : le premier lien du cercle)
+        );
     ');
+    // Version 2.3 : le code public du cercle (celui du lien) peut changer ; « code » reste son identifiant interne.
+    $cc = array_column($db->query('PRAGMA table_info(cercles)')->fetchAll(), 'name');
+    if (!in_array('lien', $cc, true)) {
+        $db->exec('ALTER TABLE cercles ADD COLUMN lien TEXT');
+        $db->exec('UPDATE cercles SET lien = code WHERE lien IS NULL');
+        $db->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_cercles_lien ON cercles(lien)');
+    }
     // Version 2.1 : un lien et une photo facultatifs.
     $cols = array_column($db->query('PRAGMA table_info(annonces)')->fetchAll(), 'name');
     if (!in_array('lien', $cols, true))  $db->exec('ALTER TABLE annonces ADD COLUMN lien TEXT NOT NULL DEFAULT \'\'');
     if (!in_array('photo', $cols, true)) $db->exec('ALTER TABLE annonces ADD COLUMN photo INTEGER NOT NULL DEFAULT 0');
+    // Version 2.2 : annonces et réponses rattachées à un membre.
+    if (!in_array('membre', $cols, true))     $db->exec('ALTER TABLE annonces ADD COLUMN membre TEXT NOT NULL DEFAULT \'\'');
+    if (!in_array('rep_membre', $cols, true)) $db->exec('ALTER TABLE annonces ADD COLUMN rep_membre TEXT NOT NULL DEFAULT \'\'');
 
     // Effacement automatique des annonces oubliées, photos comprises.
     $st = $db->prepare('SELECT id FROM annonces WHERE cree < ? AND photo = 1');
@@ -191,7 +215,7 @@ function base(): PDO {
 }
 
 function cercle(PDO $db, string $code): array {
-    $st = $db->prepare('SELECT * FROM cercles WHERE code = ?');
+    $st = $db->prepare('SELECT * FROM cercles WHERE lien = ?');
     $st->execute([$code]);
     $c = $st->fetch();
     if (!$c) erreur('Cercle inconnu', 404);
@@ -200,6 +224,26 @@ function cercle(PDO $db, string $code): array {
 
 function est_admin(array $cercle, $cle): bool {
     return is_string($cle) && $cle !== '' && hash_equals($cercle['admin_hash'], empreinte($cle));
+}
+
+/* Le membre qui fait la requête, reconnu par son identifiant et son jeton. */
+function membre(PDO $db, string $cercle, $id, $jeton): array {
+    $st = $db->prepare('SELECT * FROM membres WHERE id = ? AND cercle = ?');
+    $st->execute([(string)($id ?? ''), $cercle]);
+    $m = $st->fetch();
+    if (!$m || !jeton_ok($m['jeton_hash'], $jeton)) erreur('Membre inconnu', 403);
+    return $m;
+}
+
+/* Quitter le cercle, ou en être retiré : ses annonces (photos comprises) et ses réponses partent avec lui. */
+function effacer_membre(PDO $db, string $cercle, string $id): void {
+    $st = $db->prepare('SELECT id FROM annonces WHERE cercle = ? AND membre = ? AND photo = 1');
+    $st->execute([$cercle, $id]);
+    foreach ($st->fetchAll(PDO::FETCH_COLUMN) as $a) effacer_photo($a);
+    $db->prepare('DELETE FROM annonces WHERE cercle = ? AND membre = ?')->execute([$cercle, $id]);
+    $db->prepare('UPDATE annonces SET rep_prenom = \'\', rep_hash = \'\', rep_date = \'\', rep_membre = \'\' WHERE cercle = ? AND rep_membre = ?')
+       ->execute([$cercle, $id]);
+    $db->prepare('DELETE FROM membres WHERE cercle = ? AND id = ?')->execute([$cercle, $id]);
 }
 
 function annonce(PDO $db, string $cercle, $id): array {
@@ -244,17 +288,82 @@ try {
         }
         $nouveau = aleatoire(9);
         $admin = aleatoire(16);
-        $db->prepare('INSERT INTO cercles (code, admin_hash, nom) VALUES (?, ?, ?)')
-           ->execute([$nouveau, empreinte($admin), texte($entree['nom'] ?? '', MAX_NOM_CERCLE)]);
+        $db->prepare('INSERT INTO cercles (code, admin_hash, nom, lien) VALUES (?, ?, ?, ?)')
+           ->execute([$nouveau, empreinte($admin), texte($entree['nom'] ?? '', MAX_NOM_CERCLE), $nouveau]);
         repondre(['c' => $nouveau, 'admin' => $admin]);
+    }
+
+    /* ----- Retrouver son cercle après un changement de lien : la place de membre suffit ----- */
+    if ($action === 'retrouver' && $methode === 'POST') {
+        $st = $db->prepare('SELECT m.jeton_hash, c.lien, c.nom FROM membres m JOIN cercles c ON c.code = m.cercle WHERE m.id = ?');
+        $st->execute([(string)($entree['m'] ?? '')]);
+        $r = $st->fetch();
+        if (!$r || !jeton_ok($r['jeton_hash'], $entree['j'] ?? '')) erreur('Membre inconnu', 403);
+        repondre(['c' => $r['lien'], 'nom' => $r['nom']]);
     }
 
     if (!is_string($code) || !preg_match('/^[0-9a-f]{18}$/', $code)) erreur('Code de cercle manquant', 400);
     $cer = cercle($db, $code);
+    $code = $cer['code'];   // à partir d'ici : l'identifiant interne, qui ne change jamais
 
-    if (!in_array($action, ['liste', 'photo'], true) && $methode !== 'POST') erreur('POST attendu', 405);
+    $lecture = in_array($action, ['liste', 'photo', 'membres'], true);
+    if (!$lecture && $methode !== 'POST') erreur('POST attendu', 405);
+    $source = $methode === 'GET' ? $_GET : $entree;
+    $cle_admin = $source['admin'] ?? '';
+
+    /* ----- Entrer dans le cercle : il suffit du lien et d'un prénom ----- */
+    if ($action === 'rejoindre') {
+        $prenom = prenom_valide($entree['prenom'] ?? '');
+        $st = $db->prepare('SELECT COUNT(*) FROM membres WHERE cercle = ?');
+        $st->execute([$code]);
+        if ((int)$st->fetchColumn() >= MAX_MEMBRES_PAR_CERCLE) erreur('Ce cercle est complet');
+        $parrain = (string)($entree['parrain'] ?? '');
+        if ($parrain !== '') {
+            $st = $db->prepare('SELECT 1 FROM membres WHERE id = ? AND cercle = ?');
+            $st->execute([$parrain, $code]);
+            if (!$st->fetchColumn()) $parrain = '';
+        }
+        $id = aleatoire(6);
+        $jeton = aleatoire(16);
+        $db->prepare('INSERT INTO membres (id, cercle, prenom, jeton_hash, arrivee, parrain) VALUES (?, ?, ?, ?, ?, ?)')
+           ->execute([$id, $code, $prenom, empreinte($jeton), aujourdhui(), $parrain]);
+        repondre(['id' => $id, 'jeton' => $jeton]);
+    }
+
+    /* Toutes les autres actions demandent d'être membre (la clé de gestion seule suffit pour la liste des membres). */
+    $moi = null;
+    if (!($action === 'membres' && est_admin($cer, $cle_admin))) {
+        $moi = membre($db, $code, $source['m'] ?? '', $source['j'] ?? '');
+    }
 
     switch ($action) {
+
+        /* ----- Qui est dans le cercle (gestion seulement) ----- */
+        case 'membres':
+            if (!est_admin($cer, $cle_admin)) erreur('Réservé à la personne qui gère le cercle', 403);
+            $st = $db->prepare('SELECT m.id, m.prenom, m.arrivee, m.parrain, p.prenom AS parrain_prenom
+                                FROM membres m LEFT JOIN membres p ON p.id = m.parrain AND p.cercle = m.cercle
+                                WHERE m.cercle = ? ORDER BY m.arrivee DESC, m.rowid DESC');
+            $st->execute([$code]);
+            repondre(['membres' => $st->fetchAll()]);
+
+        /* ----- Retirer quelqu'un du cercle (gestion) ----- */
+        case 'retirer_membre':
+            if (!est_admin($cer, $cle_admin)) erreur('Réservé à la personne qui gère le cercle', 403);
+            $cible = (string)($entree['id'] ?? '');
+            if ($cible === $moi['id']) erreur('Pour partir toi-même, utilise « Tout effacer de ce téléphone »');
+            effacer_membre($db, $code, $cible);
+            repondre(['ok' => true]);
+
+        /* ----- Quitter le cercle ----- */
+        case 'quitter':
+            effacer_membre($db, $code, $moi['id']);
+            repondre(['ok' => true]);
+
+        /* ----- Changer son prénom ----- */
+        case 'mon_prenom':
+            $db->prepare('UPDATE membres SET prenom = ? WHERE id = ?')->execute([prenom_valide($entree['prenom'] ?? ''), $moi['id']]);
+            repondre(['ok' => true]);
 
         /* ----- Lire les annonces du cercle ----- */
         case 'liste':
@@ -263,7 +372,7 @@ try {
             $st->execute([$code]);
             $annonces = array_map(function ($a) { $a['photo'] = (int)$a['photo'] === 1; return $a; }, $st->fetchAll());
             $rep = ['nom' => $cer['nom'], 'annonces' => $annonces, 'duree' => DUREE_JOURS];
-            if (est_admin($cer, $_GET['admin'] ?? '')) $rep['admin'] = true;
+            if (est_admin($cer, $cle_admin)) $rep['admin'] = true;
             repondre($rep);
 
         /* ----- Publier un don ou une demande ----- */
@@ -277,19 +386,19 @@ try {
             $mot = texte($entree['mot'] ?? '', MAX_MOT);
             $lien = lien_valide($entree['lien'] ?? '');
             $photo = $sens === 'don' ? photo_valide($entree['photo'] ?? null) : null;   // photo réservée aux dons
-            $prenom = prenom_valide($entree['prenom'] ?? '');
+            $prenom = $moi['prenom'];
             $st = $db->prepare('SELECT COUNT(*) FROM annonces WHERE cercle = ?');
             $st->execute([$code]);
             if ((int)$st->fetchColumn() >= MAX_ANNONCES_PAR_CERCLE) erreur('Ce cercle a déjà beaucoup d\'annonces');
             $id = aleatoire(8);
             $jeton = aleatoire(16);
             if ($photo !== null && file_put_contents(chemin_photo($id), $photo, LOCK_EX) === false) erreur('Stockage indisponible', 500);
-            $db->prepare('INSERT INTO annonces (id, cercle, sens, categorie, titre, mot, lien, photo, prenom, jeton_hash, cree)
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-               ->execute([$id, $code, $sens, $categorie, $titre, $mot, $lien, $photo !== null ? 1 : 0, $prenom, empreinte($jeton), aujourdhui()]);
+            $db->prepare('INSERT INTO annonces (id, cercle, sens, categorie, titre, mot, lien, photo, prenom, jeton_hash, cree, membre)
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+               ->execute([$id, $code, $sens, $categorie, $titre, $mot, $lien, $photo !== null ? 1 : 0, $prenom, empreinte($jeton), aujourdhui(), $moi['id']]);
             repondre(['id' => $id, 'jeton' => $jeton]);
 
-        /* ----- Montrer la photo d'une annonce (code du cercle requis) ----- */
+        /* ----- Montrer la photo d'une annonce (membres seulement) ----- */
         case 'photo':
             $a = annonce($db, $code, $_GET['id'] ?? '');
             $f = chemin_photo($a['id']);
@@ -303,7 +412,7 @@ try {
         /* ----- Clore son annonce : elle est effacée du serveur ----- */
         case 'clore':
             $a = annonce($db, $code, $entree['id'] ?? '');
-            if (!jeton_ok($a['jeton_hash'], $entree['jeton'] ?? '') && !est_admin($cer, $entree['admin'] ?? '')) {
+            if (!jeton_ok($a['jeton_hash'], $entree['jeton'] ?? '') && $a['membre'] !== $moi['id'] && !est_admin($cer, $cle_admin)) {
                 erreur('Seule la personne qui a publié peut clore cette annonce', 403);
             }
             $db->prepare('DELETE FROM annonces WHERE id = ?')->execute([$a['id']]);
@@ -313,12 +422,11 @@ try {
         /* ----- Répondre : « Je le prends » (don) ou « J'en ai un » (demande) ----- */
         case 'prendre':
             $a = annonce($db, $code, $entree['id'] ?? '');
-            if (jeton_ok($a['jeton_hash'], $entree['jeton_auteur'] ?? '')) erreur('C\'est ta propre annonce');
-            $prenom = prenom_valide($entree['prenom'] ?? '');
+            if (jeton_ok($a['jeton_hash'], $entree['jeton_auteur'] ?? '') || $a['membre'] === $moi['id']) erreur('C\'est ta propre annonce');
             $jeton = aleatoire(16);
             // La première réponse l'emporte : la mise à jour n'a lieu que si personne n'a encore répondu.
-            $st = $db->prepare('UPDATE annonces SET rep_prenom = ?, rep_hash = ?, rep_date = ? WHERE id = ? AND rep_hash = \'\'');
-            $st->execute([$prenom, empreinte($jeton), aujourdhui(), $a['id']]);
+            $st = $db->prepare('UPDATE annonces SET rep_prenom = ?, rep_hash = ?, rep_date = ?, rep_membre = ? WHERE id = ? AND rep_hash = \'\'');
+            $st->execute([$moi['prenom'], empreinte($jeton), aujourdhui(), $moi['id'], $a['id']]);
             if ($st->rowCount() === 0) erreur('Quelqu\'un a répondu juste avant toi', 409);
             repondre(['jeton' => $jeton]);
 
@@ -327,15 +435,24 @@ try {
             $a = annonce($db, $code, $entree['id'] ?? '');
             $permis = jeton_ok($a['rep_hash'], $entree['jeton'] ?? '')
                    || jeton_ok($a['jeton_hash'], $entree['jeton'] ?? '')
-                   || est_admin($cer, $entree['admin'] ?? '');
+                   || ($a['rep_membre'] !== '' && $a['rep_membre'] === $moi['id'])
+                   || ($a['membre'] !== '' && $a['membre'] === $moi['id'])
+                   || est_admin($cer, $cle_admin);
             if (!$permis) erreur('Action réservée', 403);
-            $db->prepare('UPDATE annonces SET rep_prenom = \'\', rep_hash = \'\', rep_date = \'\' WHERE id = ?')
+            $db->prepare('UPDATE annonces SET rep_prenom = \'\', rep_hash = \'\', rep_date = \'\', rep_membre = \'\' WHERE id = ?')
                ->execute([$a['id']]);
             repondre(['ok' => true]);
 
+        /* ----- Changer le lien du cercle (gestion) : l'ancien ne mène plus nulle part ----- */
+        case 'changer_lien':
+            if (!est_admin($cer, $cle_admin)) erreur('Réservé à la personne qui gère le cercle', 403);
+            $nouveau = aleatoire(9);
+            $db->prepare('UPDATE cercles SET lien = ? WHERE code = ?')->execute([$nouveau, $code]);
+            repondre(['c' => $nouveau]);
+
         /* ----- Changer le nom du cercle (gestion) ----- */
         case 'renommer':
-            if (!est_admin($cer, $entree['admin'] ?? '')) erreur('Réservé à la personne qui gère le cercle', 403);
+            if (!est_admin($cer, $cle_admin)) erreur('Réservé à la personne qui gère le cercle', 403);
             $db->prepare('UPDATE cercles SET nom = ? WHERE code = ?')
                ->execute([texte($entree['nom'] ?? '', MAX_NOM_CERCLE), $code]);
             repondre(['ok' => true]);
