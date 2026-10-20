@@ -129,7 +129,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.3';
+  const VERSION = '2.3.1';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
@@ -267,6 +267,9 @@
     'Rejoindre ce cercle à la place du tien ?': 'Join this circle instead of yours?',
     'Actualiser': 'Refresh',
     'Changer le lien du cercle': 'Change the circle link',
+    'Le lien du cercle a changé': 'The circle link has changed',
+    'Ton ancien lien marche encore sur ce téléphone. Pour un autre appareil, ou si ton navigateur oublie Grazie, garde plutôt le nouveau.': 'Your old link still works on this phone. For another device, or if your browser forgets Grazie, keep the new one instead.',
+    'Garder le nouveau lien': 'Keep the new link',
     'Ce lien ne mène plus à aucun cercle. Demande le nouveau à qui te l\u2019a envoyé.': 'This link no longer leads to a circle. Ask whoever sent it for the new one.',
     'L\u2019ancien lien ne mènera plus nulle part. Les membres du cercle suivent tout seuls à leur prochaine visite ; seuls les proches qui ne sont pas encore entrés auront besoin du nouveau lien.': 'The old link will no longer lead anywhere. Circle members follow on their own at their next visit; only people who haven\u2019t joined yet will need the new link.',
     'Retire d\u2019abord la personne que tu ne veux plus voir dans le cercle, sinon elle suivra comme les autres.': 'First remove the person you no longer want in the circle, or they will follow like everyone else.',
@@ -449,12 +452,13 @@
       if (!r.c || r.c === cercle.c) return false;
       cercle.c = r.c; if (r.nom) cercle.nom = r.nom;
       ecrire('cercle', cercle);
+      if (!cercle.admin) ecrire('lienChange', true);
       return true;
     } catch { return false; }
   }
 
   function sortirDuCercle(message) {
-    ['cercle', 'membre', 'miennes', 'reponses', 'membresVus', 'parrain'].forEach(oublier);
+    ['cercle', 'membre', 'miennes', 'reponses', 'membresVus', 'parrain', 'lienChange'].forEach(oublier);
     cercle = null; membre = null; miennes = {}; reponses = {}; membres = null; membresVus = null; donnees = null; ecran = 'cercle';
     if (message) dire(message);
   }
@@ -525,7 +529,7 @@
     $('entrer').onclick = async () => {
       const l = lireLien($('lienColle').value);
       if (!l) return dire(L('Ce lien n’est pas un lien Grazie.'));
-      rejoindre(l);
+      await rejoindre(l);
       await rafraichir();
     };
     $('creer').onclick = (e) => agirCreation(e.target);
@@ -548,8 +552,18 @@
     }
   }
 
-  function rejoindre(l) {
+  /* Le code d'un lien mène-t-il encore à un cercle ? (404 : lien remplacé ou cercle disparu) */
+  async function lienVivant(c) {
+    try {
+      const rep = await fetch(`${API}?${new URLSearchParams({ action: 'liste', c })}`);
+      return rep.status !== 404;
+    } catch { return true; }   // hors ligne : dans le doute, on ne décide rien
+  }
+
+  async function rejoindre(l) {
     if (cercle && cercle.c === l.c) return;
+    // Un ancien lien de mon propre cercle (le lien a changé depuis) : on l'ignore, on reste où l'on est.
+    if (cercle && membre && !(await lienVivant(l.c))) return;
     if (cercle && !confirm(LN('Rejoindre ce cercle à la place du tien ?'))) return;
     if (cercle && membre) api('quitter', {}).catch(() => {});   // on quitte proprement l'ancien cercle
     sortirDuCercle();
@@ -655,6 +669,12 @@
         <a href="#" id="versReglages">${esc(L('Réglages'))}</a>
       </div>
       ${bandeauNouveaux()}
+      ${lire('lienChange', false) ? `<div class="bloc toc">
+        <h2>${esc(L('Le lien du cercle a changé'))}</h2>
+        <p>${esc(L('Ton ancien lien marche encore sur ce téléphone. Pour un autre appareil, ou si ton navigateur oublie Grazie, garde plutôt le nouveau.'))}</p>
+        <button class="btn petit" id="envoyerNouveau">${esc(L('Garder le nouveau lien'))}</button>
+        <button class="btn petit calme" id="vuLien">${esc(L('Vu'))}</button>
+      </div>` : ''}
       <div class="duo">
         <button class="btn terre" data-nouveau="don">${esc(L('Je donne'))}</button>
         <button class="btn" data-nouveau="demande">${esc(L('Je cherche'))}</button>
@@ -669,6 +689,8 @@
       ${pied()}`;
 
     $('versReglages').onclick = (e) => { e.preventDefault(); ecran = 'reglages'; afficher(); window.scrollTo(0, 0); };
+    if ($('vuLien')) $('vuLien').onclick = () => { oublier('lienChange'); afficher(); };
+    if ($('envoyerNouveau')) $('envoyerNouveau').onclick = () => partager(lienCercle());
     if ($('vuNouveaux')) $('vuNouveaux').onclick = () => {
       membresVus = membres.map((x) => x.id); ecrire('membresVus', membresVus); afficher();
     };
@@ -1021,11 +1043,11 @@
   }
 
   /* ================= Démarrage ================= */
-  function demarrer() {
+  async function demarrer() {
     const l = lireLien(location.hash);
     if (l) {
       history.replaceState(null, '', location.pathname);
-      rejoindre(l);
+      await rejoindre(l);
     }
     rafraichir();
   }
