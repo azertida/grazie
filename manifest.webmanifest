@@ -1,0 +1,14 @@
+{
+  "name": "Grazie",
+  "short_name": "Grazie",
+  "description": "Un vide-grenier gratuit, juste entre nous. On donne, on cherche.",
+  "lang": "fr",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDE3D1",
+  "theme_color": "#EDE3D1",
+  "icons": [
+    { "src": "icones/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -58,17 +58,33 @@ Un seul geste par annonce. Qui a publié voit qui a répondu, puis clôt l'annon
   4. leur envoyer quand même le nouveau lien («&#8239;Réglages › Inviter&#8239;»), sans dire pourquoi il a changé. L'ancien ne marche que sur un téléphone qui se souvient de Grazie&#8239;: pas sur un autre appareil, ni si le navigateur a effacé les données du site.
 - Seul le **premier** cercle d'un serveur se crée sans clé. Les suivants demandent la clé de gestion d'un cercle existant.
 
-### Ce qui peut surprendre
+### Plusieurs cercles
 
-Safari, sur iPhone, efface les données d'un site qu'on n'a pas ouvert depuis environ une semaine. Un proche qui n'ouvre Grazie que rarement devra alors redonner son prénom, et réapparaîtra dans le «&#8239;Toc toc&#8239;» comme s'il était nouveau. Ce n'est pas un intrus&#8239;: c'est son navigateur qui l'a oublié.
+Un même téléphone peut faire partie de plusieurs cercles&#8239;: les proches d'un côté, sa propre famille de l'autre. Ouvrir le lien d'un nouveau cercle l'**ajoute** à ceux qu'on a déjà&#8239;; on y entre aussitôt avec son prénom. Une rangée d'étiquettes, en haut de l'écran, permet de passer d'un cercle à l'autre.
 
-Grazie ne s'installe pas, comme la première version&#8239;: on rouvre le lien du cercle. Sur iPhone, Safari et une appli installée ne partagent pas leurs données&#8239;; l'installation créerait deux places de membre différentes.
+Chaque cercle garde sa place de membre, ses annonces et, pour qui le gère, sa clé de gestion. «&#8239;Réglages › Quitter ce cercle&#8239;» en retire un seul&#8239;; «&#8239;Tout effacer de ce téléphone&#8239;» les quitte tous.
+
+Pour lancer le cercle de quelqu'un d'autre&#8239;:
+1. le créer depuis «&#8239;Réglages › Gestion du cercle › Créer un cercle&#8239;» et noter sa clé de gestion&#8239;;
+2. sur le téléphone de la personne, ouvrir le lien du cercle, puis saisir la clé dans «&#8239;Je gère ce cercle&#8239;»&#8239;;
+3. quitter ensuite ce cercle sur son propre téléphone&#8239;: on n'a pas à voir qui le compose.
+
+Ses données restent hébergées sur le même serveur&#8239;: la personne qui fait tourner le serveur le lui dit.
+
+### Installer Grazie
+
+Grazie s'installe sur l'écran d'accueil, comme Corsia. C'est conseillé à tout le monde, et surtout aux usagers occasionnels&#8239;: sur iPhone, Safari efface les données d'un site qu'on n'a pas ouvert depuis environ une semaine, mais pas celles d'une appli installée. Sans installation, un proche qui n'ouvre Grazie que rarement devra redonner son prénom, et réapparaîtra dans le «&#8239;Toc toc&#8239;» comme s'il était nouveau.
+
+- L'installation est proposée **une fois**, à la deuxième ouverture, avec les gestes pour iPhone et Android&#8239;; elle reste accessible dans «&#8239;Réglages › Installer Grazie&#8239;». Rien n'est imposé.
+- Sur iPhone, Safari et l'appli installée ne partagent pas leurs données. Au moment d'ajouter l'icône, Grazie place dans l'adresse un **lien de secours**&#8239;: les cercles, le prénom et les places de membre, **jamais les clés de gestion**. L'icône reprend cette adresse, et l'appli installée retrouve tout à sa première ouverture.
+- Qui gère un cercle ressaisit sa clé une fois dans l'appli installée&#8239;; un bandeau «&#8239;Tu gères ce cercle&#8239;» le lui rappelle.
+- Le lien de secours peut aussi être copié à la main&#8239;: il se garde pour soi, comme une clé de maison.
 
 ### Données
 
 | Où | Quoi | Combien de temps |
 |---|---|---|
-| Le téléphone | le code du cercle, le prénom, la place de membre, les jetons qui prouvent que tes annonces et tes réponses sont les tiennes | jusqu'à «&#8239;Tout effacer de ce téléphone&#8239;» |
+| Le téléphone | ses cercles, le prénom, la place de membre dans chacun, les clés de gestion des cercles qu'on gère | jusqu'à «&#8239;Tout effacer de ce téléphone&#8239;» |
 | Le serveur | le nom du cercle&#8239;; pour chaque membre&#8239;: prénom, date d'arrivée, lien par lequel il est entré&#8239;; pour chaque annonce&#8239;: ce qu'elle dit, son lien et sa photo s'il y en a, un prénom, sa date, le prénom de qui a répondu | une annonce close est effacée tout de suite, photo comprise&#8239;; une annonce oubliée au bout de 90 jours&#8239;; un membre qui quitte le cercle ou en est retiré, avec tout ce qui le concerne |
 
 - Ni téléphone, ni adresse, ni compte, ni nom de famille.
@@ -79,7 +95,9 @@ Grazie ne s'installe pas, comme la première version&#8239;: on rouvre le lien d
 
 ### Architecture
 
-- **L'appli**&#8239;: `index.html` (HTML, CSS et JavaScript, sans dépendance), servi par GitHub Pages. Le numéro de version (`VERSION`) s'affiche en bas de chaque écran.
+- **L'appli**&#8239;: `index.html` (HTML, CSS et JavaScript, sans dépendance), servi par GitHub Pages. Le numéro de version (`VERSION`) s'affiche en bas de chaque écran. Avec&#8239;:
+  - `manifest.webmanifest` et `icones/` pour l'installation sur l'écran d'accueil (pas de `start_url`&#8239;: sur iPhone, l'icône reprend l'adresse affichée au moment de l'ajout, qui contient alors le lien de secours)&#8239;;
+  - `sw.js`, qui met l'appli en cache — **augmenter `CACHE_NAME` à chaque mise à jour**. Il ne touche ni au serveur, ni aux photos, ni à la première version dans `v1/`.
 - **Les polices**&#8239;: Fraunces (titres) et Atkinson Hyperlegible (texte), hébergées avec l'appli dans `polices/`, licence SIL OFL 1.1 (voir les fichiers `LICENCE-*.txt`). Aucun appel à Google ni à un autre service.
 - **Le serveur**&#8239;: `serveur/api.php` (PHP 8 + SQLite), hébergé chez alwaysdata (France), sur le modèle de Corsia. Il est placé dans `www/grazie/api.php`, et ses données dans `~/grazie-data/` (base et photos), hors de la partie publique du site. La base se crée et se met à jour toute seule.
 - Le serveur n'accepte que les requêtes venant de `https://azertida.github.io`.
@@ -88,7 +106,7 @@ Grazie ne s'installe pas, comme la première version&#8239;: on rouvre le lien d
 ### Mise à jour
 
 - **Serveur d'abord**&#8239;: redéposer `api.php` chez l'hébergeur (WebDAV), puis sa copie dans `serveur/`.
-- **Appli ensuite**&#8239;: remplacer `index.html` à la racine. GitHub Pages republie tout seul&#8239;; seule la dernière publication compte.
+- **Appli ensuite**&#8239;: remplacer `index.html` à la racine, et augmenter `CACHE_NAME` dans `sw.js`. GitHub Pages republie tout seul&#8239;; seule la dernière publication compte.
 - **Hébergement gratuit**&#8239;: se connecter à l'administration alwaysdata au moins une fois tous les 120 jours la première année, sinon le compte est suspendu.
 
 ---
