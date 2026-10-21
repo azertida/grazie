@@ -367,10 +367,17 @@ try {
 
         /* ----- Lire les annonces du cercle ----- */
         case 'liste':
-            $st = $db->prepare('SELECT id, sens, categorie, titre, mot, lien, photo, prenom, cree, rep_prenom, rep_date
+            $st = $db->prepare('SELECT id, sens, categorie, titre, mot, lien, photo, prenom, cree, rep_prenom, rep_date, membre, rep_membre
                                 FROM annonces WHERE cercle = ? ORDER BY cree DESC, rowid DESC');
             $st->execute([$code]);
-            $annonces = array_map(function ($a) { $a['photo'] = (int)$a['photo'] === 1; return $a; }, $st->fetchAll());
+            // On dit à chacun ce qui est à lui, sans jamais montrer les identifiants des autres membres.
+            $annonces = array_map(function ($a) use ($moi) {
+                $a['photo'] = (int)$a['photo'] === 1;
+                $a['mienne'] = $a['membre'] !== '' && $a['membre'] === $moi['id'];
+                $a['ma_reponse'] = $a['rep_membre'] !== '' && $a['rep_membre'] === $moi['id'];
+                unset($a['membre'], $a['rep_membre']);
+                return $a;
+            }, $st->fetchAll());
             $rep = ['nom' => $cer['nom'], 'annonces' => $annonces, 'duree' => DUREE_JOURS];
             if (est_admin($cer, $cle_admin)) $rep['admin'] = true;
             repondre($rep);
