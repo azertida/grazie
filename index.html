@@ -142,7 +142,7 @@
 
   /* ================= Réglages ================= */
   const API = 'https://azertida.alwaysdata.net/grazie/api.php';
-  const VERSION = '2.4';
+  const VERSION = '2.4.1';
   const P = 'grazie2.';            // préfixe du stockage local (distinct de la v1, qui utilise « grazie. »)
   const NB = ' ';             // espace fine insécable avant ? ! : ;
   const MAX_TITRE = 60, MAX_MOT = 140, MAX_PRENOM = 20, MAX_LIEN = 500;
@@ -159,7 +159,7 @@
     'Entre proches': 'Among friends and family',
     'Un vide-grenier gratuit, juste entre nous. On donne, on cherche.': 'A free jumble sale, just among us. We give things away, we ask for things.',
     'Pour entrer, il te faut le lien de ton cercle': 'To get in, you need your circle’s link',
-    'Un proche te l’envoie. Ouvre-le, ou colle-le ici.': 'Someone close sends it to you. Open it, or paste it here.',
+    'Un proche te l’envoie. Ouvre-le, ou colle-le ici. Ton lien de secours marche aussi.': 'Someone close sends it to you. Open it, or paste it here. Your rescue link works too.',
     'Le lien du cercle': 'The circle link',
     'Entrer': 'Enter',
     'Ce lien n’est pas un lien Grazie.': 'This isn’t a Grazie link.',
@@ -600,7 +600,7 @@
       <p class="sous">${esc(L('Un vide-grenier gratuit, juste entre nous. On donne, on cherche.'))}</p>
       <div class="bloc">
         <h2>${esc(L('Pour entrer, il te faut le lien de ton cercle'))}</h2>
-        <p>${esc(L('Un proche te l’envoie. Ouvre-le, ou colle-le ici.'))}</p>
+        <p>${esc(L('Un proche te l’envoie. Ouvre-le, ou colle-le ici. Ton lien de secours marche aussi.'))}</p>
         <label for="lienColle">${esc(L('Le lien du cercle'))}</label>
         <input type="text" id="lienColle" autocomplete="off" inputmode="url">
         <button class="btn" id="entrer">${esc(L('Entrer'))}</button>
@@ -618,7 +618,10 @@
       </details>
       ${pied()}`;
     $('entrer').onclick = async () => {
-      const l = lireLien($('lienColle').value);
+      const texte = $('lienColle').value;
+      const secours = lireSecours(texte);   // le lien de secours aussi, pour l'appli installée
+      if (secours && secours.l.length) { appliquerSecours(secours); return rafraichir(); }
+      const l = lireLien(texte);
       if (!l) return dire(L('Ce lien n’est pas un lien Grazie.'));
       await rejoindre(l);
       await rafraichir();
